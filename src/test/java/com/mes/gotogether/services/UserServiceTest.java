@@ -3,7 +3,6 @@ package com.mes.gotogether.services;
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.User;
 import com.mes.gotogether.repositories.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +18,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@Slf4j
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class UserServiceTest {
