@@ -1,8 +1,6 @@
 package com.mes.gotogether.domains;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -29,6 +27,7 @@ public class User {
     private String lastName;
     private String email;
     private String oauthId;
+    @Setter(AccessLevel.NONE)
     private String userId;
     private LoginType loginType;
     private String password;

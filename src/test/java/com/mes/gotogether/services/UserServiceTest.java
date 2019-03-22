@@ -4,36 +4,52 @@ import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.User;
 import com.mes.gotogether.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.codecs.ObjectIdGenerator;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UserServiceTest {
-
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private User user;
+    @Mock
+    private Mono<User> monoUserMock;
+    private UserServiceImpl userServiceImpl;
     private User existingUser;
     private User newUser;
-    private User returnUser;
-    private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
-    @InjectMocks
-    private UserServiceImpl userService;
+    private User retrievedUser1;
+    private User retrievedUser2;
+    // private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
     @BeforeEach
     public void setUp() {
-        System.out.println("@Beforeeach is called!");
+
+        System.out.println("@BeforeEach is called!");
+
+        MockitoAnnotations.initMocks(this);
+
+        userServiceImpl = new UserServiceImpl();
+        userServiceImpl.setUserRepository(userRepository);
 
         // Create Existing Account
         existingUser = new User();
@@ -45,6 +61,7 @@ public class UserServiceTest {
         existingUser.setMobileNumber("021234234");
         existingUser.setVerified(false);
         existingUser.setPermalink("abcgmailcom");
+        existingUser.setId((ObjectId) new ObjectIdGenerator().generate());
 
         Address address1 = new Address();
         address1.setStreetName("asda");
@@ -65,6 +82,7 @@ public class UserServiceTest {
         newUser.setMobileNumber("0123123");
         newUser.setVerified(false);
         newUser.setOauthId("123123123");
+        newUser.setId((ObjectId) new ObjectIdGenerator().generate());
 
         Address address2 = new Address();
         address2.setStreetName("ADress2");
@@ -74,34 +92,110 @@ public class UserServiceTest {
         address2.setZipcode("asdasd");
         newUser.setAddress(address2);
         // newUser.setId((ObjectId) new ObjectIdGenerator().generate());
-        userService.saveOrUpdateUser(existingUser);
-        userService.saveOrUpdateUser(newUser);
 
-        System.out.println("Existing user: " + existingUser);
-        System.out.println("New User: " + newUser);
-    }
+        log.info("User: "+ user.getClass() + " userRepository: " + userRepository.getClass());
+        log.info("Existing user: " + existingUser);
+        log.info("New User: " + newUser);
 
-
-    public void setUp2(){
-
-        MockitoAnnotations.initMocks(this);
+        // 1. Save the existing user
+        when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
+        retrievedUser1 = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
     }
 
     @Test
-    public void findUser(){
-        User user = userService.saveOrUpdateUser(existingUser).block();
-        Mono<User> userMono = userService.saveOrUpdateUser(existingUser);
+    public void testMockCreation(){
 
-        StepVerifier
-                .create(userMono)
-                .assertNext(u -> {
-                    assertEquals(existingUser.getEmail(), u.getEmail());
-                    assertEquals(existingUser.getLastName() , u.getLastName());
-                })
-                .expectComplete()
-                .verify();
+        assertNotNull(existingUser);
+        assertNotNull(newUser);
+        assertNotNull(user);
+        assertNotNull(userRepository);
+        assertNotNull(userServiceImpl);
+    }
 
-        assertEquals(user.getEmail(), existingUser.getEmail());
-        assertEquals(user.getId(), existingUser.getId());
+    @Test
+    public void saveUser(){
+
+        when(userRepository.findByUserId(anyString())).thenReturn(Mono.just(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
+        User retrievedUser = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
+        System.out.println("Returned user: " + retrievedUser.getEmail());
+        System.out.println("Existing user" + existingUser.toString());
+        assertEquals(retrievedUser.getUserId(), existingUser.getUserId());
+    }
+
+    @Test
+    public void updateUser(){
+
+        // Change existing user name
+        existingUser.setFirstName("Ergin");
+        existingUser.setEmail("mesarikaya@gmail.com");
+        when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
+        User retrievedUser2 = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
+
+        log.info("Returned user 2: " + retrievedUser2.getEmail());
+
+        // Check if they are the same object
+        assertEquals(retrievedUser1.getId(), retrievedUser2.getId());
+    }
+
+
+    @Test
+    public void findUserById(){
+
+        // Search he user by _id
+        when(userRepository.findById(existingUser.getId())).thenReturn(Mono.just(existingUser));
+        User retrievedUser = userServiceImpl.findUserById(existingUser.getId()).log().flux().next().block();
+        log.info("Returned user: " + retrievedUser.getEmail());
+
+        assertEquals(existingUser.getId(), retrievedUser.getId());
+    }
+
+    @Test
+    public void findUserByUserId(){
+
+        // Search he user by _id
+        when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
+        User retrievedUser = userServiceImpl.findByUserId(existingUser.getUserId()).log().flux().next().block();
+        log.info("Returned user: " + retrievedUser.getEmail());
+
+        assertEquals(existingUser.getId(), retrievedUser.getId());
+    }
+
+    @Test
+    public void findAllUsers(){
+
+        // Search all existing users
+        when(userRepository.findAll()).thenReturn(Flux.just(existingUser));
+        List<User> retrievedUsers = userServiceImpl.findAllUsers().log().flux().next().block();
+        log.info("Returned user: " + retrievedUsers);
+
+        assertNotNull(retrievedUsers);
+        assertEquals(existingUser, retrievedUsers.get(0));
+    }
+
+    @Test
+    public void deleteUserById(){
+
+        // Delete user by _id
+        when(userRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
+        userServiceImpl.deleteUserById(existingUser.getId()).log().flux().next().block();
+        verify(userRepository, times(1)).deleteById(existingUser.getId());
+    }
+
+    @Test
+    public void deleteAllUsers(){
+
+        // Verify if all users are deleted
+        when(userRepository.deleteAll()).thenReturn(Mono.empty());
+        userServiceImpl.deleteAll();
+        verify(userRepository, times(1)).deleteAll();
+
+        // Check if the existing user still exists
+        when(userRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
+        Mono<User> retrievedUser = userServiceImpl.findUserById(existingUser.getId());
+        log.info("*** Check if the user exists after delete ***: " + retrievedUser);
+        assertEquals(Mono.empty(),retrievedUser);
     }
 }

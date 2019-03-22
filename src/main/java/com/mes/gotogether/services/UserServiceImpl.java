@@ -5,17 +5,19 @@ import com.mes.gotogether.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -33,10 +35,7 @@ public class UserServiceImpl implements UserService {
     public Mono<User> findByUserId(String userId) {
 
         // Check if user exists
-        Mono<User> users = userRepository
-                .findByUserId(userId);
-
-        return users;
+        return userRepository.findByUserId(userId);
     }
 
     @Override
@@ -47,31 +46,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> saveOrUpdateUser(User user) {
-        System.out.println("IS repository null: " + userRepository.getClass());
+
+        System.out.println("Is repository null: " + userRepository.getClass());
+
         // Check if new user is null
         if(user != null){
             // Check if the user exists (By email and oauthId)
             // Check if user exists, if so, update. Otherwise create
-            User userInDb = userRepository
-                    .findByUserId(user.getUserId()).block();
+            return userRepository.findByUserId(user.getUserId())
+                    .flatMap(userInDb -> {
+                        if (userInDb != null){
+                            System.out.println("Update the user");
+                            user.setId(userInDb.getId());
+                            System.out.println("USER in repository: " + userInDb);
+                            return userRepository.save(user);
+                        }else{
+                            System.out.println("Creating a new User");
+                            return this.createUser(user);
+                        }
+                    });
 
-            if (userInDb != null){
-                System.out.println("Update the user");
-                user.setId(userInDb.getId());
-                System.out.println("USER in repository: " + userInDb);
-                return userRepository.save(user);
-            }else{
-                System.out.println("Creating a new User");
-                return this.createUser(user);
-            }
             // TODO: CREATE SUCCESS HANDLER AND CONNECT ON SUCCSES CASE
             // TODO: CREATE AN ERROR HANDLER AND CONNECT ON ERROR CASE
         }else{
-            System.out.println("A Null user data is entered. Do not process!");
-            // TODO: CREATE ERROR HANDLERS
-        }
 
-        return Mono.empty();
+            // TODO: CREATE ERROR HANDLERS
+            log.info("A Null user data is entered. Do not process!");
+            return Mono.just(null);
+        }
     }
 
     @Override
