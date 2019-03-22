@@ -91,11 +91,6 @@ public class UserServiceTest {
         address2.setCountry("asd");
         address2.setZipcode("asdasd");
         newUser.setAddress(address2);
-        // newUser.setId((ObjectId) new ObjectIdGenerator().generate());
-
-        log.info("User: "+ user.getClass() + " userRepository: " + userRepository.getClass());
-        log.info("Existing user: " + existingUser);
-        log.info("New User: " + newUser);
 
         // 1. Save the existing user
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
@@ -119,8 +114,6 @@ public class UserServiceTest {
         when(userRepository.findByUserId(anyString())).thenReturn(Mono.just(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
-        System.out.println("Returned user: " + retrievedUser.getEmail());
-        System.out.println("Existing user" + existingUser.toString());
         assertEquals(retrievedUser.getUserId(), existingUser.getUserId());
     }
 
@@ -134,8 +127,6 @@ public class UserServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
         User retrievedUser2 = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
 
-        log.info("Returned user 2: " + retrievedUser2.getEmail());
-
         // Check if they are the same object
         assertEquals(retrievedUser1.getId(), retrievedUser2.getId());
     }
@@ -147,7 +138,6 @@ public class UserServiceTest {
         // Search he user by _id
         when(userRepository.findById(existingUser.getId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findUserById(existingUser.getId()).log().flux().next().block();
-        log.info("Returned user: " + retrievedUser.getEmail());
 
         assertEquals(existingUser.getId(), retrievedUser.getId());
     }
@@ -158,7 +148,6 @@ public class UserServiceTest {
         // Search he user by _id
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findByUserId(existingUser.getUserId()).log().flux().next().block();
-        log.info("Returned user: " + retrievedUser.getEmail());
 
         assertEquals(existingUser.getId(), retrievedUser.getId());
     }
@@ -169,7 +158,6 @@ public class UserServiceTest {
         // Search all existing users
         when(userRepository.findAll()).thenReturn(Flux.just(existingUser));
         List<User> retrievedUsers = userServiceImpl.findAllUsers().log().flux().next().block();
-        log.info("Returned user: " + retrievedUsers);
 
         assertNotNull(retrievedUsers);
         assertEquals(existingUser, retrievedUsers.get(0));
@@ -195,7 +183,6 @@ public class UserServiceTest {
         // Check if the existing user still exists
         when(userRepository.findById(any(ObjectId.class))).thenReturn(Mono.empty());
         Mono<User> retrievedUser = userServiceImpl.findUserById(existingUser.getId());
-        log.info("*** Check if the user exists after delete ***: " + retrievedUser);
         assertEquals(Mono.empty(),retrievedUser);
     }
 }
