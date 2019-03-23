@@ -69,7 +69,7 @@ public class UserServiceTest {
         address1.setCountry("asdasd");
         address1.setZipcode("sasd123");
         existingUser.setAddress(address1);
-        // existingUser.setId((ObjectId) new ObjectIdGenerator().generate());
+        existingUser.setId((ObjectId) new ObjectIdGenerator().generate());
 
         // New User
         // Create Existing Account
@@ -117,6 +117,13 @@ public class UserServiceTest {
     }
 
     @Test
+    public void saveNullUser(){
+
+        Mono<User> retrievedUser = userServiceImpl.saveOrUpdateUser(null);
+        assertEquals(Mono.empty(),retrievedUser);
+    }
+
+    @Test
     public void updateUser(){
 
         // Change existing user name
@@ -125,7 +132,6 @@ public class UserServiceTest {
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
         User retrievedUser2 = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
-
         // Check if they are the same object
         assertEquals(retrievedUser1.getId(), retrievedUser2.getId());
     }
@@ -137,7 +143,6 @@ public class UserServiceTest {
         // Search he user by _id
         when(userRepository.findById(existingUser.getId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findUserById(existingUser.getId()).log().flux().next().block();
-
         assertEquals(existingUser.getId(), retrievedUser.getId());
     }
 
@@ -147,7 +152,6 @@ public class UserServiceTest {
         // Search he user by _id
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findByUserId(existingUser.getUserId()).log().flux().next().block();
-
         assertEquals(existingUser.getId(), retrievedUser.getId());
     }
 
@@ -157,7 +161,6 @@ public class UserServiceTest {
         // Search all existing users
         when(userRepository.findAll()).thenReturn(Flux.just(existingUser));
         List<User> retrievedUsers = userServiceImpl.findAllUsers().log().flux().next().block();
-
         assertNotNull(retrievedUsers);
         assertEquals(existingUser, retrievedUsers.get(0));
     }

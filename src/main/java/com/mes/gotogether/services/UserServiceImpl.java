@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
             // TODO: CREATE ERROR HANDLERS
             log.info("A Null user data is entered. Do not process!");
-            return Mono.just(null);
+            return Mono.empty();
         }
     }
 
