@@ -1,4 +1,4 @@
-package com.mes.gotogether.services;
+package com.mes.gotogether.services.domain;
 
 import com.mes.gotogether.domains.User;
 import org.bson.types.ObjectId;
@@ -15,4 +15,5 @@ public interface UserService {
     Mono<User> saveOrUpdateUser(User user);
     Mono<Void> deleteUserById(ObjectId id);
     Mono<Void> deleteAll();
+    Mono<User> setPassword(User user, String newPassword);
 }

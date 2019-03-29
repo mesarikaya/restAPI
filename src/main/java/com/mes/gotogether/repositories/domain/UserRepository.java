@@ -1,4 +1,4 @@
-package com.mes.gotogether.repositories;
+package com.mes.gotogether.repositories.domain;
 
 import com.mes.gotogether.domains.User;
 import org.bson.types.ObjectId;

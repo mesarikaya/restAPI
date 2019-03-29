@@ -1,8 +1,8 @@
-package com.mes.gotogether.services;
+package com.mes.gotogether.services.domain;
 
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.User;
-import com.mes.gotogether.repositories.UserRepository;
+import com.mes.gotogether.repositories.domain.UserRepository;
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,9 +15,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,6 +25,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class UserServiceTest {
+
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -44,11 +43,9 @@ public class UserServiceTest {
     public void setUp() {
 
         System.out.println("@BeforeEach is called!");
-
         MockitoAnnotations.initMocks(this);
 
-        userServiceImpl = new UserServiceImpl();
-        userServiceImpl.setUserRepository(userRepository);
+        userServiceImpl = new UserServiceImpl(userRepository);
 
         // Create Existing Account
         existingUser = new User();
@@ -61,7 +58,7 @@ public class UserServiceTest {
         existingUser.setVerified(false);
         existingUser.setPermalink("abcgmailcom");
         existingUser.setId((ObjectId) new ObjectIdGenerator().generate());
-
+        existingUser.setRoles(new String[] {"ADMIN", "USER", "GUEST"});
         Address address1 = new Address();
         address1.setStreetName("asda");
         address1.setHouseNumber("asd");
@@ -82,7 +79,7 @@ public class UserServiceTest {
         newUser.setVerified(false);
         newUser.setOauthId("123123123");
         newUser.setId((ObjectId) new ObjectIdGenerator().generate());
-
+        newUser.setRoles(new String[] {"USER","GUEST"});
         Address address2 = new Address();
         address2.setStreetName("ADress2");
         address2.setHouseNumber("asda");
