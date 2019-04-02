@@ -14,10 +14,16 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
+import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -32,80 +38,18 @@ public class AppSecurityConfig {
     @Autowired
     private AddressService addressService;
 
-    /*
-    @Bean
-    @Primary
-    public ReactiveUserDetailsService authentication(UserService userService) {
-
-        System.out.println("Inside this*************8");
-        String rawPassword = "1234test";
-        User user = new User();
-        user.setId((ObjectId) new ObjectIdGenerator().generate());
-        user.setEmail("mesarikaya@gmail.com");
-        user.setOauthId("facebooks");
-        user.setPassword(rawPassword);
-        user.setFirstName("M.");
-        user.setMiddleName("E.");
-        user.setLastName("S.");
-        user.setActive(true);
-        user.setRoles(new String[] {"ADMIN","USER"});
-
-        Address address1 = new Address();
-        address1.setStreetName("Parklaan");
-        address1.setHouseNumber("103");
-        address1.setCity("Sassenheim");
-        address1.setCountry("The Netherlands");
-        address1.setZipcode("2171 ED");
-
-        // GET lat and lon for the address
-        addressService.createAddress(address1);
-        System.out.println("****Setting address****");
-        user.setAddress(address1);
-
-        System.out.println("UserDetails toString data: " + user.toUserDetails().toString());
-
-
-        UserDetails userDetails =
-                SpringSecurityUserDetails
-                        .withUserDetails(user.toUserDetails())
-                        .build();
-
-
-                .withUsername(user.getUserId())
-                .password(user.getPassword())
-                .roles(user.getRoles())
-                .build();
-                                        // .withUserDetails(user.toUserDetails())
-                                        // .passwordEncoder(User.PASSWORD_ENCODER::encode)
-                                        // .build();
-
-
-        return new MapReactiveUserDetailsService(userDetails);
-    }
-*/
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
-    /*
-    @Bean
-    public ReactiveUserDetailsService userDetailsService(UserRepository users) {
-        return (userId) -> userService.findByUserId(userId)
-                .map(u -> {
-                    log.debug("*****2----Creating the user details object from database*****");
-                    return SpringSecurityUserDetails
-                            .withUserDetails(u.toUserDetails())
-                            .build();
-                });
-    }*/
-
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 
         http
-            .csrf().disable()
+            .csrf()
+                .csrfTokenRepository(csrfTokenRepository())
+                .and()
             .authorizeExchange()
             .matchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
             .matchers(EndpointRequest.to("health")).permitAll()
@@ -124,6 +68,27 @@ public class AppSecurityConfig {
                 .logoutSuccessHandler(logoutSuccessHandler("/bye"));
 
         return http.build();
+    }
+
+    @Bean
+    public ServerCsrfTokenRepository csrfTokenRepository() {
+        WebSessionServerCsrfTokenRepository repository =
+                new WebSessionServerCsrfTokenRepository();
+        repository.setHeaderName("X-CSRF-TK");
+
+        return repository;
+    }
+
+    @Bean
+    public WebClient webClient(ReactiveClientRegistrationRepository clientRegistrationRepository,
+                        ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
+        ServerOAuth2AuthorizedClientExchangeFilterFunction oauth =
+                new ServerOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrationRepository,
+                        authorizedClientRepository);
+        oauth.setDefaultClientRegistrationId("google");
+        return WebClient.builder()
+                .filter(oauth)
+                .build();
     }
 
     public ServerLogoutSuccessHandler logoutSuccessHandler(String uri) {

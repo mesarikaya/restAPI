@@ -9,13 +9,25 @@ import reactor.core.publisher.Mono;
 @Controller
 public class IndexController {
 
-    @GetMapping({"", "/", "/index"})
+    @GetMapping({"", "/", "/index", "/login/oauth2/callback/google"})
     public String getIndexPage(){
+        System.out.println("RUNNING THIS API CALLBACK");
 
         log.debug("Getting Index page");
         return "index";
     }
 
+    /*
+    @GetMapping({"", "/", "/index", "/login/oauth2/callback/google"})
+    public String index(Model model,
+                        @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient authorizedClient,
+                        @AuthenticationPrincipal OAuth2User oauth2User) {
+        model.addAttribute("userName", oauth2User.getName());
+        model.addAttribute("clientName", authorizedClient.getClientRegistration().getClientName());
+        model.addAttribute("userAttributes", oauth2User.getAttributes());
+        return "index";
+    }
+*/
 
     @GetMapping("/user")
     public String getUserPage(){

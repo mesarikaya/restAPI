@@ -1,6 +1,7 @@
 package com.mes.gotogether.services.domain;
 
 import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.domains.Role;
 import com.mes.gotogether.domains.User;
 import com.mes.gotogether.repositories.domain.UserRepository;
 import org.bson.codecs.ObjectIdGenerator;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -58,7 +61,7 @@ public class UserServiceTest {
         existingUser.setVerified(false);
         existingUser.setPermalink("abcgmailcom");
         existingUser.setId((ObjectId) new ObjectIdGenerator().generate());
-        existingUser.setRoles(new String[] {"ADMIN", "USER", "GUEST"});
+        existingUser.setRoles(Arrays.asList(new Role[] {Role.ADMIN, Role.USER, Role.GUEST}));
         Address address1 = new Address();
         address1.setStreetName("asda");
         address1.setHouseNumber("asd");
@@ -79,7 +82,7 @@ public class UserServiceTest {
         newUser.setVerified(false);
         newUser.setOauthId("123123123");
         newUser.setId((ObjectId) new ObjectIdGenerator().generate());
-        newUser.setRoles(new String[] {"USER","GUEST"});
+        newUser.setRoles(Arrays.asList(new Role[] { Role.USER, Role.GUEST}));
         Address address2 = new Address();
         address2.setStreetName("ADress2");
         address2.setHouseNumber("asda");
@@ -107,10 +110,10 @@ public class UserServiceTest {
     @Test
     public void saveUser(){
 
-        when(userRepository.findByUserId(anyString())).thenReturn(Mono.just(existingUser));
-        when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
-        User retrievedUser = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
-        assertEquals(retrievedUser.getUserId(), existingUser.getUserId());
+        when(userRepository.findByUserId(anyString())).thenReturn(Mono.empty());
+        when(userRepository.save(newUser)).thenReturn(Mono.just(newUser));
+        User retrievedUser = userServiceImpl.saveOrUpdateUser(newUser).log().flux().next().block();
+        assertEquals(retrievedUser.getUserId(), newUser.getUserId());
     }
 
     @Test
@@ -127,7 +130,7 @@ public class UserServiceTest {
         existingUser.setFirstName("Ergin");
         existingUser.setEmail("mesarikaya@gmail.com");
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
-        when(userRepository.save(any(User.class))).thenReturn(Mono.just(existingUser));
+        when(userRepository.save(existingUser)).thenReturn(Mono.just(existingUser));
         User retrievedUser2 = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
         // Check if they are the same object
         assertEquals(retrievedUser1.getId(), retrievedUser2.getId());
@@ -146,7 +149,7 @@ public class UserServiceTest {
     @Test
     public void findUserByUserId(){
 
-        // Search he user by _id
+        // Search the user by _id
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findByUserId(existingUser.getUserId()).log().flux().next().block();
         assertEquals(existingUser.getId(), retrievedUser.getId());
