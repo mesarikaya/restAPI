@@ -15,5 +15,4 @@ public interface UserService {
     Mono<User> saveOrUpdateUser(User user);
     Mono<Void> deleteUserById(ObjectId id);
     Mono<Void> deleteAll();
-    Mono<User> setPassword(User user, String newPassword);
 }
