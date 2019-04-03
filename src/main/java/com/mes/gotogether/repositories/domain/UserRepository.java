@@ -10,5 +10,5 @@ import reactor.core.publisher.Mono;
 public interface UserRepository extends ReactiveMongoRepository<User, ObjectId> {
 
     Mono<User> findByUserId(String userId);
-    Mono<User> findById(ObjectId id);
+    Mono<Void> deleteByUserId(String userId);
 }

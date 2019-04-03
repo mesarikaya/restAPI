@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,7 +85,7 @@ public class UserServiceTest {
         newUser.setId((ObjectId) new ObjectIdGenerator().generate());
         newUser.setRoles(Arrays.asList(new Role[] { Role.USER, Role.GUEST}));
         Address address2 = new Address();
-        address2.setStreetName("ADress2");
+        address2.setStreetName("Address2");
         address2.setHouseNumber("asda");
         address2.setCity("asdsad");
         address2.setCountry("asd");
@@ -136,7 +137,6 @@ public class UserServiceTest {
         assertEquals(retrievedUser1.getId(), retrievedUser2.getId());
     }
 
-
     @Test
     public void findUserById(){
 
@@ -156,6 +156,14 @@ public class UserServiceTest {
     }
 
     @Test
+    public void findUserByNullUserId(){
+
+        // Search the user by Null User id
+        Mono<User> retrievedUser = userServiceImpl.findByUserId(null);
+        assertEquals(retrievedUser, Mono.empty());
+    }
+
+    @Test
     public void findAllUsers(){
 
         // Search all existing users
@@ -172,6 +180,30 @@ public class UserServiceTest {
         when(userRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
         userServiceImpl.deleteUserById(existingUser.getId()).log().flux().next().block();
         verify(userRepository, times(1)).deleteById(existingUser.getId());
+    }
+
+    @Test
+    public void deleteUserByUserId(){
+
+        // Delete by userId
+        when(userRepository.deleteByUserId(anyString())).thenReturn(Mono.empty());
+        userServiceImpl.deleteByUserId(existingUser.getUserId()).log().flux().next().block();
+        verify(userRepository, times(1))
+                .deleteByUserId((existingUser.getUserId()));
+    }
+
+    @Test
+    public void deleteUserByNullUserId(){
+
+        // Delete the user by Null User id
+        Mono<Void> retrievedUser = userServiceImpl.deleteByUserId(null);
+        assertEquals(retrievedUser, Mono.empty());
+
+        // DeleteById method should have not been called
+        when(userRepository.deleteByUserId(null)).thenReturn(Mono.empty());
+        userServiceImpl.deleteByUserId(null).log().flux().next().block();
+        verify(userRepository, times(0))
+                .deleteByUserId(existingUser.getUserId());
     }
 
     @Test

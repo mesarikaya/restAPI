@@ -14,15 +14,13 @@ public class Group {
     @Id
     private String id;
     private HashSet<User> members;
-    private String originTarget;
-    private String originTargetLat;
-    private String originTargetLon;
+    private String originAddress;
+    private String originAddressLatitude;
+    private String originAddressLongitude;
     private String originSearchRadius;
-    private String destinationTarget;
-    private String destinationTargetLat;
-    private String destinationTargetLon;
+    private String destinationAddress;
+    private String destinationAddressLatitude;
+    private String destinationAddressLongitude;
     private String destinationSearchRadius;
     private boolean isActive;
-
-
 }

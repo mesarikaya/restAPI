@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -17,6 +18,7 @@ public class AddressServiceImpl implements AddressService {
     private AddressRepository addressRepository;
     private RestTemplate restTemplate;
 
+    // FIND METHODS
     @Autowired
     public AddressServiceImpl(AddressRepository addressRepository, RestTemplate restTemplate) {
         this.addressRepository = addressRepository;
@@ -29,24 +31,43 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public Flux<Address> findAddressByStreetNameAndHouseNumberAndCityAndCountry(String streetName,
+                                                                                String houseNumber,
+                                                                                String city,
+                                                                                String country) {
+        return addressRepository.findAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
+                streetName,
+                houseNumber,
+                city,
+                country);
+    }
+
+    @Override
+    public Flux<Address> findAddressByLatitudeAndLongitudeAnd(String latitude, String longitude) {
+        return null;
+    }
+
+    // SAVE OR UPDATE METHODS
+    @Override
     public Mono<Address> saveOrUpdateAddress(Address address) {
 
         if (address != null){
-            return addressRepository.findById(address.getId())
+            return addressRepository.findAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
+                    address.getStreetName(), address.getHouseNumber(), address.getCity(), address.getCountry())
+                    .take(1).single()
                     .flatMap(addressResult -> {
-                        if (addressResult != null){
-                            // TODO: Call https://nominatim.openstreetmap.org/search/Street, House Number, City
-                            // TODO: Set the latitude and longitude
+                            addressResult.setId(address.getId());
                             return this.setAddressLatitudeAndLongitude(addressResult)
-                                    .flatMap(returnedAddress->addressRepository.save(returnedAddress)
-                            );
-                            // TODO: ADD ERORR OR SUCCESS HANDLERS
-                        }else{
-                            log.info("Creating a new User");
-                            return this.createAddress(address);
-                        }
+                                    .flatMap(returnedAddress->addressRepository.save(returnedAddress));
 
-                    });
+                    })
+                    .switchIfEmpty(Mono.defer(()-> Mono.defer(() -> {
+                        log.debug("Creating a new Address");
+                        return this.setAddressLatitudeAndLongitude(address)
+                                .flatMap(returnedAddress->addressRepository.save(returnedAddress));
+
+                    })));
+            // TODO: ADD ERORR OR SUCCESS HANDLERS*/
         }else{
             // TODO: CREATE ERROR HANDLERS
             log.info("A Null address data is entered. Do not process!");
@@ -54,26 +75,29 @@ public class AddressServiceImpl implements AddressService {
         }
     }
 
-    @Override
-    public Mono<Address> createAddress(Address address) {
-
-        if (address != null) {
-            this.setAddressLatitudeAndLongitude(address).flatMap(returnedAddress -> {
-                return addressRepository.save(returnedAddress);
-            });
-            // TODO: ADD ERORR OR SUCCSES HANDLERS
-        }else{
-            // TODO: CREATE ERROR HANDLERS
-            log.info("A Null address data is entered. Do not process!");
-            return Mono.empty();
-        }
-
-        return addressRepository.save(address);
-    }
-
+    // DELETE METHODS
     @Override
     public Mono<Void> deleteAddressById(ObjectId id) {
         return addressRepository.deleteById(id);
+    }
+
+    @Override
+    public Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName, String houseNumber, String city, String country) {
+        return addressRepository.deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(
+                streetName,
+                houseNumber,
+                city,
+                country);
+    }
+
+    @Override
+    public Mono<Void> deleteAddressByLatitudeAndLongitude(String latitude, String longitude) {
+        return deleteAddressByLatitudeAndLongitude(latitude, longitude);
+    }
+
+    @Override
+    public Mono<Void> deleteAll() {
+        return addressRepository.deleteAll();
     }
 
     @Override

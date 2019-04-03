@@ -51,13 +51,14 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testCompile group: 'org.mockito', name: 'mockito-core'
     testCompile group: 'org.mockito', name: 'mockito-junit-jupiter'
-    testCompile('org.junit.jupiter:junit-jupiter-api')
-    testRuntime('org.junit.jupiter:junit-jupiter-engine')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile 'org.junit.jupiter:junit-jupiter-api'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
     useJUnitPlatform()
+
     testLogging {
         events 'PASSED', 'FAILED', 'SKIPPED'
     }

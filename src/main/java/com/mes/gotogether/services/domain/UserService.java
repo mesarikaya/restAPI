@@ -14,5 +14,6 @@ public interface UserService {
     Mono<User> createUser(User user);
     Mono<User> saveOrUpdateUser(User user);
     Mono<Void> deleteUserById(ObjectId id);
+    Mono<Void> deleteByUserId(String userId);
     Mono<Void> deleteAll();
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> findUserById(ObjectId id) {
+
         return userRepository.findById(id);
     }
 
@@ -37,6 +39,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @PreAuthorize("isAnonymous() or isAuthenticated()")
     public Mono<User> findByUserId(String userId) {
+
+        // Check null cases
+        if (ObjectUtils.isEmpty(userId)) return Mono.empty();
 
         // Check if user exists
         return userRepository.findByUserId(userId);
@@ -51,9 +56,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<User> saveOrUpdateUser(User user) {
 
-        // Check if new user is null
-        if(user != null){
-            System.out.println("REQUESTIG SAVE OR UPDATE with  user: " + user);
+        // Check if new user is null, empty cases
+        if (!ObjectUtils.isEmpty(user)){
+            log.debug("REQUESTING SAVE OR UPDATE with  user: " + user);
             // Check if the user exists (By email and oauthId)
             // Check if user exists, if so, update. Otherwise create
             return userRepository.findByUserId(user.getUserId())
@@ -82,6 +87,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<Void> deleteUserById(ObjectId id) {
         return userRepository.deleteById(id);
+    }
+
+    @Override
+    public Mono<Void> deleteByUserId(String userId) {
+        // Check null cases
+        if (ObjectUtils.isEmpty(userId)) return Mono.empty();
+
+        return userRepository.deleteByUserId(userId);
     }
 
     @Override

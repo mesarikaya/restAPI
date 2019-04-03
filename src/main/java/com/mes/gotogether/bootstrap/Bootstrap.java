@@ -52,7 +52,7 @@ public class Bootstrap implements CommandLineRunner {
         address1.setZipcode("2171 ED");
 
         // GET lat and lon for the address
-        addressService.createAddress(address1).block();
+        addressService.saveOrUpdateAddress(address1).block();
         user1.setAddress(address1);
 
         userService.saveOrUpdateUser(user1)
@@ -82,7 +82,7 @@ public class Bootstrap implements CommandLineRunner {
         address2.setZipcode("2171ED");
 
         // GET lat and lon for the address
-        addressService.createAddress(address2).block();
+        addressService.saveOrUpdateAddress(address2).block();
         user2.setAddress(address1);
 
         userService.saveOrUpdateUser(user2)
