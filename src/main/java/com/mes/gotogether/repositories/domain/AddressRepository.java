@@ -10,14 +10,14 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface AddressRepository extends ReactiveMongoRepository<Address, ObjectId> {
 
-    Flux<Address> findAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(String streetName,
+    Mono<Address> findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(String streetName,
                                                                            String houseNumber,
                                                                            String city,
                                                                            String country);
 
-    Flux<Address> findAddressByLatitudeAndLongitudeOrderByLastModified(String latitude, String longitude);
+    Flux<Address> findFirst10AddressByLatitudeAndLongitudeOrderByLastModified(String latitude, String longitude);
 
-    Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName,
+    Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountry(String streetName,
                                                                            String houseNumber,
                                                                            String city,
                                                                            String country);

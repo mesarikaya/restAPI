@@ -20,8 +20,7 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -34,21 +33,17 @@ public class UserServiceTest {
     private UserRepository userRepository;
     @Mock
     private User user;
-    @Mock
-    private Mono<User> monoUserMock;
     private UserServiceImpl userServiceImpl;
     private User existingUser;
     private User newUser;
     private User retrievedUser1;
-    private User retrievedUser2;
-    // private Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
+    private User unchangedExistingUser;
 
     @BeforeEach
     public void setUp() {
 
         System.out.println("@BeforeEach is called!");
         MockitoAnnotations.initMocks(this);
-
         userServiceImpl = new UserServiceImpl(userRepository);
 
         // Create Existing Account
@@ -71,6 +66,7 @@ public class UserServiceTest {
         address1.setZipcode("sasd123");
         existingUser.setAddress(address1);
         existingUser.setId((ObjectId) new ObjectIdGenerator().generate());
+        unchangedExistingUser = new User(existingUser);
 
         // New User
         // Create Existing Account
@@ -129,18 +125,19 @@ public class UserServiceTest {
 
         // Change existing user name
         existingUser.setFirstName("Ergin");
-        existingUser.setEmail("mesarikaya@gmail.com");
+        existingUser.setEmail("mesaya@gmail.com");
         when(userRepository.findByUserId(existingUser.getUserId())).thenReturn(Mono.just(existingUser));
         when(userRepository.save(existingUser)).thenReturn(Mono.just(existingUser));
         User retrievedUser2 = userServiceImpl.saveOrUpdateUser(existingUser).log().flux().next().block();
+
         // Check if they are the same object
-        assertEquals(retrievedUser1.getId(), retrievedUser2.getId());
+        assertEquals(retrievedUser1.getId(), unchangedExistingUser.getId());
     }
 
     @Test
     public void findUserById(){
 
-        // Search he user by _id
+        // Search the user by _id
         when(userRepository.findById(existingUser.getId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findUserById(existingUser.getId()).log().flux().next().block();
         assertEquals(existingUser.getId(), retrievedUser.getId());

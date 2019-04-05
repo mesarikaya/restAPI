@@ -4,7 +4,6 @@ import com.mes.gotogether.domains.User;
 import com.mes.gotogether.repositories.domain.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,13 +19,14 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
-    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public Mono<User> findUserById(ObjectId id) {
+
+        if (ObjectUtils.isEmpty(id)) return Mono.empty();
 
         return userRepository.findById(id);
     }
@@ -49,6 +49,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> createUser(User user) {
+
+        if (ObjectUtils.isEmpty(user)) return Mono.empty();
 
         return userRepository.save(user);
     }
@@ -86,11 +88,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<Void> deleteUserById(ObjectId id) {
+
+        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+
         return userRepository.deleteById(id);
     }
 
     @Override
     public Mono<Void> deleteByUserId(String userId) {
+
         // Check null cases
         if (ObjectUtils.isEmpty(userId)) return Mono.empty();
 

@@ -4,6 +4,7 @@ package com.mes.gotogether.domains;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -25,6 +26,35 @@ public class Address {
     private String latitude;
     private String longitude;
     private Date lastModified;
+
+    public Address(Address address){
+        this(
+                address.getId(),
+                address.getStreetName(),
+                address.getHouseNumber(),
+                address.getCity(),
+                address.getZipcode(),
+                address.getState(),
+                address.getCountry(),
+                address.getLatitude(),
+                address.getLongitude(),
+                address.getLastModified()
+        );
+    }
+
+    @PersistenceConstructor
+    public Address(ObjectId id, String streetName, String houseNumber, String city, String zipcode, String state, String country, String latitude, String longitude, Date lastModified) {
+        this.id = id;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.state = state;
+        this.country = country;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.lastModified = lastModified;
+    }
 
     @Override
     public boolean equals(Object o) {

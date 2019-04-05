@@ -8,13 +8,14 @@ import reactor.core.publisher.Mono;
 public interface AddressService {
 
     Mono<Address> findAddressById(ObjectId id);
-    Flux<Address> findAddressByStreetNameAndHouseNumberAndCityAndCountry(String streetName,
+    Mono<Address> findAddressByStreetNameAndHouseNumberAndCityAndCountry(String streetName,
                                                                           String houseNumber,
                                                                           String city,
                                                                           String country);
 
 
     Flux<Address> findAddressByLatitudeAndLongitudeAnd(String latitude, String longitude);
+    Flux<Address> findAll();
     Mono<Address> saveOrUpdateAddress(Address address);
     Mono<Void> deleteAddressById(ObjectId id);
     Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName,

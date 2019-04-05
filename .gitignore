@@ -28,3 +28,9 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+
+
+# project properties
+application.yml
+application-dev.yml
+

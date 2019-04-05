@@ -5,21 +5,22 @@ import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
 import com.mes.gotogether.repositories.domain.AddressRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
+@Transactional
 public class AddressServiceImpl implements AddressService {
 
     private AddressRepository addressRepository;
     private RestTemplate restTemplate;
 
     // FIND METHODS
-    @Autowired
     public AddressServiceImpl(AddressRepository addressRepository, RestTemplate restTemplate) {
         this.addressRepository = addressRepository;
         this.restTemplate = restTemplate;
@@ -27,15 +28,25 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Mono<Address> findAddressById(ObjectId id) {
+
+        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+
         return addressRepository.findById(id);
     }
 
     @Override
-    public Flux<Address> findAddressByStreetNameAndHouseNumberAndCityAndCountry(String streetName,
+    public Mono<Address> findAddressByStreetNameAndHouseNumberAndCityAndCountry(String streetName,
                                                                                 String houseNumber,
                                                                                 String city,
                                                                                 String country) {
-        return addressRepository.findAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
+
+        // If null, do nothing
+        if (ObjectUtils.isEmpty(streetName)
+                || ObjectUtils.isEmpty(houseNumber)
+                || ObjectUtils.isEmpty(city)
+                || ObjectUtils.isEmpty(country)) return Mono.empty();
+
+        return addressRepository.findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
                 streetName,
                 houseNumber,
                 city,
@@ -44,29 +55,36 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Flux<Address> findAddressByLatitudeAndLongitudeAnd(String latitude, String longitude) {
-        return null;
+
+        // If null, do nothing
+        if (ObjectUtils.isEmpty(latitude) || ObjectUtils.isEmpty(longitude)) return Flux.empty();
+
+        return addressRepository.findFirst10AddressByLatitudeAndLongitudeOrderByLastModified(latitude, longitude);
+    }
+
+    @Override
+    public Flux<Address> findAll() {
+        return addressRepository.findAll();
     }
 
     // SAVE OR UPDATE METHODS
     @Override
     public Mono<Address> saveOrUpdateAddress(Address address) {
 
-        if (address != null){
-            return addressRepository.findAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
-                    address.getStreetName(), address.getHouseNumber(), address.getCity(), address.getCountry())
-                    .take(1).single()
+        if (!ObjectUtils.isEmpty(address)){
+            return this.findAddressById(address.getId())
                     .flatMap(addressResult -> {
                             addressResult.setId(address.getId());
                             return this.setAddressLatitudeAndLongitude(addressResult)
-                                    .flatMap(returnedAddress->addressRepository.save(returnedAddress));
-
+                                    .flatMap(returnedAddress->addressRepository.save(returnedAddress))
+                                    .switchIfEmpty(Mono.defer(()-> Mono.empty()));
                     })
-                    .switchIfEmpty(Mono.defer(()-> Mono.defer(() -> {
+                    .switchIfEmpty(Mono.defer(() -> {
                         log.debug("Creating a new Address");
                         return this.setAddressLatitudeAndLongitude(address)
-                                .flatMap(returnedAddress->addressRepository.save(returnedAddress));
-
-                    })));
+                                .flatMap(returnedAddress->addressRepository.save(returnedAddress))
+                                .switchIfEmpty(Mono.defer(()-> Mono.empty()));
+                    }));
             // TODO: ADD ERORR OR SUCCESS HANDLERS*/
         }else{
             // TODO: CREATE ERROR HANDLERS
@@ -78,12 +96,22 @@ public class AddressServiceImpl implements AddressService {
     // DELETE METHODS
     @Override
     public Mono<Void> deleteAddressById(ObjectId id) {
+
+        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+
         return addressRepository.deleteById(id);
     }
 
     @Override
     public Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName, String houseNumber, String city, String country) {
-        return addressRepository.deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(
+
+        // If any is null, do nothing
+        if (ObjectUtils.isEmpty(streetName)
+                || ObjectUtils.isEmpty(houseNumber)
+                || ObjectUtils.isEmpty(city)
+                || ObjectUtils.isEmpty(country)) return Mono.empty();
+
+        return addressRepository.deleteAddressByStreetNameAndHouseNumberAndCityAndCountry(
                 streetName,
                 houseNumber,
                 city,
@@ -92,7 +120,11 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Mono<Void> deleteAddressByLatitudeAndLongitude(String latitude, String longitude) {
-        return deleteAddressByLatitudeAndLongitude(latitude, longitude);
+
+        // If any is null, do nothing
+        if (ObjectUtils.isEmpty(latitude) || ObjectUtils.isEmpty(longitude)) return Mono.empty();
+
+        return addressRepository.deleteAddressByLatitudeAndLongitude(latitude, longitude);
     }
 
     @Override
@@ -102,6 +134,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Mono<Address> setAddressLatitudeAndLongitude(Address address) {
+
+        // If null, do nothing
+        if (ObjectUtils.isEmpty(address)) return Mono.empty();
 
         String baseUrl = "https://nominatim.openstreetmap.org/search/";
         String urlParameter = address.getStreetName() + " " + address.getHouseNumber() + ", " + address.getCity();
