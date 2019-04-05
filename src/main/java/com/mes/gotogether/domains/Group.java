@@ -1,6 +1,7 @@
 package com.mes.gotogether.domains;
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,15 +13,13 @@ import java.util.HashSet;
 public class Group {
 
     @Id
-    private String id;
+    private ObjectId id;
+    private String name;
     private HashSet<User> members;
-    private String originAddress;
-    private String originAddressLatitude;
-    private String originAddressLongitude;
+    private HashSet<User> owners;
+    private Address originAddress;
     private String originSearchRadius;
-    private String destinationAddress;
-    private String destinationAddressLatitude;
-    private String destinationAddressLongitude;
+    private Address destinationAddress;
     private String destinationSearchRadius;
     private boolean isActive;
 }

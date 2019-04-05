@@ -66,8 +66,8 @@ public class AccountServiceTest {
         unchangedExistingAddress = new Address(existingAddress);
 
         mapQuery1 = new NomatimOpenStreetMapQuery();
-        mapQuery1.setLatitude("11");
-        mapQuery1.setLongitude("13");
+        mapQuery1.setLatitude(11);
+        mapQuery1.setLongitude(13);
         existingAddressMapQuery = new NomatimOpenStreetMapQuery[1];
         existingAddressMapQuery[0] = mapQuery1;
 
@@ -82,8 +82,8 @@ public class AccountServiceTest {
         newAddress.setId((ObjectId) new ObjectIdGenerator().generate());
 
         mapQuery2 = new NomatimOpenStreetMapQuery();
-        mapQuery2.setLatitude("11");
-        mapQuery2.setLongitude("13");
+        mapQuery2.setLatitude(11);
+        mapQuery2.setLongitude(13);
         newAddressMapQuery = new NomatimOpenStreetMapQuery[1];
         newAddressMapQuery[0] = mapQuery2;
 
@@ -173,7 +173,8 @@ public class AccountServiceTest {
     public void findAddressByAddressDetails(){
 
         // Find the existing address
-        when(addressRepository.findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
+        when(addressRepository
+                .findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 anyString(),anyString(), anyString(), anyString()
         )).thenReturn(Mono.just(existingAddress));
         Address retrievedAddress = addressServiceImpl
@@ -191,7 +192,8 @@ public class AccountServiceTest {
     public void findAddressByNullAddressDetails(){
 
         // Find the existing address
-        when(addressRepository.findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
+        when(addressRepository
+                .findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 null, null, null, null
         )).thenReturn(Mono.empty());
         Address retrievedAddress = addressServiceImpl
@@ -201,7 +203,8 @@ public class AccountServiceTest {
                         null,
                         null
                 ).log().flux().next().block();
-        verify(addressRepository, times(0)).findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
+        verify(addressRepository, times(0))
+                .findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 null, null, null, null
         );
     }
@@ -210,8 +213,8 @@ public class AccountServiceTest {
     public void findAddressByLatitudeAndLongitude(){
 
         // Find the existing address
-        when(addressRepository.findFirst10AddressByLatitudeAndLongitudeOrderByLastModified(
-                anyString(),anyString()
+        when(addressRepository.findFirst10AddressByLatitudeAndLongitudeOrderByLastModifiedDesc(
+                anyDouble(),anyDouble()
         )).thenReturn(Flux.just(existingAddress));
         List<Address> retrievedAddress = addressServiceImpl
                 .findAddressByLatitudeAndLongitudeAnd(
@@ -226,15 +229,17 @@ public class AccountServiceTest {
     public void findAddressByNullLatitudeAndLongitude(){
 
         // Find the existing address
-        when(addressRepository.findFirst10AddressByLatitudeAndLongitudeOrderByLastModified(
+        when(addressRepository
+                .findFirst10AddressByLatitudeAndLongitudeOrderByLastModifiedDesc(
                 null, null
         )).thenReturn(Flux.empty());
         List<Address> retrievedAddress = addressServiceImpl
                 .findAddressByLatitudeAndLongitudeAnd(
                         null, null
                 ).collectList().log().flux().next().block();
-        verify(addressRepository, times(0)).findFirst10AddressByLatitudeAndLongitudeOrderByLastModified(
-                null, null
+        verify(addressRepository, times(0))
+                .findFirst10AddressByLatitudeAndLongitudeOrderByLastModifiedDesc(
+                        null, null
         );
     }
 
@@ -251,7 +256,7 @@ public class AccountServiceTest {
     public void deleteAddressByNullId(){
 
         // Delete address by _id
-        // when(addressRepository.deleteById(nullable(ObjectId.class))).thenReturn(Mono.empty());
+        // when(addressRepository.deleteById(null).thenReturn(Mono.empty());
         Mono<Void> retrievedAddress = addressServiceImpl.deleteAddressById(null);
         assertEquals(Mono.empty(), retrievedAddress);
     }
@@ -308,8 +313,8 @@ public class AccountServiceTest {
 
         // Delete address by address details
         when(addressRepository.deleteAddressByLatitudeAndLongitude(
-                anyString(),
-                anyString())).thenReturn(Mono.empty());
+                anyDouble(),
+                anyDouble())).thenReturn(Mono.empty());
         addressServiceImpl.deleteAddressByLatitudeAndLongitude(
                 existingAddress.getLongitude(),
                 existingAddress.getLatitude())

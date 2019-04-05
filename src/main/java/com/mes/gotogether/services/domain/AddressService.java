@@ -14,7 +14,7 @@ public interface AddressService {
                                                                           String country);
 
 
-    Flux<Address> findAddressByLatitudeAndLongitudeAnd(String latitude, String longitude);
+    Flux<Address> findAddressByLatitudeAndLongitudeAnd(Double latitude, Double longitude);
     Flux<Address> findAll();
     Mono<Address> saveOrUpdateAddress(Address address);
     Mono<Void> deleteAddressById(ObjectId id);
@@ -23,7 +23,7 @@ public interface AddressService {
                                                                            String city,
                                                                            String country);
 
-    Mono<Void> deleteAddressByLatitudeAndLongitude(String latitude, String longitude);
+    Mono<Void> deleteAddressByLatitudeAndLongitude(Double latitude, Double longitude);
     Mono<Void> deleteAll();
     Mono<Address> setAddressLatitudeAndLongitude(Address address);
 }

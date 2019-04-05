@@ -23,8 +23,8 @@ public class Address {
     private String zipcode;
     private String state;
     private String country;
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     private Date lastModified;
 
     public Address(Address address){
@@ -43,7 +43,8 @@ public class Address {
     }
 
     @PersistenceConstructor
-    public Address(ObjectId id, String streetName, String houseNumber, String city, String zipcode, String state, String country, String latitude, String longitude, Date lastModified) {
+    public Address(ObjectId id, String streetName, String houseNumber, String city, String zipcode,
+                   String state, String country, double latitude, double longitude, Date lastModified) {
         this.id = id;
         this.streetName = streetName;
         this.houseNumber = houseNumber;

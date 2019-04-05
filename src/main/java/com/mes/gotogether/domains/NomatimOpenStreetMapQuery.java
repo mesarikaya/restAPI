@@ -17,9 +17,9 @@ public class NomatimOpenStreetMapQuery {
     @JsonProperty("osm_id")
     private Long osmId;
     @JsonProperty("lat")
-    private String latitude;
+    private double latitude;
     @JsonProperty("lon")
-    private String longitude;
+    private double longitude;
     @JsonProperty("display_name")
     private String displayName;
 
