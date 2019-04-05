@@ -121,6 +121,13 @@ public class UserServiceTest {
     }
 
     @Test
+    public void createNullUser(){
+
+        Mono<User> retrievedUser = userServiceImpl.createUser(null);
+        assertEquals(Mono.empty(),retrievedUser);
+    }
+
+    @Test
     public void updateUser(){
 
         // Change existing user name
@@ -141,6 +148,14 @@ public class UserServiceTest {
         when(userRepository.findById(existingUser.getId())).thenReturn(Mono.just(existingUser));
         User retrievedUser = userServiceImpl.findUserById(existingUser.getId()).log().flux().next().block();
         assertEquals(existingUser.getId(), retrievedUser.getId());
+    }
+
+    @Test
+    public void findUserByNullId(){
+
+        // Search the user by Null User id
+        Mono<User> retrievedUser = userServiceImpl.findUserById(null);
+        assertEquals(retrievedUser, Mono.empty());
     }
 
     @Test
@@ -177,6 +192,15 @@ public class UserServiceTest {
         when(userRepository.deleteById(any(ObjectId.class))).thenReturn(Mono.empty());
         userServiceImpl.deleteUserById(existingUser.getId()).log().flux().next().block();
         verify(userRepository, times(1)).deleteById(existingUser.getId());
+    }
+
+    @Test
+    public void deleteUserByNullId(){
+
+        // Delete user by _id
+        when(userRepository.deleteById(nullable(ObjectId.class))).thenReturn(Mono.empty());
+        userServiceImpl.deleteUserById(null).log().flux().next().block();
+        verify(userRepository, times(0)).deleteById(nullable(ObjectId.class));
     }
 
     @Test

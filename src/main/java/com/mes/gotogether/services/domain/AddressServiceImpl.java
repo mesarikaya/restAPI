@@ -41,10 +41,7 @@ public class AddressServiceImpl implements AddressService {
                                                                                 String country) {
 
         // If null, do nothing
-        if (ObjectUtils.isEmpty(streetName)
-                || ObjectUtils.isEmpty(houseNumber)
-                || ObjectUtils.isEmpty(city)
-                || ObjectUtils.isEmpty(country)) return Mono.empty();
+        if (ObjectUtils.isEmpty(streetName) || ObjectUtils.isEmpty(houseNumber) || ObjectUtils.isEmpty(city) || ObjectUtils.isEmpty(country)) return Mono.empty();
 
         return addressRepository.findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
                 streetName,
@@ -106,10 +103,7 @@ public class AddressServiceImpl implements AddressService {
     public Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName, String houseNumber, String city, String country) {
 
         // If any is null, do nothing
-        if (ObjectUtils.isEmpty(streetName)
-                || ObjectUtils.isEmpty(houseNumber)
-                || ObjectUtils.isEmpty(city)
-                || ObjectUtils.isEmpty(country)) return Mono.empty();
+        if (ObjectUtils.isEmpty(streetName) || ObjectUtils.isEmpty(houseNumber) || ObjectUtils.isEmpty(city) || ObjectUtils.isEmpty(country)) return Mono.empty();
 
         return addressRepository.deleteAddressByStreetNameAndHouseNumberAndCityAndCountry(
                 streetName,

@@ -279,6 +279,30 @@ public class AccountServiceTest {
                 existingAddress.getCountry());
     }
 
+
+    @Test
+    public void deleteAddressByNullAddressDetails(){
+
+        // Delete address by address details
+        when(addressRepository.deleteAddressByStreetNameAndHouseNumberAndCityAndCountry(
+                null,
+                null,
+                null,
+                null)).thenReturn(Mono.empty());
+        addressServiceImpl.deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(
+                null,
+                null,
+                null,
+                null)
+                .log().flux().next().block();
+        verify(addressRepository, times(0)).deleteAddressByStreetNameAndHouseNumberAndCityAndCountry(
+                null,
+                null,
+                null,
+                null);
+    }
+
+
     @Test
     public void deleteAddressByLatitudeAndLongitude(){
 
@@ -293,6 +317,21 @@ public class AccountServiceTest {
         verify(addressRepository, times(1)).deleteAddressByLatitudeAndLongitude(
                 existingAddress.getLongitude(),
                 existingAddress.getLatitude());
+    }
+
+    @Test
+    public void deleteAddressByNullLatitudeAndLongitude(){
+
+        // Delete address by address details
+        when(addressRepository.deleteAddressByLatitudeAndLongitude(
+                null,
+                null)).thenReturn(Mono.empty());
+        addressServiceImpl.deleteAddressByLatitudeAndLongitude(
+                null,
+                null)
+                .log().flux().next().block();
+        verify(addressRepository, times(0))
+                .deleteAddressByLatitudeAndLongitude(null,null);
     }
 
     @Test
