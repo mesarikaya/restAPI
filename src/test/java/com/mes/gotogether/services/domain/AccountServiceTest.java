@@ -3,7 +3,6 @@ package com.mes.gotogether.services.domain;
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
 import com.mes.gotogether.repositories.domain.AddressRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +25,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@Slf4j
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class AccountServiceTest {
@@ -52,7 +50,7 @@ public class AccountServiceTest {
     @BeforeEach
     public void setUp() {
 
-        log.info("@BeforeEach is called!");
+        System.out.println("@BeforeEach is called!");
         MockitoAnnotations.initMocks(this);
         addressServiceImpl = new AddressServiceImpl(addressRepository, restTemplate);
 
@@ -126,24 +124,6 @@ public class AccountServiceTest {
         Mono<Address> retrievedAddress = addressServiceImpl.saveOrUpdateAddress(null);
         assertEquals(Mono.empty(), retrievedAddress);
     }
-
-    /*
-    @Test
-    public void saveAddress(){
-
-        // 1. Save the existing Address
-        when(addressRepository.findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModified(
-                existingAddress.getStreetName(),
-                existingAddress.getHouseNumber(),
-                existingAddress.getCity(),
-                existingAddress.getCountry()
-        )).thenReturn(Mono.empty());
-        when(restTemplate.getForObject(anyString(),eq(NomatimOpenStreetMapQuery[].class))).thenReturn(existingAddressMapQuery);
-        when(addressRepository.save(existingAddress)).thenReturn(Mono.just(existingAddress));
-        Address retrievedAddress = addressServiceImpl.saveOrUpdateAddress(existingAddress).log().flux().next().block();
-        assertEquals(retrievedAddress.getId(), existingAddress.getId());
-    }
-*/
 
     @Test
     public void updateAddress(){
