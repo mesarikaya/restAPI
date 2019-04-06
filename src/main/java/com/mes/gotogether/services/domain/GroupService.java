@@ -13,25 +13,25 @@ public interface GroupService {
     Flux<Group> findGroupsByDestinationAddress(Address destinationAddress);
     Flux<Group> findGroupsByOriginAndDestinationAddress(Address originAddress, Address destinationAddress);
     Flux<Group> findGroupsByOriginAndDestinationGeoLocationDetails(
-            double originLatitude,
-            double originLongitude,
-            double destinationLatitude,
-            double destinationLongitude
+            Double originLatitude,
+            Double originLongitude,
+            Double destinationLatitude,
+            Double destinationLongitude
     );
 
     Flux<Group> findGroupsByOriginWithinSearchRadius(
-            double originLatMin, double originLatMax,
-            double originLongMin, double originLongMax);
+            Double originLatMin, Double originLatMax,
+            Double originLongMin, Double originLongMax);
 
     Flux<Group> findGroupsByDestinationWithinSearchRadius(
-            double destLatMin, double destLatMax,
-            double destLongMin, double destLongMax);
+            Double destLatMin, Double destLatMax,
+            Double destLongMin, Double destLongMax);
 
     Flux<Group> findGroupsByOriginAndDestinationWithinSearchRadius(
-            double originLatMin, double originLatMax,
-            double originLongMin, double originLongMax,
-            double destLatMin, double destLatMax,
-            double destLongMin, double destLongMax);
+            Double originLatMin, Double originLatMax,
+            Double originLongMin, Double originLongMax,
+            Double destLatMin, Double destLatMax,
+            Double destLongMin, Double destLongMax);
 
     Flux<Group> findAll();
 

@@ -13,14 +13,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -219,7 +220,7 @@ public class GroupServiceTest {
         existingGroup.setName("Group Test changed Name");
         existingGroup.setActive(false);
 
-        // 1. Save the existing Address
+        // 1. Save the existing group
         when(groupRepository.findById(existingGroup.getId())).thenReturn(Mono.just(existingGroup));
         when(groupRepository.save(existingGroup)).thenReturn(Mono.just(existingGroup));
         Group retrievedGroup = groupServiceImpl.saveOrUpdate(existingGroup).log().flux().next().block();
@@ -231,19 +232,281 @@ public class GroupServiceTest {
     @Test
     public void findGroupById(){
 
-        // Search the Address by _id
+        // Search the group by _id
         Group retrievedGroup = groupServiceImpl.findById(existingGroup.getId()).log().flux().next().block();
         assertEquals(existingGroup, retrievedGroup);
     }
 
 
     @Test
-    public void findAddressByNullId(){
+    public void findGroupByNullId(){
 
-        // Search the Address by Null Address id
+        // Search the group by Null Address id
         Group retrievedGroup = groupServiceImpl.findById(null).log().flux().next().block();
         assertEquals(null, retrievedGroup);
     }
 
+    @Test
+    public void findGroupByOriginAddress(){
+
+        // Search by origin address
+        when(groupRepository.findGroupsByOriginAddress(existingGroup.getOriginAddress()))
+                .thenReturn(Flux.just(existingGroup));
+
+        Group retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAddress(existingGroup.getOriginAddress()).log().next().block();
+        assertEquals(existingGroup, retrievedGroup);
+    }
+
+
+    @Test
+    public void findGroupByNullOriginAddress(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAddress(null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+    @Test
+    public void findGroupByDestinationAddress(){
+
+        // Search by origin address
+        when(groupRepository.findGroupsByDestinationAddress(existingGroup.getDestinationAddress()))
+                .thenReturn(Flux.just(existingGroup));
+
+        Group retrievedGroup = groupServiceImpl
+                .findGroupsByDestinationAddress(existingGroup.getDestinationAddress())
+                .log().next().block();
+        assertEquals(existingGroup, retrievedGroup);
+    }
+
+
+    @Test
+    public void findGroupByNullDestinationAddress(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByDestinationAddress(null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+    @Test
+    public void findGroupByOriginAndDestinationAddress(){
+
+        // Search by origin address
+        when(groupRepository
+                .findGroupsByOriginAndDestinationAddress(
+                        existingGroup.getOriginAddress(),
+                        existingGroup.getDestinationAddress()))
+                .thenReturn(Flux.just(existingGroup));
+
+        Group retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAndDestinationAddress(
+                        existingGroup.getOriginAddress(),
+                        existingGroup.getDestinationAddress())
+                .log().next().block();
+
+        assertEquals(existingGroup, retrievedGroup);
+    }
+
+
+    @Test
+    public void findGroupByNullOriginAndDestinationAddress(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAndDestinationAddress(
+                        null,
+                        null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+
+    @Test
+    public void findGroupByOriginAndDestinationGeoLocation(){
+
+        // Search by origin address
+        when(groupRepository
+                .findGroupsByOriginAndDestinationGeoLocationDetails(
+                        existingGroup.getOriginAddress().getLatitude(),
+                        existingGroup.getOriginAddress().getLongitude(),
+                        existingGroup.getDestinationAddress().getLatitude(),
+                        existingGroup.getDestinationAddress().getLongitude()))
+                .thenReturn(Flux.just(existingGroup));
+
+        Group retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAndDestinationGeoLocationDetails(
+                        existingGroup.getOriginAddress().getLatitude(),
+                        existingGroup.getOriginAddress().getLongitude(),
+                        existingGroup.getDestinationAddress().getLatitude(),
+                        existingGroup.getDestinationAddress().getLongitude())
+                .log().next().block();
+
+        assertEquals(existingGroup, retrievedGroup);
+    }
+
+    @Test
+    public void findGroupByNullOriginAndDestinationGeoLocation(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAndDestinationGeoLocationDetails(
+                        null, null,
+                        null, null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+    @Test
+    public void findGroupByOriginWithinSearchRadius(){
+
+        // Search by origin address
+        when(groupRepository
+                .findGroupsByOriginWithinSearchRadius(
+                        existingGroup.getOriginAddress().getLatitude()-2,
+                        existingGroup.getOriginAddress().getLatitude()+2,
+                        existingGroup.getOriginAddress().getLongitude()-2,
+                        existingGroup.getOriginAddress().getLongitude()+2))
+                .thenReturn(Flux.fromIterable(Arrays.asList(existingGroup, newGroup)));
+
+        List<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginWithinSearchRadius(
+                        existingGroup.getOriginAddress().getLatitude()-2,
+                        existingGroup.getOriginAddress().getLatitude()+2,
+                        existingGroup.getOriginAddress().getLongitude()-2,
+                        existingGroup.getOriginAddress().getLongitude()+2)
+                .collectList().log().block();
+
+        assertEquals(newGroup, retrievedGroup.get(1));
+    }
+
+    @Test
+    public void findGroupByNullOriginWithinSearchRadius(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginWithinSearchRadius(
+                        null, null,
+                        null, null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+    @Test
+    public void findGroupByDestinationWithinSearchRadius(){
+
+        // Search by origin address
+        when(groupRepository
+                .findGroupsByDestinationWithinSearchRadius(
+                        existingGroup.getDestinationAddress().getLatitude()-2,
+                        existingGroup.getDestinationAddress().getLatitude()+2,
+                        existingGroup.getDestinationAddress().getLongitude()-2,
+                        existingGroup.getDestinationAddress().getLongitude()+2))
+                .thenReturn(Flux.fromIterable(Arrays.asList(existingGroup, newGroup)));
+
+        List<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByDestinationWithinSearchRadius(
+                        existingGroup.getDestinationAddress().getLatitude()-2,
+                        existingGroup.getDestinationAddress().getLatitude()+2,
+                        existingGroup.getDestinationAddress().getLongitude()-2,
+                        existingGroup.getDestinationAddress().getLongitude()+2)
+                .collectList().log().block();
+
+        assertEquals(newGroup, retrievedGroup.get(1));
+    }
+
+    @Test
+    public void findGroupByNullDestinationWithinSearchRadius(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByDestinationWithinSearchRadius(
+                        null, null,
+                        null, null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+    @Test
+    public void findGroupByOriginAndDestinationWithinSearchRadius(){
+
+        // Search by origin address
+        when(groupRepository
+                .findGroupsByOriginAndDestinationWithinSearchRadius(
+                        existingGroup.getOriginAddress().getLatitude()-2,
+                        existingGroup.getOriginAddress().getLatitude()+2,
+                        existingGroup.getOriginAddress().getLongitude()-2,
+                        existingGroup.getOriginAddress().getLongitude()+2,
+                        existingGroup.getDestinationAddress().getLatitude()-2,
+                        existingGroup.getDestinationAddress().getLatitude()+2,
+                        existingGroup.getDestinationAddress().getLongitude()-2,
+                        existingGroup.getDestinationAddress().getLongitude()+2))
+                .thenReturn(Flux.fromIterable(Arrays.asList(existingGroup, newGroup)));
+
+        List<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAndDestinationWithinSearchRadius(
+                        existingGroup.getOriginAddress().getLatitude()-2,
+                        existingGroup.getOriginAddress().getLatitude()+2,
+                        existingGroup.getOriginAddress().getLongitude()-2,
+                        existingGroup.getOriginAddress().getLongitude()+2,
+                        existingGroup.getDestinationAddress().getLatitude()-2,
+                        existingGroup.getDestinationAddress().getLatitude()+2,
+                        existingGroup.getDestinationAddress().getLongitude()-2,
+                        existingGroup.getDestinationAddress().getLongitude()+2)
+                .collectList().log().block();
+
+        assertEquals(newGroup, retrievedGroup.get(1));
+    }
+
+    @Test
+    public void findGroupByNullOriginAndDestinationWithinSearchRadius(){
+
+        Flux<Group> retrievedGroup = groupServiceImpl
+                .findGroupsByOriginAndDestinationWithinSearchRadius(
+                        null, null,
+                        null, null,
+                        null, null,
+                        null, null);
+
+        assertEquals(Flux.empty(), retrievedGroup);
+    }
+
+
+    @Test
+    public void findAll(){
+
+        when(groupRepository.findAll()).thenReturn(Flux.fromIterable(Arrays.asList(existingGroup, newGroup)));
+
+        List<Group> retrievedGroup = groupServiceImpl.findAll().collectList().block();
+
+        assertEquals(existingGroup, retrievedGroup.get(0));
+        assertEquals(2, retrievedGroup.size());
+    }
+
+    @Test
+    public void deleteGroupById(){
+
+        when(groupRepository.deleteById(existingGroup.getId())).thenReturn(Mono.empty());
+
+        groupServiceImpl.deleteById(existingGroup.getId());
+
+        verify(groupRepository, times(1)).deleteAll();
+    }
+
+    @Test
+    public void deleteGroupByNullId(){
+
+        Mono<Void> retrievedGroup = groupServiceImpl.deleteById(null);
+
+        assertEquals(Mono.empty(), retrievedGroup);
+    }
+
+    @Test
+    public void deleteGroupAll(){
+
+        when(groupRepository.deleteAll()).thenReturn(Mono.empty());
+
+        groupServiceImpl.deleteAll();
+
+        verify(groupRepository, times(1)).deleteAll();
+    }
 }
 

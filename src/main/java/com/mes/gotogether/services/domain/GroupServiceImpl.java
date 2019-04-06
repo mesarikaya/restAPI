@@ -20,6 +20,8 @@ public class GroupServiceImpl implements GroupService{
         this.groupRepository = groupRepository;
     }
 
+
+    // FIND METHODS
     @Override
     public Mono<Group> findById(ObjectId id) {
 
@@ -54,8 +56,8 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public Flux<Group> findGroupsByOriginAndDestinationGeoLocationDetails(
-            double originLatitude, double destinationLatitude,
-            double originLongitude, double destinationLongitude) {
+            Double originLatitude, Double originLongitude,
+            Double destinationLatitude, Double destinationLongitude) {
 
         if (ObjectUtils.isEmpty(originLatitude)
                 || ObjectUtils.isEmpty(originLongitude)
@@ -69,8 +71,8 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public Flux<Group> findGroupsByOriginWithinSearchRadius(
-            double originLatMin, double originLatMax,
-            double originLongMin, double originLongMax) {
+            Double originLatMin, Double originLatMax,
+            Double originLongMin, Double originLongMax) {
 
         if (ObjectUtils.isEmpty(originLatMin) || ObjectUtils.isEmpty(originLatMax)
                 || ObjectUtils.isEmpty(originLongMin) || ObjectUtils.isEmpty(originLongMax)) return Flux.empty();
@@ -83,8 +85,8 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public Flux<Group> findGroupsByDestinationWithinSearchRadius(
-            double destLatMin, double destLatMax,
-            double destLongMin, double destLongMax) {
+            Double destLatMin, Double destLatMax,
+            Double destLongMin, Double destLongMax) {
 
         if (ObjectUtils.isEmpty(destLatMin) || ObjectUtils.isEmpty(destLatMax)
                 || ObjectUtils.isEmpty(destLongMin) || ObjectUtils.isEmpty(destLongMax)) return Flux.empty();
@@ -96,10 +98,10 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public Flux<Group> findGroupsByOriginAndDestinationWithinSearchRadius(
-            double originLatMin, double originLatMax,
-            double originLongMin, double originLongMax,
-            double destLatMin, double destLatMax,
-            double destLongMin, double destLongMax) {
+            Double originLatMin, Double originLatMax,
+            Double originLongMin, Double originLongMax,
+            Double destLatMin, Double destLatMax,
+            Double destLongMin, Double destLongMax) {
 
         if (ObjectUtils.isEmpty(originLatMin) || ObjectUtils.isEmpty(originLatMax)
                 || ObjectUtils.isEmpty(originLongMin) || ObjectUtils.isEmpty(originLongMax)
@@ -118,6 +120,7 @@ public class GroupServiceImpl implements GroupService{
         return groupRepository.findAll();
     }
 
+    // SAVE OR UPDATE
     @Override
     public Mono<Group> saveOrUpdate(Group group) {
 
@@ -142,6 +145,8 @@ public class GroupServiceImpl implements GroupService{
         }
     }
 
+
+    // DELETE
     @Override
     public Mono<Void> deleteById(ObjectId id) {
 
