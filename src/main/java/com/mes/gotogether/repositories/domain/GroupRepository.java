@@ -23,18 +23,18 @@ public interface GroupRepository extends ReactiveMongoRepository<Group, ObjectId
     );
 
     @Query("{$and: [{'originAddress.latitude': {$gte: ?0, $lte: ?1 }},  {'originAddress.longitude': {$gte: ?2, $lte: ?3 }}]}")
-    Flux<Group> findGroupsByOriginWithinSearchRadius(
+    Flux<Group> findGroupsByOriginWithinThresholds(
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax);
 
     @Query("{$and: [{'destinationAddress.latitude': {$gte: ?0, $lte: ?1 }}, {'destinationAddress.longitude': {$gte: ?2, $lte: ?3 }}]}")
-    Flux<Group> findGroupsByDestinationWithinSearchRadius(
+    Flux<Group> findGroupsByDestinationWithinThresholds(
             Double destLatMin, Double destLatMax,
             Double destLongMin, Double destLongMax);
 
     @Query("{$and: [{'originAddress.latitude': {$gte: ?0, $lte: ?1 }},  {'originAddress.longitude': {$gte: ?2, $lte: ?3 }}," +
             "{'destinationAddress.latitude': {$gte: ?4, $lte: ?5 }}, {'destinationAddress.longitude': {$gte: ?6, $lte: ?7 }]}")
-    Flux<Group> findGroupsByOriginAndDestinationWithinSearchRadius(
+    Flux<Group> findGroupsByOriginAndDestinationWithinThresholds(
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax,
             Double destLatMin, Double destLatMax,

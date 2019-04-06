@@ -19,19 +19,29 @@ public interface GroupService {
             Double destinationLongitude
     );
 
-    Flux<Group> findGroupsByOriginWithinSearchRadius(
+    Flux<Group> findGroupsByOriginWithinThresholds(
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax);
 
-    Flux<Group> findGroupsByDestinationWithinSearchRadius(
+    Flux<Group> findGroupsByDestinationWithinThresholds(
             Double destLatMin, Double destLatMax,
             Double destLongMin, Double destLongMax);
 
-    Flux<Group> findGroupsByOriginAndDestinationWithinSearchRadius(
+    Flux<Group> findGroupsByOriginAndDestinationWithinThresholds(
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax,
             Double destLatMin, Double destLatMax,
             Double destLongMin, Double destLongMax);
+
+    Flux<Group> findGroupsByOriginWithinRadius(
+            Double originLat, Double originLong, Double originRadius);
+
+    Flux<Group> findGroupsByDestinationWithinRadius(
+            Double destLat, Double destLong, Double destRadius);
+
+    Flux<Group> findGroupsByOriginAndDestinationWithinRadius(
+            Double originLat, Double originLong, Double originRadius,
+            Double destLat, Double destLong, Double destRadius);
 
     Flux<Group> findAll();
 

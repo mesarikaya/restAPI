@@ -70,7 +70,7 @@ public class GroupServiceImpl implements GroupService{
     }
 
     @Override
-    public Flux<Group> findGroupsByOriginWithinSearchRadius(
+    public Flux<Group> findGroupsByOriginWithinThresholds(
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax) {
 
@@ -78,26 +78,26 @@ public class GroupServiceImpl implements GroupService{
                 || ObjectUtils.isEmpty(originLongMin) || ObjectUtils.isEmpty(originLongMax)) return Flux.empty();
 
 
-        return groupRepository.findGroupsByOriginWithinSearchRadius(
+        return groupRepository.findGroupsByOriginWithinThresholds(
                 originLatMin, originLatMax,
                 originLongMin, originLongMax);
     }
 
     @Override
-    public Flux<Group> findGroupsByDestinationWithinSearchRadius(
+    public Flux<Group> findGroupsByDestinationWithinThresholds(
             Double destLatMin, Double destLatMax,
             Double destLongMin, Double destLongMax) {
 
         if (ObjectUtils.isEmpty(destLatMin) || ObjectUtils.isEmpty(destLatMax)
                 || ObjectUtils.isEmpty(destLongMin) || ObjectUtils.isEmpty(destLongMax)) return Flux.empty();
 
-        return groupRepository.findGroupsByDestinationWithinSearchRadius(
+        return groupRepository.findGroupsByDestinationWithinThresholds(
                 destLatMin, destLatMax,
                 destLongMin, destLongMax);
     }
 
     @Override
-    public Flux<Group> findGroupsByOriginAndDestinationWithinSearchRadius(
+    public Flux<Group> findGroupsByOriginAndDestinationWithinThresholds(
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax,
             Double destLatMin, Double destLatMax,
@@ -108,11 +108,56 @@ public class GroupServiceImpl implements GroupService{
                 || ObjectUtils.isEmpty(destLatMin) || ObjectUtils.isEmpty(destLatMax)
                 || ObjectUtils.isEmpty(destLongMin) || ObjectUtils.isEmpty(destLongMax)) return Flux.empty();
 
-        return groupRepository.findGroupsByOriginAndDestinationWithinSearchRadius(
+        return groupRepository.findGroupsByOriginAndDestinationWithinThresholds(
                 originLatMin, originLatMax,
                 originLongMin, originLongMax,
                 destLatMin, destLatMax,
                 destLongMin, destLongMax);
+    }
+
+    public Flux<Group> findGroupsByOriginWithinRadius(
+            Double originLat, Double originLong, Double originRadius){
+
+        if (ObjectUtils.isEmpty(originLat) || ObjectUtils.isEmpty(originLong)
+                || ObjectUtils.isEmpty(originRadius) || originRadius<0 ) return Flux.empty();
+
+        GeoLocationThreshold originThresholds = new GeoLocationThreshold(originLat, originLong, originRadius);
+
+        return this.findGroupsByOriginWithinThresholds(
+                originThresholds.getLatMin(), originThresholds.getLatMax(),
+                originThresholds.getLongMin(), originThresholds.getLongMax());
+    }
+
+    public Flux<Group> findGroupsByDestinationWithinRadius(
+            Double destLat, Double destLong, Double destRadius){
+
+        if (ObjectUtils.isEmpty(destLat) || ObjectUtils.isEmpty(destLong)
+                || ObjectUtils.isEmpty(destRadius) || destRadius < 0) return Flux.empty();
+
+        GeoLocationThreshold destThresholds = new GeoLocationThreshold(destLat, destLong, destRadius);
+
+        return this.findGroupsByDestinationWithinThresholds(
+                destThresholds.getLatMin(), destThresholds.getLatMax(),
+                destThresholds.getLongMin(), destThresholds.getLongMax());
+    }
+
+    public Flux<Group> findGroupsByOriginAndDestinationWithinRadius(
+            Double originLat, Double originLong, Double originRadius,
+            Double destLat, Double destLong, Double destRadius){
+
+        if (ObjectUtils.isEmpty(originLat) || ObjectUtils.isEmpty(originLong)
+                || ObjectUtils.isEmpty(destLat) || ObjectUtils.isEmpty(destLong)
+                || ObjectUtils.isEmpty(originRadius) || ObjectUtils.isEmpty(destRadius)
+                || originRadius<0 || destRadius < 0) return Flux.empty();
+
+        GeoLocationThreshold originThresholds = new GeoLocationThreshold(originLat, originLong, originRadius);
+        GeoLocationThreshold destThresholds = new GeoLocationThreshold(destLat, destLong, destRadius);
+
+        return this.findGroupsByOriginAndDestinationWithinThresholds(
+                originThresholds.getLatMin(), originThresholds.getLatMax(),
+                originThresholds.getLongMin(), originThresholds.getLongMax(),
+                destThresholds.getLatMin(), destThresholds.getLatMax(),
+                destThresholds.getLongMin(), destThresholds.getLongMax());
     }
 
     @Override
@@ -144,7 +189,6 @@ public class GroupServiceImpl implements GroupService{
             return Mono.empty();
         }
     }
-
 
     // DELETE
     @Override
