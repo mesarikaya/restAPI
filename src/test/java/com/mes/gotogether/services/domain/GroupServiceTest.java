@@ -488,7 +488,7 @@ public class GroupServiceTest {
 
         groupServiceImpl.deleteById(existingGroup.getId());
 
-        verify(groupRepository, times(1)).deleteAll();
+        verify(groupRepository, times(1)).deleteById(existingGroup.getId());
     }
 
     @Test
