@@ -1,10 +1,13 @@
 package com.mes.gotogether.controllers.restControllers;
 
 import com.mes.gotogether.domains.User;
+import com.mes.gotogether.security.jwt.JWTUtil;
+import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
 import com.mes.gotogether.services.domain.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,12 +26,18 @@ public class UserController {
 
     private final UserService userService;
     private final WebClient webClient;
+    private final JWTUtil jwtUtil;
+    private final SecurityUserLibraryUserDetailsService securityUserService;
+    private final PasswordEncoder passwordEncoder;
 
-
-
-    public UserController(UserService userService, WebClient webClient) {
+    public UserController(UserService userService, WebClient webClient,
+                          JWTUtil jwtUtil, PasswordEncoder passwordEncoder,
+                          SecurityUserLibraryUserDetailsService securityUserService) {
         this.userService = userService;
         this.webClient = webClient;
+        this.jwtUtil = jwtUtil;
+        this.securityUserService = securityUserService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/users")
@@ -54,5 +63,4 @@ public class UserController {
                 .map(OAuth2User::getName)
                 .map(name -> String.format("Hi, %s", name));
     }
-
 }

@@ -2,15 +2,25 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from "react-router";
 import { Route, Switch, withRouter } from 'react-router-dom';
-import StoreState from './redux/types/storeState';
+import { AppState } from './redux/reducers/rootReducer';
+import { StoreState } from './redux/types/system/storeState';
+import { updateAuthAction } from './redux/actions/jwtAuthAction';
 
 // Import the presentational components for this container
 import App from './App';
 import {store} from "./redux/store";
 
-export interface Props {
-    cookie: string
-};
+const mapStateToProps = (
+    state: AppState, 
+    OwnProps: AppProps & RouteComponentProps<PathProps>
+    ) => ({
+    system: state.system
+})  
+
+interface AppProps {
+    updateSession: typeof updateAuthAction,
+    system: StoreState
+}
 
 // These props are provided by the router
 interface PathProps {
@@ -19,16 +29,13 @@ interface PathProps {
     match: any;
 }
 
-class Container extends React.Component<Props & RouteComponentProps<PathProps>, StoreState> {
-    public state: StoreState;
+class Container extends React.Component<AppProps & RouteComponentProps<PathProps>, AppState> {
+    public state: AppState;
 
-    constructor(props: Props & RouteComponentProps<PathProps>) {
+    constructor(props: AppProps & RouteComponentProps<PathProps>) {
         super(props);
-
-        const currAppState = store.getState();
-        this.state = {
-            cookie: currAppState.cookie
-        };
+    
+        this.state = store.getState();
     }
 
     public render() {
@@ -39,12 +46,6 @@ class Container extends React.Component<Props & RouteComponentProps<PathProps>, 
                 <Route path="/**" component={App} />
             </Switch>
         );
-    }
-}
-
-export function mapStateToProps(state: StoreState, OwnProps: Props & RouteComponentProps<PathProps>) {
-    return {
-        cookie: state.cookie
     }
 }
 

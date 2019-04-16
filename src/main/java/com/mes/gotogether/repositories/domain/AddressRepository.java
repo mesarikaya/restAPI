@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface AddressRepository extends ReactiveMongoRepository<Address, ObjectId> {
 
-    Mono<Address> findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(String streetName,
+    Mono<Address> findFirstAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(String streetName,
                                                                            String houseNumber,
                                                                            String city,
                                                                            String country);

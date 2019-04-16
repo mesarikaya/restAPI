@@ -1,4 +1,4 @@
-import StoreState from '../storeState';
+import { StoreState } from '../system/storeState';
 
 export const SEND_LOGIN_REQUEST = 'SEND_LOGIN_REQUEST';
 
@@ -7,4 +7,4 @@ interface SendLoginRequest {
     payload: StoreState
 }
 
-export type SimpleActionTypes = SendLoginRequest;
+export type JwtAuthActionTypes = SendLoginRequest;

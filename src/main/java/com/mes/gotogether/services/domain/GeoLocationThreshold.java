@@ -42,16 +42,4 @@ public class GeoLocationThreshold {
     public double getLongMax() {
         return longMax;
     }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
 }

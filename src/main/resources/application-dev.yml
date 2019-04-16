@@ -27,6 +27,18 @@ spring:
             client-secret: r6-x0qIpqtreqJwtDLndRtpU
             redirect-uri: "{baseUrl}/login/oauth2/callback/{registrationId}"
 
+jwt:
+  header: Authorization
+  param: token
+  prefix: Bearer
+  secret: TsotneqtoTroglOmvtOmfs19Tw:_=?124ptwdms1Zkf::;;123rdm|l|ret#!_-+*())^$~zscgte
+  expiration: 28800
+  route:
+    authentication:
+      path: auth
+      token: token
+      refresh: refresh
+
 app:
   auth:
     tokenSecret: 4512M23IFPA012312IJFD312SCVZX245TRSC

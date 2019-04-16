@@ -296,7 +296,7 @@ public class GroupServiceTest {
 
         // Search by origin address
         when(groupRepository
-                .findGroupsByOriginAndDestinationAddress(
+                .findGroupsByOriginAddressAndDestinationAddress(
                         existingGroup.getOriginAddress(),
                         existingGroup.getDestinationAddress()))
                 .thenReturn(Flux.just(existingGroup));

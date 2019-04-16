@@ -46,7 +46,7 @@ public class AddressServiceImpl implements AddressService {
                 || ObjectUtils.isEmpty(city)
                 || ObjectUtils.isEmpty(country)) return Mono.empty();
 
-        return addressRepository.findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
+        return addressRepository.findFirstAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 streetName,
                 houseNumber,
                 city,

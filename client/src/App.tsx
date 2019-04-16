@@ -63,6 +63,9 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
             event.stopPropagation();
         }
         this.setState({ validated: true });
+
+        // TODO: MAKE AN AJAX CALL
+        // TODO: VALIDATE ON THE REST CONTROLLER AND RETURN ERROR OR THE LOGIN STATUS AND SAVE COOKIE
     };
 
 
@@ -104,7 +107,7 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                                                   <i className="fas fa-user-shield" />
                                               </InputGroup.Text>
                                           </InputGroup.Append>
-                                          <Form.Control.Feedback type="invalid">
+                                          <Form.Control.Feedback type="invalid" className="invalid-feedback usernameError text-center">
                                               Invalid username!
                                           </Form.Control.Feedback>
                                       </InputGroup>
@@ -124,7 +127,7 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                                                   <i className="far fa-eye" />
                                               </div>
                                           </InputGroup.Append>
-                                          <Form.Control.Feedback type="invalid">
+                                          <Form.Control.Feedback type="invalid" className="invalid-feedback passwordError text-center">
                                               Invalid password!
                                           </Form.Control.Feedback>
                                       </InputGroup>

@@ -174,7 +174,7 @@ public class AccountServiceTest {
 
         // Find the existing address
         when(addressRepository
-                .findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
+                .findFirstAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 anyString(),anyString(), anyString(), anyString()
         )).thenReturn(Mono.just(existingAddress));
         Address retrievedAddress = addressServiceImpl
@@ -193,7 +193,7 @@ public class AccountServiceTest {
 
         // Find the existing address
         when(addressRepository
-                .findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
+                .findFirstAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 null, null, null, null
         )).thenReturn(Mono.empty());
         Address retrievedAddress = addressServiceImpl
@@ -204,7 +204,7 @@ public class AccountServiceTest {
                         null
                 ).log().flux().next().block();
         verify(addressRepository, times(0))
-                .findFirstByAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
+                .findFirstAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 null, null, null, null
         );
     }

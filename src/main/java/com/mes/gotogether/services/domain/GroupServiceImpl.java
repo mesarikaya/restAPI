@@ -51,7 +51,7 @@ public class GroupServiceImpl implements GroupService{
 
         if (ObjectUtils.isEmpty(originAddress) || ObjectUtils.isEmpty(destinationAddress)) return Flux.empty();
 
-        return groupRepository.findGroupsByOriginAndDestinationAddress(originAddress, destinationAddress);
+        return groupRepository.findGroupsByOriginAddressAndDestinationAddress(originAddress, destinationAddress);
     }
 
     @Override

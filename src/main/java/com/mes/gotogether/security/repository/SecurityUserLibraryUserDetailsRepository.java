@@ -12,7 +12,8 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-public class SecurityUserLibraryUserDetailsRepository implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
+public class SecurityUserLibraryUserDetailsRepository
+        implements ReactiveUserDetailsService, ReactiveUserDetailsPasswordService {
 
     private UserService userService;
 
@@ -25,6 +26,7 @@ public class SecurityUserLibraryUserDetailsRepository implements ReactiveUserDet
         log.warn("****CALLING SECURITYDETAILS REPOSITORY FINDBYUSERNAME FUNCTION");
         return userService.findByUserId(userId)
                 .switchIfEmpty(Mono.defer(() -> {
+                    System.out.println("USer not found in In memory User Details Repository method");
                     return Mono.error(new UsernameNotFoundException("User Not Found"));
                 }))
                 .map(SecurityUserLibrary::new);
@@ -39,6 +41,7 @@ public class SecurityUserLibraryUserDetailsRepository implements ReactiveUserDet
         log.info("Password upgraded from '{}' to '{}'", user.getPassword(), newPassword);
         return userService.findByUserId(user.getUsername())
                 .switchIfEmpty(Mono.defer(() -> {
+
                     return Mono.error(new UsernameNotFoundException("User Not Found"));
                 }))
                 .doOnSuccess(u -> u.setPassword(newPassword))

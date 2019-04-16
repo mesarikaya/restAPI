@@ -32,7 +32,6 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-
         // FIRST sample user
         User user1 = new User();
         user1.setEmail("mesarikaya@gmail.com");
@@ -93,7 +92,6 @@ public class Bootstrap implements CommandLineRunner {
                         () -> log.info("done initialization 2...")
                 );
 
-
-        System.out.println("User: "+ user2 + " is set");
+        // System.out.println("User: "+ user2 + " is set");
     }
 }

@@ -1,14 +1,15 @@
 package com.mes.gotogether.security.config;
 
 import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.security.jwt.JWTReactiveAuthenticationManager;
 import com.mes.gotogether.services.domain.AddressService;
 import com.mes.gotogether.services.domain.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.reactive.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -18,7 +19,6 @@ import org.springframework.security.oauth2.client.registration.ReactiveClientReg
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
@@ -33,10 +33,18 @@ import java.net.URI;
 @EnableReactiveMethodSecurity
 public class AppSecurityConfig {
 
-    @Autowired
+    private com.mes.gotogether.security.jwt.JWTReactiveAuthenticationManager JWTReactiveAuthenticationManager;
+    private SecurityContextRepository securityContextRepository;
     private UserService userService;
-    @Autowired
     private AddressService addressService;
+
+    public AppSecurityConfig(JWTReactiveAuthenticationManager JWTReactiveAuthenticationManager, SecurityContextRepository securityContextRepository,
+                             UserService userService, AddressService addressService) {
+        this.JWTReactiveAuthenticationManager = JWTReactiveAuthenticationManager;
+        this.securityContextRepository = securityContextRepository;
+        this.userService = userService;
+        this.addressService = addressService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,37 +55,83 @@ public class AppSecurityConfig {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
 
         http
-            .csrf()
-                .csrfTokenRepository(csrfTokenRepository())
-                .and()
+            .exceptionHandling()
+            .authenticationEntryPoint((swe, e) -> {
+                    return Mono.fromRunnable(() -> {
+                        swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                });
+            })
+            .accessDeniedHandler((swe, e) -> {
+            return Mono.fromRunnable(() -> {
+                swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+            });
+            }).and()
+            //.cors()
+            //.and()
+            .csrf().disable()
+                //.csrfTokenRepository(csrfTokenRepository())
+                //.and()
+            .authorizeExchange()
+            .and()
+            .httpBasic().disable()
+            .formLogin().disable()
+            .authenticationManager(JWTReactiveAuthenticationManager)
+            .securityContextRepository(securityContextRepository)
             .authorizeExchange()
             .matchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
             .matchers(EndpointRequest.to("health")).permitAll()
             .matchers(EndpointRequest.to("info")).permitAll()
             .matchers(EndpointRequest.toAnyEndpoint()).hasRole(Role.ADMIN.name())
-            .pathMatchers(HttpMethod.POST, "/api/v1/users").hasRole(Role.ADMIN.name())
-            .pathMatchers(HttpMethod.DELETE, "/api/v1/users").hasRole(Role.ADMIN.name())
+            .pathMatchers(HttpMethod.POST, "/api/v1/users**").hasRole(Role.ADMIN.name())
+            .pathMatchers(HttpMethod.DELETE, "/api/v1/users**").hasRole(Role.ADMIN.name())
+            .pathMatchers("/login**").permitAll()
+            .pathMatchers(HttpMethod.OPTIONS).permitAll()
+            .pathMatchers("/auth**").permitAll()
+            .anyExchange().authenticated()
+            .and();
+
+
+        /*
+        http
+            .csrf()
+                .disable()
+                //.csrfTokenRepository(csrfTokenRepository())
+                //.and()
+            .authorizeExchange()
+            .matchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+            .matchers(EndpointRequest.to("health")).permitAll()
+            .matchers(EndpointRequest.to("info")).permitAll()
+            .matchers(EndpointRequest.toAnyEndpoint()).hasRole(Role.ADMIN.name())
+            .pathMatchers(HttpMethod.POST, "/api/v1/users**").hasRole(Role.ADMIN.name())
+            .pathMatchers(HttpMethod.DELETE, "/api/v1/users**").hasRole(Role.ADMIN.name())
+            .pathMatchers("/login**").permitAll()
             .anyExchange().authenticated()
             .and()
-            .httpBasic().and().formLogin()
-                .authenticationFailureHandler((exchange, exception) -> Mono.error(exception))
-                .authenticationSuccessHandler(new RedirectServerAuthenticationSuccessHandler("/user"))
+            .httpBasic().and()
+                .formLogin().loginPage("/login")
+                .authenticationSuccessHandler(
+                        new RedirectServerAuthenticationSuccessHandler("/user")
+                )
                 .and()
             .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler("/bye"));
+         */
 
         return http.build();
     }
 
+
     @Bean
     public ServerCsrfTokenRepository csrfTokenRepository() {
+
         WebSessionServerCsrfTokenRepository repository =
                 new WebSessionServerCsrfTokenRepository();
         repository.setHeaderName("X-CSRF-TK");
 
         return repository;
     }
+
 
     @Bean
     public WebClient webClient(ReactiveClientRegistrationRepository clientRegistrationRepository,
