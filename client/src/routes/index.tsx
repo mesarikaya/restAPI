@@ -2,6 +2,9 @@ import {Route, Switch} from "react-router";
 import App from "../App";
 import * as React from "react";
 
+// tslint:disable-next-line:no-console
+console.log(process.env);
+
 const routes = (
     <div>
         <Switch>

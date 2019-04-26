@@ -1,4 +1,4 @@
-export interface StoreState {
+export interface SecurityState {
     cookie: string
     loggedIn: boolean
     userName: string

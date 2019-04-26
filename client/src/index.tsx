@@ -9,9 +9,9 @@ import {Route, Router } from "react-router";
 
 ReactDOM.render(
     (<Provider store={store}>
-            <Router history={history} >
-                <Route path="/" component={Container} />
-            </Router>
+        <Router history={history}>
+            <Route path="/" component={Container}/>
+        </Router>
      </Provider>),
     document.getElementById('root') as HTMLElement
 );

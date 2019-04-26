@@ -1,9 +1,9 @@
-import { JwtAuthActionTypes } from "../types/action/jwtAuthActionType";
-import { StoreState } from "../types/system/storeState";
+import { JwtAuthActionTypes, SEND_LOGIN_REQUEST } from "../types/action/jwtAuthActionType";
+import { SecurityState } from '../types/system/SecurityState';
 
 
 // Set initial state
-const initialState: StoreState = {
+const initialState: SecurityState   = {
     cookie: "none",
     loggedIn: false,
     userName: "guest"
@@ -12,14 +12,26 @@ const initialState: StoreState = {
 export function loginReducer(
     state = initialState,
     action: JwtAuthActionTypes
-    ): StoreState {
+    ): SecurityState {
+
     switch (action.type) {
-        case "SEND_LOGIN_REQUEST":
+
+        case SEND_LOGIN_REQUEST:
+
+            // tslint:disable-next-line:no-console
+            console.log('Inside SEND_LOGIN_REQUEST REDUCER, PAYLOAD IS: ', action.payload);
+
+            /*return { 
+                ...state,
+                cookie: action.payload.cookie,
+                loggedIn: action.payload.loggedIn,
+                userName: action.payload.userName
+            };*/
             return Object.assign({}, state, {
                 cookie: action.payload.cookie,
                 loggedIn: action.payload.loggedIn,
                 userName: action.payload.userName,
-            })
+            });
         default:
             return state
     }
