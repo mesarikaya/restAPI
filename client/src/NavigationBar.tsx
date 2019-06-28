@@ -31,17 +31,20 @@ class NavigationBar extends React.Component<Props> {
 
                     <div className="container">
                         {/* <!- Search Form --> */}
-                        <div className="row box">
+                        <div className="navRow row box">
                             <div className="col-12 col-sm-5 branding">
                                 <a href="/" className="navbar-brand" >
                                     <img className="img-fluid rounded-circle img_logo App-logo"
                                     src={Logo} alt="" style={{ maxWidth: '3rem', height: '3rem' }} />
-                                       GreenerCommute
+                                       <strong style={{fontSize: '1.4rem'}}>C</strong>ommute
+                                       <strong style={{fontSize: '1.4rem'}}>W</strong>ith
+                                       <strong style={{fontSize: '1.4rem'}}>M</strong>ore
                                 </a>
                             </div>
                             
                             <div className="col-12 col-sm-7 navButtonGroup">
                                 <LoginButton loginFormFields={this.props.loginFormFields}/>
+                                
                                 <Button className="navButton signOutButton" variant="link">
                                     <i className="fas fa-sign-out-alt">
                                         <strong id="icons"> Sign out</strong>

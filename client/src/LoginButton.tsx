@@ -13,7 +13,7 @@ import { UpdateAuth } from './redux/actions/jwtAuthAction';
 
 export interface Props {
     loginFormFields: LoginFormFields;
-    onLoginSubmit: typeof UpdateAuth
+    onLoginSubmit: typeof UpdateAuth;
 };
 
 export interface State {
@@ -123,7 +123,7 @@ class LoginButton extends React.Component<Props, State> {
                               <Form name="loginForm" className="needsLoginFormValidation"
                                     noValidate={true}
                                     validated = {validated}
-                                    onSubmit={this.handleSubmit}>
+                                    onSubmit = {this.handleSubmit}>
                                   <h2 className="loginHeader text-center">Login</h2>
 
                                   <div className="error" />

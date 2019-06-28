@@ -1,3 +1,18 @@
+/* PAGE CSS DEFAULTS
+-------------------------------------------------- */
+html, body{
+  height: 100%;
+  background-color: #ade8f1 !important;
+}
+
+form {
+  display: inline-block;
+}
+
+label{
+  color: steelblue !important;
+}
+
 .App {
   text-align: center;
 }
@@ -22,12 +37,49 @@
 
 .container {
   flex-wrap: wrap;
-  padding-right: 0 !important;
-  padding-left: 0 !important;
+  padding: 0 !important;
 }
 
-.row{
-  width: 100%;
+.carouselRow{
+  width: 50%;
   padding: 0;
-  margin: 0;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 10vh !important; 
+}
+
+.input-group .form-control {
+  width: 100% !important;
+}
+
+.input-group{
+  flex-wrap: nowrap !important;
+}
+
+
+
+/* PAGE BREAKS AND DEFAULTS MODIFICATION FOR RESPONSIVENESS
+-------------------------------------------------- */
+@media only screen and (max-width: 576px) { 
+  .App{
+    padding-top: 4rem;
+  }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+  .App{
+    padding-top: 0rem;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+  .App{
+    padding-top: 0rem;
+  }
+}
+
+@media only screen and (min-width: 993px) {
+  .App{
+    padding-top: 3rem;
+  }
 }
