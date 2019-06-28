@@ -15,15 +15,11 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
 import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -66,8 +62,8 @@ public class AppSecurityConfig {
                 swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
             });
             }).and()
-            //.cors()
-            //.and()
+            .cors()
+            .and()
             .csrf().disable()
                 //.csrfTokenRepository(csrfTokenRepository())
                 //.and()
@@ -87,6 +83,7 @@ public class AppSecurityConfig {
             .pathMatchers("/login**").permitAll()
             .pathMatchers(HttpMethod.OPTIONS).permitAll()
             .pathMatchers("/auth**").permitAll()
+            .pathMatchers("/api/auth/login**").permitAll()
             .anyExchange().authenticated()
             .and();
 
@@ -122,7 +119,7 @@ public class AppSecurityConfig {
     }
 
 
-    @Bean
+
     public ServerCsrfTokenRepository csrfTokenRepository() {
 
         WebSessionServerCsrfTokenRepository repository =
@@ -133,7 +130,7 @@ public class AppSecurityConfig {
     }
 
 
-    @Bean
+/*
     public WebClient webClient(ReactiveClientRegistrationRepository clientRegistrationRepository,
                         ServerOAuth2AuthorizedClientRepository authorizedClientRepository) {
         ServerOAuth2AuthorizedClientExchangeFilterFunction oauth =
@@ -143,7 +140,7 @@ public class AppSecurityConfig {
         return WebClient.builder()
                 .filter(oauth)
                 .build();
-    }
+    }*/
 
     public ServerLogoutSuccessHandler logoutSuccessHandler(String uri) {
         RedirectServerLogoutSuccessHandler successHandler = new RedirectServerLogoutSuccessHandler();

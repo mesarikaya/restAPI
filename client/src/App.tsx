@@ -67,7 +67,7 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
 
             <NavigationBar loginFormFields={this.props.loginFormFields} />
             <div className="container">
-                <div className="row">
+                <div className="row align-items-center">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-xl-7 my-auto">  
                         <div className="mx-auto my-auto" >
                             <Carousel className="openingCarousel"

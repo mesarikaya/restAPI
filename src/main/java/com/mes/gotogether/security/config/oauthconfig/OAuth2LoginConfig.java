@@ -1,12 +1,6 @@
 package com.mes.gotogether.security.config.oauthconfig;
 
 import org.springframework.core.env.Environment;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 
 
 
@@ -17,7 +11,7 @@ public class OAuth2LoginConfig {
 
     private String basePropertyName = "spring.security.oauth2.client.registration.";
 
-
+/*
     public ReactiveClientRegistrationRepository clientRegistrationRepository() {
         return new InMemoryReactiveClientRegistrationRepository(this.googleClientRegistration());
     }
@@ -38,5 +32,5 @@ public class OAuth2LoginConfig {
                 .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
                 .clientName("Google")
                 .build();
-    }
+    }*/
 }

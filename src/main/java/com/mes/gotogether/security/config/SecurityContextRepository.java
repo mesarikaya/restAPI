@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 public class SecurityContextRepository implements ServerSecurityContextRepository {
 
 
-    private com.mes.gotogether.security.jwt.JWTReactiveAuthenticationManager JWTReactiveAuthenticationManager;
+    private JWTReactiveAuthenticationManager JWTReactiveAuthenticationManager;
 
     public SecurityContextRepository(JWTReactiveAuthenticationManager JWTReactiveAuthenticationManager) {
         this.JWTReactiveAuthenticationManager = JWTReactiveAuthenticationManager;
