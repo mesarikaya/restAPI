@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { history, store } from './redux/store';
-import Container from './Container';
+import Container from './container/Container';
 import './stylesheets/css/index.css';
 import registerServiceWorker from './registerServiceWorker';
 import {Route, Router } from "react-router";

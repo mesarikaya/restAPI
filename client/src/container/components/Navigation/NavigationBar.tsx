@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
-import { LoginFormFields } from './redux/types/userInterface/loginFormFields';
-import LoginButton from './LoginButton';
-import Logo from '../src/logo.svg';
+import { LoginFormFields } from '../../../redux/types/userInterface/loginFormFields';
+import LoginButton from '../Buttons/LoginButton';
+import Logo from '../../../../src/stylesheets/images/logo.svg';
 
 // Add styling related imports
-import './stylesheets/css/App.css';
+import '../../../stylesheets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import './stylesheets/css/NavBar.css';
-
+import '../../../stylesheets/css/NavBar.css';
 
 export interface Props {
     loginFormFields: LoginFormFields;
@@ -17,7 +16,6 @@ export interface Props {
 
 class NavigationBar extends React.Component<Props> {
     
-
     constructor(props: Props) {
         super(props);
     }

@@ -3,20 +3,24 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from "react-router";
 
 // Add styling related imports
-import './stylesheets/css/App.css';
+import '../../../stylesheets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import { store } from './redux/store';
-import { SecurityState } from './redux/types/system/SecurityState';
-import { LoginFormFields } from './redux/types/userInterface/loginFormFields';
-import NavigationBar from './NavigationBar';
-import carouselPart1 from './stylesheets/images/carouselImagePart1.png';
-import carouselPart2 from './stylesheets/images/carouselImagePart2.png';
-import carouselPart3 from './stylesheets/images/carouselImagePart3.png';
-import { Carousel} from 'react-bootstrap';
-import GroupSearchForm from './GroupSearchForm';
-import { GroupSearchFormFields } from './redux/types/userInterface/groupSearchFormFields';
+import carouselPart1 from '../../../stylesheets/images/carouselImagePart1.png';
+import carouselPart2 from '../../../stylesheets/images/carouselImagePart2.png';
+import carouselPart3 from '../../../stylesheets/images/carouselImagePart3.png';
+import { Carousel, CardColumns} from 'react-bootstrap';
 
+// import child component
+import GroupSearchForm from '../Forms/GroupSearchForm';
+import NavigationBar from '../Navigation/NavigationBar';
+import { LoginFormFields } from '../../../redux/types/userInterface/loginFormFields';
+import GroupCard from '../Cards/GroupCard';
+
+// import types
+import { GroupSearchFormFields } from '../../../redux/types/userInterface/groupSearchFormFields';
+import { store } from '../../../redux/store';
+import { SecurityState } from '../../../redux/types/system/securityState';
 
 export interface Props {
     system: SecurityState;
@@ -108,13 +112,52 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                         </div>
                     </div>
                 </div>
+
+                <br />
+
+                <div className="container">
+                    <CardColumns>
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+
+                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
+                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
+                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
+                    </CardColumns>
+
+                </div>
+
             </div>
             
-
-
-            
-            
-
         </div>);
   }
 }

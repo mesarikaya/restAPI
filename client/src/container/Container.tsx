@@ -2,12 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from "react-router";
 import { Route, Switch, withRouter } from 'react-router-dom';
-import { UpdateAuth } from './redux/actions/jwtAuthAction';
+import { UpdateAuth } from '../redux/actions/jwtAuthAction';
 
 // Import the presentational components for this container
-import App from './App';
-import {store} from "./redux/store";
-import { SecurityState } from './redux/types/system/SecurityState';
+import App from './components/Page/App';
+import {store} from "../redux/store";
+import { SecurityState } from '../redux/types/system/securityState';
 
 
 interface AppProps {

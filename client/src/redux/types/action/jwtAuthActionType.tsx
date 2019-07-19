@@ -1,4 +1,4 @@
-import { SecurityState } from "../system/SecurityState";
+import { SecurityState } from "../system/securityState";
 
 export const SEND_LOGIN_REQUEST = 'SEND_LOGIN_REQUEST';
 

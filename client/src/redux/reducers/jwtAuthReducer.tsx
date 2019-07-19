@@ -1,5 +1,5 @@
 import { JwtAuthActionTypes, SEND_LOGIN_REQUEST } from "../types/action/jwtAuthActionType";
-import { SecurityState } from '../types/system/SecurityState';
+import { SecurityState } from '../types/system/securityState';
 
 
 // Set initial state

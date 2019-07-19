@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './stylesheets/css/inputRange.css';
+import '../../../stylesheets/css/inputRange.css';
 
 
 class InputRange extends React.Component {

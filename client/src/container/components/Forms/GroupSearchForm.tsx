@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { Form, InputGroup, FormLabel, Button } from 'react-bootstrap';
 
 // Add styling related imports
-import './stylesheets/css/App.css';
+import '../../../stylesheets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import './stylesheets/css/GroupSearch.css';
+import '../../../stylesheets/css/GroupSearch.css';
 
-import { GroupSearchFormFields } from './redux/types/userInterface/groupSearchFormFields';
-import InputRange from './InputRange';
-import { SearchGroups } from './redux/actions/groupSearchAction';
+import { GroupSearchFormFields } from '../../../redux/types/userInterface/groupSearchFormFields';
+import InputRange from '../Buttons/InputRange';
+import { SearchGroups } from '../../../redux/actions/groupSearchAction';
 
 export interface Props {
     formFields: GroupSearchFormFields;

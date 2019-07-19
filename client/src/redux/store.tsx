@@ -6,7 +6,7 @@ import logger from 'redux-logger'
 import thunk from 'redux-thunk';
 import { JwtAuthActionTypes } from './types/action/jwtAuthActionType';
 import { rootReducer, AppState } from "./reducers/rootReducer";
-import { SecurityState } from './types/system/SecurityState';
+import { SecurityState } from './types/system/securityState';
 
 // Create history
 export const history = createBrowserHistory();

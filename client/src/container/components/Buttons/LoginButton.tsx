@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { LoginFormFields } from './redux/types/userInterface/loginFormFields';
+import { LoginFormFields } from '../../../redux/types/userInterface/loginFormFields';
 import Switch from "react-switch";
 import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
 
 // Add styling related imports
-import './stylesheets/css/App.css';
+import '../../../stylesheets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import './stylesheets/css/Login.css';
-import { UpdateAuth } from './redux/actions/jwtAuthAction';
+import '../../../stylesheets/css/Login.css';
+import { UpdateAuth } from '../../../redux/actions/jwtAuthAction';
 
 export interface Props {
     loginFormFields: LoginFormFields;

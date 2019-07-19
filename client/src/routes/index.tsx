@@ -1,5 +1,5 @@
 import {Route, Switch} from "react-router";
-import App from "../App";
+import App from "../container/components/Page/App";
 import * as React from "react";
 
 // tslint:disable-next-line:no-console
