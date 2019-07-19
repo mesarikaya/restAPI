@@ -17,6 +17,7 @@ public interface AddressService {
     Flux<Address> findAddressByLatitudeAndLongitudeAnd(Double latitude, Double longitude);
     Flux<Address> findAll();
     Mono<Address> saveOrUpdateAddress(Address address);
+    Mono<Address> saveFakeAddress(Address address);
     Mono<Void> deleteAddressById(ObjectId id);
     Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName,
                                                                            String houseNumber,

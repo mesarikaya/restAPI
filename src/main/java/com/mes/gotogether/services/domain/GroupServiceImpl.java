@@ -20,7 +20,6 @@ public class GroupServiceImpl implements GroupService{
         this.groupRepository = groupRepository;
     }
 
-
     // FIND METHODS
     @Override
     public Mono<Group> findById(ObjectId id) {
@@ -28,6 +27,13 @@ public class GroupServiceImpl implements GroupService{
         if (ObjectUtils.isEmpty(id)) return Mono.empty();
 
         return groupRepository.findById(id);
+    }
+
+    @Override
+    public Flux<Group> findGroupsByName(String groupName) {
+        if (ObjectUtils.isEmpty(groupName)) return Flux.empty();
+        System.out.println("Searching the group by name");
+        return groupRepository.findGroupsByName(groupName);
     }
 
     @Override
@@ -179,15 +185,24 @@ public class GroupServiceImpl implements GroupService{
                         return groupRepository.save(group);
                     })
                     .switchIfEmpty(Mono.defer(() -> {
-                        log.debug("Creating a new User 2");
+                        log.debug("Creating a new Group");
                         return groupRepository.save(group);
                     }));
-            // TODO: ADD ERORR OR SUCCESS HANDLERS*/
+            // TODO: ADD ERROR OR SUCCESS HANDLERS*/
         }else{
             // TODO: CREATE ERROR HANDLERS
-            log.info("A Null group data is entered. Do not process!");
+            System.out.println("Could not save the GROUP");
+            log.debug("A Null group data is entered. Do not process!");
             return Mono.empty();
         }
+    }
+
+    // SAVE Fake group
+
+
+    @Override
+    public Mono<Group> saveFakeGroup(Group group) {
+        return groupRepository.save(group);
     }
 
     // DELETE

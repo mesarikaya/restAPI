@@ -7,7 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Objects;
 
 
 @Data
@@ -17,6 +19,7 @@ public class Group {
 
     @Id
     private ObjectId id;
+    @NotNull
     private String name;
     private HashSet<User> members;
     private HashSet<User> owners;
@@ -55,5 +58,35 @@ public class Group {
         this.destinationAddress = destinationAddress;
         this.destinationSearchRadius = destinationSearchRadius;
         this.isActive = isActive;
+    }
+
+    public HashSet<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(HashSet<User> members) {
+        this.members = members;
+    }
+
+    public HashSet<User> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(HashSet<User> owners) {
+        this.owners = owners;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return id.equals(group.id) &&
+                name.equals(group.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

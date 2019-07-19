@@ -14,6 +14,8 @@ public interface GroupRepository extends ReactiveMongoRepository<Group, ObjectId
     Flux<Group> findGroupsByOriginAddress(Address originAddress);
     Flux<Group> findGroupsByDestinationAddress(Address destinationAddress);
     Flux<Group> findGroupsByOriginAddressAndDestinationAddress(Address originAddress, Address destinationAddress);
+    Flux<Group> findGroupsByName(String groupName);
+
     @Query("{$and: [{'originAddress.latitude': ?0}, {'originAddress.longitude': ?1}, {'destinationAddress.latitude': ?2}, {'destinationAddress.longitude': ?3}]}")
     Flux<Group> findGroupsByOriginAndDestinationGeoLocationDetails(
             Double originLatitude,

@@ -1,10 +1,7 @@
 package com.mes.gotogether.domains;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -40,6 +37,7 @@ public class User {
     private String userId;
     private LoginType loginType;
     private String password;
+    @ToString.Exclude
     private Address address;
     private String permalink;
     private String mobileNumber;
@@ -49,16 +47,17 @@ public class User {
     private Date verificationExpiresAt;
     private boolean isActive;
     private List<Role> roles;
+    @ToString.Exclude
     @DBRef
     private HashSet<Group> groups;
 
     public User(User user){
         this(
-                user.getId(),
-                user.getEmail(),
-                user.getOauthId(),
-                user.getPassword(),
-                user.getRoles()
+            user.getId(),
+            user.getEmail(),
+            user.getOauthId(),
+            user.getPassword(),
+            user.getRoles()
         );
     }
 
@@ -72,9 +71,21 @@ public class User {
         this.roles = roles;
     }
 
+    public ObjectId getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
         this.setUserId();
+    }
+
+    public String getOauthId() {
+        return oauthId;
     }
 
     public void setOauthId(String oauthId) {
@@ -88,6 +99,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     @Override

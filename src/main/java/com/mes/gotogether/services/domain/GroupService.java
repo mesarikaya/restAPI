@@ -11,6 +11,8 @@ public interface GroupService {
     Mono<Group> findById(ObjectId id);
     Flux<Group> findGroupsByOriginAddress(Address originAddress);
     Flux<Group> findGroupsByDestinationAddress(Address destinationAddress);
+    Flux<Group> findGroupsByName(String groupName);
+
     Flux<Group> findGroupsByOriginAndDestinationAddress(Address originAddress, Address destinationAddress);
     Flux<Group> findGroupsByOriginAndDestinationGeoLocationDetails(
             Double originLatitude,
@@ -46,6 +48,7 @@ public interface GroupService {
     Flux<Group> findAll();
 
     Mono<Group> saveOrUpdate(Group group);
+    Mono<Group> saveFakeGroup(Group group);
 
     Mono<Void> deleteById(ObjectId id);
     Mono<Void> deleteAll();

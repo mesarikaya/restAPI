@@ -85,12 +85,17 @@ public class AddressServiceImpl implements AddressService {
                                 .flatMap(returnedAddress->addressRepository.save(returnedAddress))
                                 .switchIfEmpty(Mono.defer(()-> Mono.empty()));
                     }));
-            // TODO: ADD ERORR OR SUCCESS HANDLERS*/
+            // TODO: ADD ERROR OR SUCCESS HANDLERS*/
         }else{
             // TODO: CREATE ERROR HANDLERS
             log.info("A Null address data is entered. Do not process!");
             return Mono.empty();
         }
+    }
+
+    @Override
+    public Mono<Address> saveFakeAddress(Address address) {
+        return addressRepository.save(address);
     }
 
     // DELETE METHODS
