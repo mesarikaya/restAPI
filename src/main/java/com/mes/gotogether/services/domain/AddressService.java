@@ -1,7 +1,9 @@
 package com.mes.gotogether.services.domain;
 
-import com.mes.gotogether.domains.Address;
 import org.bson.types.ObjectId;
+
+import com.mes.gotogether.domains.Address;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +14,6 @@ public interface AddressService {
                                                                           String houseNumber,
                                                                           String city,
                                                                           String country);
-
 
     Flux<Address> findAddressByLatitudeAndLongitudeAnd(Double latitude, Double longitude);
     Flux<Address> findAll();

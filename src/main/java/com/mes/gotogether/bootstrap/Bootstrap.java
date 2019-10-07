@@ -1,11 +1,13 @@
 package com.mes.gotogether.bootstrap;
 
 
-import com.mes.gotogether.domains.*;
-import com.mes.gotogether.services.domain.AddressService;
-import com.mes.gotogether.services.domain.GroupService;
-import com.mes.gotogether.services.domain.UserService;
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,8 +15,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.util.*;
+import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.domains.Group;
+import com.mes.gotogether.domains.LoginType;
+import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.domains.User;
+import com.mes.gotogether.services.domain.AddressService;
+import com.mes.gotogether.services.domain.GroupService;
+import com.mes.gotogether.services.domain.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component

@@ -1,10 +1,7 @@
 package com.mes.gotogether.security.config;
 
-import com.mes.gotogether.domains.Role;
-import com.mes.gotogether.security.jwt.JWTReactiveAuthenticationManager;
-import com.mes.gotogether.services.domain.AddressService;
-import com.mes.gotogether.services.domain.UserService;
-import lombok.extern.slf4j.Slf4j;
+import java.net.URI;
+
 import org.springframework.boot.actuate.autoconfigure.security.reactive.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +17,14 @@ import org.springframework.security.web.server.authentication.logout.RedirectSer
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
 import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
-import reactor.core.publisher.Mono;
 
-import java.net.URI;
+import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.security.jwt.JWTReactiveAuthenticationManager;
+import com.mes.gotogether.services.domain.AddressService;
+import com.mes.gotogether.services.domain.UserService;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @EnableWebFluxSecurity

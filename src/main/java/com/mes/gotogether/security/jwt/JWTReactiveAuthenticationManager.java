@@ -1,8 +1,9 @@
 package com.mes.gotogether.security.jwt;
 
-import com.mes.gotogether.domains.Role;
-import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
-import io.jsonwebtoken.Claims;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -13,11 +14,12 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
+
+import io.jsonwebtoken.Claims;
+import reactor.core.publisher.Mono;
 
 @Component
 public class JWTReactiveAuthenticationManager implements ReactiveAuthenticationManager {

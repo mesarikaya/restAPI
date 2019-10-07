@@ -1,14 +1,18 @@
 package com.mes.gotogether.services.domain;
 
-import com.mes.gotogether.domains.Address;
-import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
-import com.mes.gotogether.repositories.domain.AddressRepository;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
+
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
+
+import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.repositories.domain.AddressRepository;
+import com.mes.gotogether.services.externalconnections.GeoLocationService;
+
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,13 +23,18 @@ public class AddressServiceImpl implements AddressService {
 
     private AddressRepository addressRepository;
     private RestTemplate restTemplate;
+    private GeoLocationService geoLocationService;
 
-    // FIND METHODS
-    public AddressServiceImpl(AddressRepository addressRepository, RestTemplate restTemplate) {
+    public AddressServiceImpl(
+    		AddressRepository addressRepository, 
+    		RestTemplate restTemplate,
+    		GeoLocationService geoLocationService) {
         this.addressRepository = addressRepository;
         this.restTemplate = restTemplate;
+        this.geoLocationService = geoLocationService;
     }
 
+    // FIND METHODS
     @Override
     public Mono<Address> findAddressById(ObjectId id) {
 
@@ -142,22 +151,19 @@ public class AddressServiceImpl implements AddressService {
 
         // If null, do nothing
         if (ObjectUtils.isEmpty(address)) return Mono.empty();
-
-        String baseUrl = "https://nominatim.openstreetmap.org/search/";
-        String urlParameter = address.getStreetName() + " " + address.getHouseNumber() + ", " + address.getCity();
-        String jsonResultFormat = "?format=json&addressdetails=1&limit=1";
-
-        NomatimOpenStreetMapQuery[] queryResult = restTemplate.getForObject(
-                baseUrl+urlParameter+jsonResultFormat,
-                NomatimOpenStreetMapQuery[].class);
-        log.info("**** QUERY ARRAY LENGTH: " + queryResult.length);
-        log.info("******QUERY RESULT IS: " + queryResult[0].toString());
-
-        if (queryResult.length>0){
-            address.setLatitude(queryResult[0].getLatitude());
-            address.setLongitude(queryResult[0].getLongitude());
+       
+        Optional<Double[]> latitudeAndLongitude = geoLocationService.getAddressLongitudeAndLatitude(address);
+        
+        if (latitudeAndLongitude.isEmpty()) {
+        	return Mono.empty();
+        }else {
+        	Double[] queryResult = latitudeAndLongitude.get();
+        	address.setLatitude(queryResult[0]);
+            address.setLongitude(queryResult[1]);
         }
 
         return Mono.just(address);
     }
+    
+    
 }

@@ -1,9 +1,5 @@
 package com.mes.gotogether.controllers.restControllers;
 
-import com.mes.gotogether.security.domain.AuthRequest;
-import com.mes.gotogether.security.domain.SecurityUserLibrary;
-import com.mes.gotogether.security.jwt.JWTUtil;
-import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,7 +7,17 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mes.gotogether.security.domain.AuthRequest;
+import com.mes.gotogether.security.domain.SecurityUserLibrary;
+import com.mes.gotogether.security.jwt.JWTUtil;
+import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
+
 import reactor.core.publisher.Mono;
 
 @RestController

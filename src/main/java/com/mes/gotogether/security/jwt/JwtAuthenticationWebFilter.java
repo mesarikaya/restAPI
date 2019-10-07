@@ -1,6 +1,5 @@
 package com.mes.gotogether.security.jwt;
 
-import com.mes.gotogether.security.config.UnauthorizedAuthenticationEntryPoint;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
@@ -8,6 +7,9 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.mes.gotogether.security.config.UnauthorizedAuthenticationEntryPoint;
+
 import reactor.core.publisher.Mono;
 
 

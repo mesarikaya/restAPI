@@ -1,10 +1,12 @@
 package com.mes.gotogether.services.domain;
 
-import com.mes.gotogether.domains.User;
-import org.bson.types.ObjectId;
-import reactor.core.publisher.Mono;
-
 import java.util.List;
+
+import org.bson.types.ObjectId;
+
+import com.mes.gotogether.domains.User;
+
+import reactor.core.publisher.Mono;
 
 public interface UserService {
 

@@ -1,8 +1,8 @@
 package com.mes.gotogether.security.jwt;
 
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-
 import javax.security.auth.Subject;
+
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class JwtPreAuthenticationToken extends AbstractAuthenticationToken {
     private final String authToken;

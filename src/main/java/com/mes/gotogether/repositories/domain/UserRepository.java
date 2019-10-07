@@ -1,9 +1,11 @@
 package com.mes.gotogether.repositories.domain;
 
-import com.mes.gotogether.domains.User;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
+
+import com.mes.gotogether.domains.User;
+
 import reactor.core.publisher.Mono;
 
 @Repository

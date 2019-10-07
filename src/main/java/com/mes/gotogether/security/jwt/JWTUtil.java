@@ -1,17 +1,5 @@
 package com.mes.gotogether.security.jwt;
 
-import com.mes.gotogether.security.domain.SecurityUserLibrary;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Clock;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.DefaultClock;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
-
-import javax.crypto.spec.SecretKeySpec;
 import java.io.Serializable;
 import java.security.Key;
 import java.util.Base64;
@@ -19,6 +7,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
+import com.mes.gotogether.security.domain.SecurityUserLibrary;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Clock;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.DefaultClock;
 
 @Component
 public class JWTUtil implements Serializable  {

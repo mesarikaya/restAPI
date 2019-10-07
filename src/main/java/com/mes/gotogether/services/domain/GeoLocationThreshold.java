@@ -10,7 +10,7 @@ public class GeoLocationThreshold {
     private final double latitude;
     private final double longitude;
 
-    public GeoLocationThreshold(double latitude, double longitude, double radius) {
+    GeoLocationThreshold(double latitude, double longitude, double radius) {
 
         this.latitude = latitude;
         this.longitude = longitude;

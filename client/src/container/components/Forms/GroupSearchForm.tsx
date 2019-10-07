@@ -11,6 +11,7 @@ import '../../../stylesheets/css/GroupSearch.css';
 import { GroupSearchFormFields } from '../../../redux/types/userInterface/groupSearchFormFields';
 import InputRange from '../Buttons/InputRange';
 import { SearchGroups } from '../../../redux/actions/groupSearchAction';
+import { submitForm } from '../../utilities/submitForm';
 
 export interface Props {
     formFields: GroupSearchFormFields;
@@ -33,7 +34,8 @@ class GroupSearchForm extends React.Component<Props, State> {
                 origin: '',
                 originRange: 2,
                 destination: '',
-                destinationRange: 2
+                destinationRange: 2,
+                validated: false
             }
         };
 
@@ -44,6 +46,9 @@ class GroupSearchForm extends React.Component<Props, State> {
     // TODO: Need to FIND A WAY TO USE THE RIGHT TYPE WITHOUT ERROR React.ChangeEvent<HTMLInputElement>
     public handleChange = async (event: any): Promise<void> => {
 
+        // tslint:disable-next-line: no-console
+        console.log("EVent handler on change: ", event.currentTarget.value);
+        
         // read the form input fields
         const formFields = { ...this.state.formFields };
         formFields[event.currentTarget.name] = event.currentTarget.value;
@@ -55,17 +60,14 @@ class GroupSearchForm extends React.Component<Props, State> {
     public handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 
         // TODO: Add button disable
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-
+        submitForm(event);
+        
         this.setState({ formFields: {
-            ...this.state.formFields
+            ...this.state.formFields,
+            validated: true
         }});
 
-        // TODO: Deactivate Button disable
+        // TODO: Deactivate Button -- disable
         
         // MAKE AN AJAX CALL
         this.props.onSubmit(event, this.state.formFields);
@@ -76,6 +78,7 @@ class GroupSearchForm extends React.Component<Props, State> {
 
     public render() {
 
+        const validated = this.state.formFields.validated;
         return (
           <React.Fragment>
 
@@ -84,44 +87,61 @@ class GroupSearchForm extends React.Component<Props, State> {
                 <h1 className="joinAGroupText">Join<span> a group</span>?</h1>
                 <p className="joinAGroupSubText">Search with ease based on the origin and destination radius</p>
                 
-                <Form action="#">
+                <Form name="groupSearchForm" className="groupSearchFormValidation" 
+                noValidate={true} validated = {validated} onSubmit = {this.handleSubmit}>
                     <Form.Row> 
                         <InputGroup className="justify-content-center">
                             {/* <!- Origin Input Group --> */}
                             <Form.Group className="originInputFormGroup" controlId="originAdressInputControl">
-                                    {/* <!- Origin Input text --> */}
-                                    <Form.Label className="originLabel" ><strong>Origin</strong></Form.Label>
-                                    <Form.Control type="email" placeholder="Address/zip code" required={true}/>
+                                {/* <!- Origin Input text --> */}
+                                <Form.Label className="originLabel" ><strong>Origin</strong></Form.Label>
+                                <Form.Control 
+                                    type="input"
+                                    id={"origin"}
+                                    name={"origin"}
+                                    placeholder="Address/zip code" 
+                                    required={true}
+                                    onChange={this.handleChange}
+                                />
                             </Form.Group>
                             {/* <!- Origin Input Range Group --> */}
                             <Form.Group controlId="originAdressRangeControl">
-                                    {/* <!- Origin Range --> */}
-                                    <FormLabel className="originRangeDropdownLabel" htmlFor="originRangeDropDownMenuButton">
-                                    <strong>Range</strong>
-                                    </FormLabel>
-                                    <InputRange/>
+                                {/* <!- Origin Range --> */}
+                                <FormLabel className="originRangeDropdownLabel" htmlFor="originRangeDropDownMenuButton">
+                                <strong>Range</strong>
+                                </FormLabel>
+                                <InputRange value={0}/>
                             </Form.Group>
                         </InputGroup>
                     
                         <InputGroup className="justify-content-center">
                             {/* <!- Destination Input Group --> */}
                             <Form.Group className="destinationInputFormGroup" controlId="destinationAdressInputControl">
-                                    {/* <!- Destination Input text --> */}
-                                    <Form.Label className="destinationLabel" ><strong>Destination</strong></Form.Label>
-                                    <Form.Control type="email" placeholder="Address/zip code" required={true}/>
+                                {/* <!- Destination Input text --> */}
+                                <Form.Label className="destinationLabel" >
+                                    <strong>Destination</strong>
+                                </Form.Label>
+                                <Form.Control 
+                                    type="input"
+                                    id={"destination"}
+                                    name={"destination"}
+                                    placeholder="Address/zip code" 
+                                    required={true}
+                                    onChange={this.handleChange}
+                                />
                             </Form.Group>
                             {/* <!- Destination Input Range Group --> */}
                             <Form.Group controlId="destinationAdressRangeControl">
-                                    {/* <!- Destination Range --> */}
-                                    <FormLabel className="destinationRangeDropdownLabel" htmlFor="destinationRangeDropDownMenuButton">
+                                {/* <!- Destination Range --> */}
+                                <FormLabel className="destinationRangeDropdownLabel" htmlFor="destinationRangeDropDownMenuButton">
                                     <strong>Range</strong>
-                                    </FormLabel>
-                                    <InputRange/>
+                                </FormLabel>
+                                <InputRange value={2}/>
                             </Form.Group>
                         </InputGroup>
                     
                     </Form.Row>
-                    <Button type="submit">search</Button>
+                    <Button size="lg" type="submit"> Search </Button>
                 </Form>
             </div>
           </React.Fragment>

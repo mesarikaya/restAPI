@@ -1,9 +1,5 @@
 package com.mes.gotogether.controllers.viewControllers;
 
-import com.mes.gotogether.security.domain.AuthRequest;
-import com.mes.gotogether.security.domain.SecurityUserLibrary;
-import com.mes.gotogether.security.jwt.JWTUtil;
-import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -12,6 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.mes.gotogether.security.domain.AuthRequest;
+import com.mes.gotogether.security.domain.SecurityUserLibrary;
+import com.mes.gotogether.security.jwt.JWTUtil;
+import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
+
 import reactor.core.publisher.Mono;
 
 @Controller

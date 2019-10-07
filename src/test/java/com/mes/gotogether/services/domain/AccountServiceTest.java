@@ -1,8 +1,18 @@
 package com.mes.gotogether.services.domain;
 
-import com.mes.gotogether.domains.Address;
-import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
-import com.mes.gotogether.repositories.domain.AddressRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,17 +23,17 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.util.Optionals;
 import org.springframework.web.client.RestTemplate;
+
+import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
+import com.mes.gotogether.repositories.domain.AddressRepository;
+import com.mes.gotogether.services.externalconnections.GeoLocationService;
+
+import io.netty.handler.ssl.OptionalSslHandler;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -37,6 +47,8 @@ public class AccountServiceTest {
     private Address address;
     @Mock
     private NomatimOpenStreetMapQuery nomatimOpenStreetMapQueries;
+    @Mock
+    private GeoLocationService geoLocationService;
     private AddressServiceImpl addressServiceImpl;
     private Address existingAddress;
     private Address unchangedExistingAddress;
@@ -52,7 +64,7 @@ public class AccountServiceTest {
 
         System.out.println("@BeforeEach is called!");
         MockitoAnnotations.initMocks(this);
-        addressServiceImpl = new AddressServiceImpl(addressRepository, restTemplate);
+        addressServiceImpl = new AddressServiceImpl(addressRepository, restTemplate, geoLocationService);
 
         // Create Existing Address
         existingAddress = new Address();
@@ -88,10 +100,10 @@ public class AccountServiceTest {
         newAddressMapQuery[0] = mapQuery2;
 
         // 1. Save the existing Address
-
         when(addressRepository.findById(existingAddress.getId())).thenReturn(Mono.just(existingAddress));
         when(restTemplate.getForObject(anyString(),eq(NomatimOpenStreetMapQuery[].class))).thenReturn(existingAddressMapQuery);
         when(addressRepository.save(existingAddress)).thenReturn(Mono.just(existingAddress));
+        when(geoLocationService.getAddressLongitudeAndLatitude(existingAddress)).thenReturn(Optional.of(new Double[] {43.0359862, -7.658727}));
         retrievedAddress1 = addressServiceImpl.saveOrUpdateAddress(existingAddress).log().flux().next().block();
     }
 
@@ -105,7 +117,6 @@ public class AccountServiceTest {
         assertNotNull(addressServiceImpl);
     }
 
-
     @Test
     public void saveAddress(){
 
@@ -113,6 +124,7 @@ public class AccountServiceTest {
         when(addressRepository.findById(newAddress.getId())).thenReturn(Mono.empty());
         when(restTemplate.getForObject(anyString(),eq(NomatimOpenStreetMapQuery[].class))).thenReturn(newAddressMapQuery);
         when(addressRepository.save(newAddress)).thenReturn(Mono.just(newAddress));
+        when(geoLocationService.getAddressLongitudeAndLatitude(newAddress)).thenReturn(Optional.of(new Double[] {51.9721063, 5.3446671}));
         Address retrievedAddress = addressServiceImpl.saveOrUpdateAddress(newAddress).log().flux().next().block();
         assertEquals(newAddress.getId(), retrievedAddress.getId());
     }
@@ -136,6 +148,7 @@ public class AccountServiceTest {
         when(addressRepository.findById(existingAddress.getId())).thenReturn(Mono.just(existingAddress));
         when(restTemplate.getForObject(anyString(),eq(NomatimOpenStreetMapQuery[].class))).thenReturn(existingAddressMapQuery);
         when(addressRepository.save(existingAddress)).thenReturn(Mono.just(existingAddress));
+        when(geoLocationService.getAddressLongitudeAndLatitude(existingAddress)).thenReturn(Optional.of(new Double[] {43.0359862, -7.658727}));
         Address retrievedAddress = addressServiceImpl.saveOrUpdateAddress(existingAddress).log().flux().next().block();
 
         // Check if they are the same object

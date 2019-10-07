@@ -1,12 +1,13 @@
 package com.mes.gotogether.security.domain;
 
-import com.mes.gotogether.domains.User;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+import com.mes.gotogether.domains.User;
 
 public class SecurityUserLibrary extends User implements UserDetails {
 

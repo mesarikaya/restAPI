@@ -1,8 +1,10 @@
 package com.mes.gotogether.validators;
 
-import com.mes.gotogether.security.domain.AuthRequest;
-import lombok.Data;
 import java.util.Map;
+
+import com.mes.gotogether.security.domain.AuthRequest;
+
+import lombok.Data;
 
 @Data
 public class UserLoginResponse {

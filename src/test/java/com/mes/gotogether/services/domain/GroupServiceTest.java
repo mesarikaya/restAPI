@@ -1,7 +1,16 @@
 package com.mes.gotogether.services.domain;
 
-import com.mes.gotogether.domains.*;
-import com.mes.gotogether.repositories.domain.GroupRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +22,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.web.client.RestTemplate;
+
+import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.domains.Group;
+import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
+import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.domains.User;
+import com.mes.gotogether.repositories.domain.GroupRepository;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
