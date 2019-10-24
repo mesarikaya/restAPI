@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Form, InputGroup, FormLabel, Button } from 'react-bootstrap';
 
 // Add styling related imports
@@ -15,12 +14,16 @@ import { submitForm } from '../../utilities/submitForm';
 
 export interface Props {
     formFields: GroupSearchFormFields;
+    token: string;
     onSubmit: typeof SearchGroups;
 };
 
 export interface State {
     formFields: GroupSearchFormFields;
 };
+
+const MAX_RANGES=1000;
+const MIN_RANGES=0;
 
 class GroupSearchForm extends React.Component<Props, State> {
     
@@ -41,13 +44,16 @@ class GroupSearchForm extends React.Component<Props, State> {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleInputRangeChange = this.handleInputRangeChange.bind(this);
+        this.increase = this.increase.bind(this);
+        this.decrease = this.decrease.bind(this);
     }
 
     // TODO: Need to FIND A WAY TO USE THE RIGHT TYPE WITHOUT ERROR React.ChangeEvent<HTMLInputElement>
     public handleChange = async (event: any): Promise<void> => {
 
         // tslint:disable-next-line: no-console
-        console.log("EVent handler on change: ", event.currentTarget.value);
+        console.log("Event handler on change: ", event.currentTarget.value);
         
         // read the form input fields
         const formFields = { ...this.state.formFields };
@@ -70,10 +76,69 @@ class GroupSearchForm extends React.Component<Props, State> {
         // TODO: Deactivate Button -- disable
         
         // MAKE AN AJAX CALL
-        this.props.onSubmit(event, this.state.formFields);
+        this.props.onSubmit(event, this.state.formFields, this.props.token);
 
         // TODO: VALIDATE ON THE REST CONTROLLER AND RETURN ERROR OR THE SEARCH STATUS AND SAVE COOKIE
 
+    };
+
+    public decrease = (name: string) => {
+    
+        if (name==="originRange"){
+
+            const rangeValue = this.setRange(this.state.formFields.originRange);
+            
+                const formFields = {
+                    ...this.state.formFields,
+                    originRange: Math.max(Number(rangeValue) - 1, MIN_RANGES)
+                };
+                this.setState({formFields});
+        }else if(name==="destinationRange"){
+
+            const rangeValue = this.setRange(this.state.formFields.destinationRange);
+            const formFields = {
+                ...this.state.formFields,
+                destinationRange: Math.max(Number(rangeValue) - 1, MIN_RANGES)
+            };
+            this.setState({formFields});
+        }
+    }
+        
+    public increase = (name:string) => {
+        
+        if (name==="originRange"){
+
+            const rangeValue = this.setRange(this.state.formFields.originRange);
+            const formFields = {
+                ...this.state.formFields,
+                originRange: Math.min(Number(rangeValue) + 1, MAX_RANGES)
+            };
+            this.setState({formFields});
+        }else if(name==="destinationRange"){
+
+            const rangeValue = Number(this.state.formFields.destinationRange);  
+            const formFields = {
+                ...this.state.formFields,
+                destinationRange: Math.min(Number(rangeValue) + 1, MAX_RANGES)
+            };
+            this.setState({formFields});
+        }
+    }
+
+    public handleInputRangeChange = async (name: string, value: number): Promise<void> => {
+        
+        const rangeValue = Math.max(0, Math.min(value,MAX_RANGES));
+        if (name==="originRange"){
+            this.setState({ formFields: {
+                ...this.state.formFields,
+                originRange: rangeValue
+            }});
+        }else if (name==="destinationRange") {
+            this.setState({ formFields: {
+                ...this.state.formFields,
+                destinationRange: rangeValue
+            }});
+        }
     };
 
     public render() {
@@ -110,7 +175,13 @@ class GroupSearchForm extends React.Component<Props, State> {
                                 <FormLabel className="originRangeDropdownLabel" htmlFor="originRangeDropDownMenuButton">
                                 <strong>Range</strong>
                                 </FormLabel>
-                                <InputRange value={0}/>
+                                <InputRange 
+                                    name={"originRange"}
+                                    value={this.state.formFields.originRange}
+                                    onChangeValue={this.handleInputRangeChange}
+                                    onIncrease={this.increase}
+                                    onDecrease={this.decrease}
+                                />
                             </Form.Group>
                         </InputGroup>
                     
@@ -136,10 +207,15 @@ class GroupSearchForm extends React.Component<Props, State> {
                                 <FormLabel className="destinationRangeDropdownLabel" htmlFor="destinationRangeDropDownMenuButton">
                                     <strong>Range</strong>
                                 </FormLabel>
-                                <InputRange value={2}/>
+                                <InputRange 
+                                    name={"destinationRange"}
+                                    value={this.state.formFields.destinationRange}
+                                    onChangeValue={this.handleInputRangeChange}
+                                    onIncrease={this.increase}
+                                    onDecrease={this.decrease}
+                                />
                             </Form.Group>
                         </InputGroup>
-                    
                     </Form.Row>
                     <Button size="lg" type="submit"> Search </Button>
                 </Form>
@@ -147,16 +223,16 @@ class GroupSearchForm extends React.Component<Props, State> {
           </React.Fragment>
         );
   }
+
+  private isValidEntry(entry: string|number){
+    entry = Number(entry);
+    return (isNaN(entry) || entry<0 || typeof entry !== 'undefined' || entry==='' || entry === null);
+  }
+
+  private setRange(entry: string|number){
+    const rangeValue = Number(entry);
+    return (this.isValidEntry(rangeValue)) ? rangeValue: 0;
+  }
 }
 
-
-const mapDispatchToProps = (dispatch: any) => {
-    return {
-        onSubmit: (
-            e: React.FormEvent<HTMLFormElement>, 
-            formFields: GroupSearchFormFields
-            ) => dispatch(SearchGroups(e, formFields))
-    }
-}
-
-export default connect(null, mapDispatchToProps)(GroupSearchForm);
+export default GroupSearchForm;

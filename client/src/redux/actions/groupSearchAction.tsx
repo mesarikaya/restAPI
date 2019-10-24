@@ -12,7 +12,9 @@ const url = process.env.REACT_APP_NODE_ENV === 'production' ? "/api/v1/" : "http
  * @param e HTML Form Event
  * @param formFields Login form input data
  */
-export function SearchGroups(event: React.FormEvent<HTMLFormElement>, formFields: GroupSearchFormFields) {
+export function SearchGroups(event: React.FormEvent<HTMLFormElement>, 
+                             formFields: GroupSearchFormFields,
+                             token: string) {
     
     if (event !== null) { 
         event.preventDefault(); 
@@ -34,10 +36,15 @@ export function SearchGroups(event: React.FormEvent<HTMLFormElement>, formFields
     console.log('environment is', process.env.NODE_ENV);
     
     return ((dispatch: Dispatch<GroupSearchActionTypes>) => {
-        return (axios.get(`${url}groups`, 
-        {
+        return (axios.get(`${url}groups`, {
+            headers: {
+                Authorization: "Bearer " + token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Cache: "no-cache"
+            },
             params,
-            'withCredentials': true
+            withCredentials: true
         }).then((response) => {
             
             let payload = { 

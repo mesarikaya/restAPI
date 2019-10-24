@@ -15,7 +15,8 @@ export const history = createBrowserHistory();
 const system: SecurityState = {
     cookie: "none",
     loggedIn: false,
-    userName: "guest"
+    userName: "guest",
+    token: ''
 };
 
 const initialState: AppState = {

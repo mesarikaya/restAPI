@@ -39,7 +39,8 @@ export function UpdateAuth(event: React.FormEvent<HTMLFormElement>, formFields: 
             let payload = { 
                 cookie: "test cookies",
                 loggedIn: false,
-                userName: "guest"
+                userName: "guest",
+                token: ''
              };
 
             // tslint:disable-next-line:no-console
@@ -48,10 +49,13 @@ export function UpdateAuth(event: React.FormEvent<HTMLFormElement>, formFields: 
             // Depending on response status, allow or not for login
             if (response.status === 200) {
                 
+                // tslint:disable-next-line: no-console
+                console.log("Response data is: " + response.data)
                 payload = {
                     cookie: "authenticated cookie",
                     loggedIn: true,
-                    userName: response.data
+                    userName: response.data.username,
+                    token: response.data.token
                 };
 
                 // tslint:disable-next-line:no-console

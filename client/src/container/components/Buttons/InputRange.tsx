@@ -2,23 +2,17 @@ import * as React from 'react';
 import '../../../stylesheets/css/inputRange.css';
 
 export interface Props {
+  name: string;
   value: string|number;
+  onChangeValue: (name: string, value: number) => Promise<void>;
+  onIncrease: (name:string) => void;
+  onDecrease: (name:string) => void;
 };
 
-export interface State {
-  value: string|number;
-};
-
-class InputRange extends React.Component<Props, State> {
-
-  public state: State;
+class InputRange extends React.Component<Props> {
 
   constructor(props:Props){
     super(props);
-
-    this.state={
-      value: 2
-    };
 
     this.increase = this.increase.bind(this);
     this.decrease = this.decrease.bind(this);
@@ -26,45 +20,23 @@ class InputRange extends React.Component<Props, State> {
   }
 
   public decrease = () => {
-    
-    const rangeValue = Number(this.state.value);
-    
-    if(this.isValidEntry(rangeValue)){
-      if (rangeValue-1<0){
-        this.setState({ value: 0 }); // Set to 0 for negatives
-      }else{
-        this.setState({ value: rangeValue - 1 });
-      }
-    } else{
-      this.setState({ value: 0 }); // Set to default: 0
-    }
+    this.props.onDecrease(this.props.name)
   }
 
   public handleInputChange = async (event: any): Promise<void> => {
     // tslint:disable-next-line: no-console
     console.log("Event details:", Number(event.currentTarget.value));
     const enteredRange = this.setRange(Number(event.target.value));
-    this.setState({ value: enteredRange});
+    this.props.onChangeValue(this.props.name, enteredRange);
   }
 
   public increase = () => {
-
-    const rangeValue = Number(this.state.value);
-    
-    if(this.isValidEntry(rangeValue)){
-      if (rangeValue+1>1000){
-        this.setState({ value: 1000 }); // Set to a default upper limit
-      }else{
-        this.setState({ value: rangeValue + 1 });
-      }
-    }else{
-      this.setState({ value: 0 }); // Set to default: 0
-    }
+    this.props.onIncrease(this.props.name);
   }
   
   public render() {
 
-    const rangeValue = this.setRange(this.state.value).toString();
+    const rangeValue = this.setRange(this.props.value).toString();
 
     return (
         <div className="def-number-input number-input">

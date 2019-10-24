@@ -21,11 +21,13 @@ import GroupCard from '../Cards/GroupCard';
 import { GroupSearchFormFields } from '../../../redux/types/userInterface/groupSearchFormFields';
 import { store } from '../../../redux/store';
 import { SecurityState } from '../../../redux/types/system/securityState';
+import { SearchGroups } from 'src/redux/actions/groupSearchAction';
 
 export interface Props {
     system: SecurityState;
     loginFormFields: LoginFormFields;
     groupSearchFormFields: GroupSearchFormFields;
+    onSubmit: typeof SearchGroups;
 };
 
 export interface State {
@@ -107,7 +109,11 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-xl-5 my-auto"> 
                         <div className="container mx-auto my-auto">
                             <div className="searchFormRow mx-auto my-auto">
-                                <GroupSearchForm formFields={this.props.groupSearchFormFields}/>
+                                <GroupSearchForm 
+                                  token={this.state.system.token} 
+                                  formFields={this.props.groupSearchFormFields}
+                                  onSubmit={this.props.onSubmit}
+                                />
                             </div>
                         </div>
                     </div>
@@ -172,6 +178,16 @@ const mapStateToProps = (
     }
 }
 
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        onSubmit: (
+            e: React.FormEvent<HTMLFormElement>, 
+            formFields: GroupSearchFormFields,
+            token: string,
+            ) => dispatch(SearchGroups(e, formFields, token))
+    }
+}
+
 /*const mapDispatchToProps = (dispatch: any) => {
     return {
         onLoginSubmit: (
@@ -181,4 +197,4 @@ const mapStateToProps = (
     }
 }*/
 
-export  default withRouter(connect(mapStateToProps, null)(App));
+export  default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
