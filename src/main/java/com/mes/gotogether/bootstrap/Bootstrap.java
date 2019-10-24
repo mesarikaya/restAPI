@@ -48,7 +48,12 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+    	/*
+    	// Delete current database
+    	groupService.deleteAll();
+    	addressService.deleteAll();
+    	userService.deleteAll();
+    	
         // Read test data file
         File testFile= ResourceUtils.getFile("classpath:data/TestData.csv");
 
@@ -63,7 +68,7 @@ public class Bootstrap implements CommandLineRunner {
         
         // Read Group Data
         List<GroupDTO> groupDTO = CsvReader.readGroupDetails(testFile);
-
+        
         HashMap<String, Group> groupNamesMap = new HashMap<>();
         for(GroupDTO gr: groupDTO){
 
@@ -128,16 +133,16 @@ public class Bootstrap implements CommandLineRunner {
                     group.setDestinationAddress(userAddress);
                 }
 
-                /*// Add group to the user's membership list
-                if (user.getGroups() != null) {
-                    System.out.println("Adding group to the user membership list");
-                    user.getGroups().add(group);
-                }else{
-                    System.out.println("Null USer membership");
-                    HashSet<Group> userGroups = new HashSet<>();
-                    userGroups.add(group);
-                    user.setGroups(userGroups);
-                }*/
+                // Add group to the user's membership list
+                //if (user.getGroups() != null) {
+                  //  System.out.println("Adding group to the user membership list");
+                    //user.getGroups().add(group);
+                //}else{
+                  //  System.out.println("Null USer membership");
+                   // HashSet<Group> userGroups = new HashSet<>();
+                   // userGroups.add(group);
+                   // user.setGroups(userGroups);
+                //}
 
                 // Add user to the group members set
                 if(group.getMembers()!=null) {
@@ -153,7 +158,6 @@ public class Bootstrap implements CommandLineRunner {
                     usersInGroup.add(user);
                     group.setMembers(usersInGroup);
                 }
-                	
 
                 // Add user to the group owners set
                 if(group.getOwners()!=null) {
@@ -169,14 +173,14 @@ public class Bootstrap implements CommandLineRunner {
                     usersInGroup.add(user);
                     group.setOwners(usersInGroup);
                 }
-
+                log.info("Saving group: " + group.toString());
                 groupService.saveOrUpdate(group).block();
             }
-
+            
             // Add the user to the data repository
             userService.saveOrUpdateUser(user).block();
         }
-        
+        */
         System.out.println("FAKE data creation is successfull!");
         // FIRST sample user
         User user1 = new User();

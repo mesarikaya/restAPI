@@ -16,6 +16,10 @@ public interface GroupService {
     Flux<Group> findGroupsByName(String groupName);
 
     Flux<Group> findGroupsByOriginAndDestinationAddress(Address originAddress, Address destinationAddress);
+    
+    Flux<Group> findGroupsByOriginAndDestinationAddress(String originAddress, String destinationAddress, 
+    		double originRadius, double destinationRadius);
+    
     Flux<Group> findGroupsByOriginAndDestinationGeoLocationDetails(
             Double originLatitude,
             Double originLongitude,

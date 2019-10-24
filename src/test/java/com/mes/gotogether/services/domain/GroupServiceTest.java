@@ -6,11 +6,9 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +27,7 @@ import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
 import com.mes.gotogether.domains.Role;
 import com.mes.gotogether.domains.User;
 import com.mes.gotogether.repositories.domain.GroupRepository;
+import com.mes.gotogether.services.externalconnections.GeoLocationService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,6 +39,8 @@ public class GroupServiceTest {
     @Mock
     private GroupRepository groupRepository;
     @Mock
+    private GeoLocationService geoLocationService;
+    @Mock
     private RestTemplate restTemplate;
     @Mock
     private Group group;
@@ -49,14 +50,13 @@ public class GroupServiceTest {
     private Group existingGroup;
     private Group unchangedExistingGroup;
     private Group newGroup;
-    private Group retrievedGroup1;
 
     @BeforeEach
     public void setUp() {
 
         System.out.println("@BeforeEach is called!");
         MockitoAnnotations.initMocks(this);
-        groupServiceImpl = new GroupServiceImpl(groupRepository);
+        groupServiceImpl = new GroupServiceImpl(groupRepository, geoLocationService);
 
         // Create User 1
         User user1 = new User();

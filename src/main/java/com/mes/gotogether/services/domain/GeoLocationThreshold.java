@@ -24,7 +24,7 @@ public class GeoLocationThreshold {
         this.latMin = latitude - Math.toDegrees(radius/earthRadius);
         this.latMax = latitude + Math.toDegrees(radius/earthRadius);
         this.longMin = longitude - Math.toDegrees(radius/earthRadius/Math.cos(Math.toRadians(latitude)));
-        this.longMax = longitude - Math.toDegrees(radius/earthRadius/Math.cos(Math.toRadians(latitude)));
+        this.longMax = longitude + Math.toDegrees(radius/earthRadius/Math.cos(Math.toRadians(latitude)));
     }
 
     public double getLatMin() {

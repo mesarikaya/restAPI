@@ -1,12 +1,17 @@
 package com.mes.gotogether.services.domain;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
+import static org.springframework.util.ObjectUtils.*;
 
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.Group;
 import com.mes.gotogether.repositories.domain.GroupRepository;
+import com.mes.gotogether.services.externalconnections.GeoLocationService;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -17,23 +22,25 @@ import reactor.core.publisher.Mono;
 public class GroupServiceImpl implements GroupService{
 
     private GroupRepository groupRepository;
-
-    public GroupServiceImpl(GroupRepository groupRepository) {
+    private GeoLocationService geoLocationService;
+    
+    public GroupServiceImpl(GroupRepository groupRepository, GeoLocationService geoLocationService) {
         this.groupRepository = groupRepository;
+        this.geoLocationService = geoLocationService;
     }
 
     // FIND METHODS
     @Override
     public Mono<Group> findById(ObjectId id) {
 
-        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+        if (isEmpty(id)) return Mono.empty();
 
         return groupRepository.findById(id);
     }
 
     @Override
     public Flux<Group> findGroupsByName(String groupName) {
-        if (ObjectUtils.isEmpty(groupName)) return Flux.empty();
+        if (isEmpty(groupName)) return Flux.empty();
         System.out.println("Searching the group by name");
         return groupRepository.findGroupsByName(groupName);
     }
@@ -41,7 +48,7 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Flux<Group> findGroupsByOriginAddress(Address originAddress) {
 
-        if (ObjectUtils.isEmpty(originAddress)) return Flux.empty();
+        if (isEmpty(originAddress)) return Flux.empty();
 
         return groupRepository.findGroupsByOriginAddress(originAddress);
     }
@@ -49,7 +56,7 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Flux<Group> findGroupsByDestinationAddress(Address destinationAddress) {
 
-        if (ObjectUtils.isEmpty(destinationAddress)) return Flux.empty();
+        if (isEmpty(destinationAddress)) return Flux.empty();
 
         return groupRepository.findGroupsByDestinationAddress(destinationAddress);
     }
@@ -57,20 +64,42 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Flux<Group> findGroupsByOriginAndDestinationAddress(Address originAddress, Address destinationAddress) {
 
-        if (ObjectUtils.isEmpty(originAddress) || ObjectUtils.isEmpty(destinationAddress)) return Flux.empty();
+        if (isEmpty(originAddress) || isEmpty(destinationAddress)) return Flux.empty();
 
         return groupRepository.findGroupsByOriginAddressAndDestinationAddress(originAddress, destinationAddress);
     }
 
     @Override
+	public Flux<Group> findGroupsByOriginAndDestinationAddress(String originAddress, String destinationAddress,
+			double originRadius, double destinationRadius) {
+    	
+    	log.info("Sending latitude and longitude");
+    	Optional<Double[]> originLatitudeAndLongitude = geoLocationService.getAddressLongitudeAndLatitude(originAddress);
+    	Optional<Double[]> destinationLatitudeAndLongitude = geoLocationService.getAddressLongitudeAndLatitude(destinationAddress);
+    	
+    	if (originLatitudeAndLongitude.isEmpty() || destinationLatitudeAndLongitude.isEmpty()) {
+    		log.info("Sending flux empty due to empty origin or destination latitude");
+    		return Flux.empty();
+    	}
+    	
+		Double[] originGeoLocations = originLatitudeAndLongitude.get();
+		Double[] destinationGeoLocations = destinationLatitudeAndLongitude.get();
+		log.info("Searching the groups within origin: " + originGeoLocations + " and destination: " + destinationGeoLocations);
+		
+		return this.findGroupsByOriginAndDestinationWithinRadius(
+	            originGeoLocations[0], originGeoLocations[1], originRadius,
+	            destinationGeoLocations[0], destinationGeoLocations[1], destinationRadius); 	
+   }
+
+	@Override
     public Flux<Group> findGroupsByOriginAndDestinationGeoLocationDetails(
             Double originLatitude, Double originLongitude,
             Double destinationLatitude, Double destinationLongitude) {
 
-        if (ObjectUtils.isEmpty(originLatitude)
-                || ObjectUtils.isEmpty(originLongitude)
-                || ObjectUtils.isEmpty(destinationLatitude)
-                || ObjectUtils.isEmpty(destinationLongitude)) return Flux.empty();
+        if (isEmpty(originLatitude)
+                || isEmpty(originLongitude)
+                || isEmpty(destinationLatitude)
+                || isEmpty(destinationLongitude)) return Flux.empty();
 
         return groupRepository.findGroupsByOriginAndDestinationGeoLocationDetails(
                 originLatitude, originLongitude,
@@ -82,8 +111,8 @@ public class GroupServiceImpl implements GroupService{
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax) {
 
-        if (ObjectUtils.isEmpty(originLatMin) || ObjectUtils.isEmpty(originLatMax)
-                || ObjectUtils.isEmpty(originLongMin) || ObjectUtils.isEmpty(originLongMax)) return Flux.empty();
+        if (isEmpty(originLatMin) || isEmpty(originLatMax)
+                || isEmpty(originLongMin) || isEmpty(originLongMax)) return Flux.empty();
 
 
         return groupRepository.findGroupsByOriginWithinThresholds(
@@ -96,8 +125,8 @@ public class GroupServiceImpl implements GroupService{
             Double destLatMin, Double destLatMax,
             Double destLongMin, Double destLongMax) {
 
-        if (ObjectUtils.isEmpty(destLatMin) || ObjectUtils.isEmpty(destLatMax)
-                || ObjectUtils.isEmpty(destLongMin) || ObjectUtils.isEmpty(destLongMax)) return Flux.empty();
+        if (isEmpty(destLatMin) || isEmpty(destLatMax)
+                || isEmpty(destLongMin) || isEmpty(destLongMax)) return Flux.empty();
 
         return groupRepository.findGroupsByDestinationWithinThresholds(
                 destLatMin, destLatMax,
@@ -111,11 +140,20 @@ public class GroupServiceImpl implements GroupService{
             Double destLatMin, Double destLatMax,
             Double destLongMin, Double destLongMax) {
 
-        if (ObjectUtils.isEmpty(originLatMin) || ObjectUtils.isEmpty(originLatMax)
-                || ObjectUtils.isEmpty(originLongMin) || ObjectUtils.isEmpty(originLongMax)
-                || ObjectUtils.isEmpty(destLatMin) || ObjectUtils.isEmpty(destLatMax)
-                || ObjectUtils.isEmpty(destLongMin) || ObjectUtils.isEmpty(destLongMax)) return Flux.empty();
+        if (isEmpty(originLatMin) || isEmpty(originLatMax)
+                || isEmpty(originLongMin) || isEmpty(originLongMax)
+                || isEmpty(destLatMin) || isEmpty(destLatMax)
+                || isEmpty(destLongMin) || isEmpty(destLongMax)) return Flux.empty();
 
+        log.info("Requested mongo query parameters\n" + 
+        "Origin min latitude: " + originLatMin + "\n" +
+        "Origin max latitude: " + originLatMax + "\n" +
+        "Origin min longitude: " + originLongMin + "\n" +
+        "Origin max longitude: " + originLongMax + "\n" +
+        "Destination min latitude: " + destLatMin + "\n" +
+        "Destination max latitude: " + destLatMax + "\n" +
+        "Destination min longitude: " + destLongMin + "\n" +
+        "Destination max longitude: " + destLongMax + "\n");
         return groupRepository.findGroupsByOriginAndDestinationWithinThresholds(
                 originLatMin, originLatMax,
                 originLongMin, originLongMax,
@@ -126,8 +164,8 @@ public class GroupServiceImpl implements GroupService{
     public Flux<Group> findGroupsByOriginWithinRadius(
             Double originLat, Double originLong, Double originRadius){
 
-        if (ObjectUtils.isEmpty(originLat) || ObjectUtils.isEmpty(originLong)
-                || ObjectUtils.isEmpty(originRadius) || originRadius<0 ) return Flux.empty();
+        if (isEmpty(originLat) || isEmpty(originLong)
+                || isEmpty(originRadius) || originRadius<0 ) return Flux.empty();
 
         GeoLocationThreshold originThresholds = new GeoLocationThreshold(originLat, originLong, originRadius);
 
@@ -139,8 +177,8 @@ public class GroupServiceImpl implements GroupService{
     public Flux<Group> findGroupsByDestinationWithinRadius(
             Double destLat, Double destLong, Double destRadius){
 
-        if (ObjectUtils.isEmpty(destLat) || ObjectUtils.isEmpty(destLong)
-                || ObjectUtils.isEmpty(destRadius) || destRadius < 0) return Flux.empty();
+        if (isEmpty(destLat) || isEmpty(destLong)
+                || isEmpty(destRadius) || destRadius < 0) return Flux.empty();
 
         GeoLocationThreshold destThresholds = new GeoLocationThreshold(destLat, destLong, destRadius);
 
@@ -153,9 +191,9 @@ public class GroupServiceImpl implements GroupService{
             Double originLat, Double originLong, Double originRadius,
             Double destLat, Double destLong, Double destRadius){
 
-        if (ObjectUtils.isEmpty(originLat) || ObjectUtils.isEmpty(originLong)
-                || ObjectUtils.isEmpty(destLat) || ObjectUtils.isEmpty(destLong)
-                || ObjectUtils.isEmpty(originRadius) || ObjectUtils.isEmpty(destRadius)
+        if (isEmpty(originLat) || isEmpty(originLong)
+                || isEmpty(destLat) || isEmpty(destLong)
+                || isEmpty(originRadius) || isEmpty(destRadius)
                 || originRadius<0 || destRadius < 0) return Flux.empty();
 
         GeoLocationThreshold originThresholds = new GeoLocationThreshold(originLat, originLong, originRadius);
@@ -177,7 +215,7 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Mono<Group> saveOrUpdate(Group group) {
 
-        if (!ObjectUtils.isEmpty(group)){
+        if (!isEmpty(group)){
             return groupRepository.findById(group.getId())
                     .flatMap(groupInDb -> {
                         log.debug("group in db is: " + groupInDb);
@@ -211,7 +249,7 @@ public class GroupServiceImpl implements GroupService{
     @Override
     public Mono<Void> deleteById(ObjectId id) {
 
-        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+        if (isEmpty(id)) return Mono.empty();
 
         return groupRepository.deleteById(id);
     }

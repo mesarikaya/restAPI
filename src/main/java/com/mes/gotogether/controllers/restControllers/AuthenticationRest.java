@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mes.gotogether.security.domain.AuthRequest;
+import com.mes.gotogether.security.domain.AuthResponse;
 import com.mes.gotogether.security.domain.SecurityUserLibrary;
 import com.mes.gotogether.security.jwt.JWTUtil;
 import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/auth", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 public class AuthenticationRest {
@@ -39,42 +42,39 @@ public class AuthenticationRest {
     @PostMapping(value = "/login")
     @CrossOrigin(
             origins = "http://localhost:3000",
-            maxAge = 30,
+            maxAge = 18000,
             allowCredentials = "true")
     public Mono<ResponseEntity<?>> login(@RequestBody AuthRequest ar,
                                          ServerHttpResponse serverHttpResponse
                                          ) {
 
-        System.out.println("Authorization request is: " + ar );
-        System.out.println("Authorization: " + ar.getUsername() +
+    	log.info("Authorization request is: " + ar );
+    	log.info("Authorization: " + ar.getUsername() +
                 "password: " + ar.getPassword() +
                 "encoded: " +passwordEncoder.encode(ar.getPassword()));
         return securityUserService.findByUserId(ar.getUsername()).map((userDetails) -> {
             System.out.println("userdetails password: " + userDetails.getPassword());
             if (passwordEncoder.matches(ar.getPassword(), userDetails.getPassword())) {
-                System.out.println("Authorized! YEAH!!!!");
+                log.info("Authorized! YEAH!!!!");
 
                 String token = jwtUtil.generateToken((SecurityUserLibrary) userDetails);
 
                 ResponseCookie cookie = ResponseCookie
-                                                .from("AUDI", token)
+                                                .from("System", token)
                                                 .sameSite("Strict")
                                                 .path("/")
-                                                .maxAge(3)
+                                                .maxAge(3000)
                                                 .httpOnly(true)
                                                 .build();
-
-                //System.out.println("Cookie is: " + cookie.getValue());
-
                 serverHttpResponse.addCookie(cookie);
 
-                System.out.println("Server response: " + serverHttpResponse.getCookies().toSingleValueMap().values());
-
+                log.info("Server response: " + serverHttpResponse.getCookies().toSingleValueMap().values());
+                
                 return ResponseEntity
                         .ok()
                         //.status(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .body(userDetails.getUsername());
+                        .body(new AuthResponse(token, userDetails.getUsername()));
                         //.build();
 
                 //serverHttpResponse.getHeaders().add(HttpHeaders.SET_COOKIE,"test: " + cookie.toString());

@@ -28,41 +28,39 @@ public class NomatimMapLocation implements GeoLocationService{
 		
 		this.restTemplate = restTemplate;
 	}
-
-	@Override
-	public Optional<Double[]> getAddressLongitudeAndLatitude(Address address) {
-		
-		if (ObjectUtils.isEmpty(address)) return Optional.empty();
-		
-        String urlParameter = address.getStreetName() + " " + address.getHouseNumber() + 
-        		", " + address.getCity() +", " + address.getZipcode() + ", " + address.getCountry();
-        String url = setGeoLocationSearchAddress(baseUrl, urlParameter, jsonResultFormat);
-		NomatimOpenStreetMapQuery[] queryResult = getQueryResult(url);
-		
-        log.info("**** QUERY ARRAY LENGTH: " + queryResult.length);
-        if (queryResult.length>0) {
-        	log.info("******QUERY RESULT IS: " + queryResult[0].toString());
-        }
-        
-        return returnResultAsOptional(queryResult);
-	}
-
-	@Override
-	public Optional<Double[]> getFreeTextLongitudeAndLatitude(String searchAddress) {
-		
-		if (ObjectUtils.isEmpty(searchAddress) || ObjectUtils.isEmpty(searchAddress.trim())) return Optional.empty();
-		
-		String url = setGeoLocationSearchAddress(baseUrl, searchAddress, jsonResultFormat);
-		
-		NomatimOpenStreetMapQuery[] queryResult = getQueryResult(url);
-		
-        log.info("**** QUERY ARRAY LENGTH: " + queryResult.length);
-        if (queryResult.length>0) {
-        	log.info("******QUERY RESULT IS: " + queryResult[0].toString());
-        }
-		return returnResultAsOptional(queryResult);
-	}
 	
+	@Override
+	public <T> Optional<Double[]> getAddressLongitudeAndLatitude(T searchAddress) {
+		
+		String urlParameter = "";
+		if (searchAddress instanceof Address) {
+			Address address = (Address) searchAddress;
+			if (ObjectUtils.isEmpty(address)) return Optional.empty();
+			urlParameter = address.getStreetName() + " " + address.getHouseNumber() + 
+					", " + address.getCity() +", " + address.getZipcode() + ", " + address.getCountry();
+		}else if(searchAddress instanceof String) {
+			String address = (String) searchAddress;
+			if (ObjectUtils.isEmpty(address) || ObjectUtils.isEmpty(address.trim())) return Optional.empty();
+			urlParameter = (String) address.trim();
+		}else {
+			// TODO: Create an exception for this case
+			log.debug("An input type different than Address or string"
+					+ " class is provided with urlParameter: " +  urlParameter 
+					+ " and searchAddress: " + searchAddress);
+			return Optional.empty();
+		}
+		
+		String url = setGeoLocationSearchAddress(baseUrl, urlParameter, jsonResultFormat);
+		NomatimOpenStreetMapQuery[] queryResult = getQueryResult(url);
+        log.info("**** QUERY ARRAY LENGTH: " + queryResult.length);
+        if (queryResult.length>0) {
+        	log.info("******QUERY RESULT IS: " + queryResult[0].toString());
+        	return returnResultAsOptional(queryResult);
+        }else {
+        	return Optional.empty();
+        }
+	}
+
 	private NomatimOpenStreetMapQuery[] getQueryResult(String searchAddress){
 		
 		NomatimOpenStreetMapQuery[] defaultResult = {};
@@ -83,10 +81,12 @@ public class NomatimMapLocation implements GeoLocationService{
 	
 	private Optional<Double[]> returnResultAsOptional(NomatimOpenStreetMapQuery[] queryResult) {
 		
+		log.info("Nomatiom query result is successful");
 		Objects.requireNonNull(queryResult);
 		if (queryResult.length>0)
 			return Optional.of(new Double[]{queryResult[0].getLatitude(), queryResult[0].getLongitude()});
 		else
+			log.info("Nomatim query result is empty. Therefore returning empty optional");
 			return Optional.empty();
 	}
 }

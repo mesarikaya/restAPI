@@ -71,9 +71,10 @@ dependencies {
 	
 	testCompile group: 'org.mockito', name: 'mockito-core'
     testCompile group: 'org.mockito', name: 'mockito-junit-jupiter'
-    testCompile 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 test {

@@ -1,6 +1,8 @@
 package com.mes.gotogether.security.config;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.boot.actuate.autoconfigure.security.reactive.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
@@ -17,6 +19,9 @@ import org.springframework.security.web.server.authentication.logout.RedirectSer
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.ServerCsrfTokenRepository;
 import org.springframework.security.web.server.csrf.WebSessionServerCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import com.mes.gotogether.domains.Role;
 import com.mes.gotogether.security.jwt.JWTReactiveAuthenticationManager;
@@ -80,12 +85,13 @@ public class AppSecurityConfig {
             .matchers(EndpointRequest.to("health")).permitAll()
             .matchers(EndpointRequest.to("info")).permitAll()
             .matchers(EndpointRequest.toAnyEndpoint()).hasRole(Role.ADMIN.name())
+            //.pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .pathMatchers(HttpMethod.POST, "/api/v1/users**").hasRole(Role.ADMIN.name())
             .pathMatchers(HttpMethod.DELETE, "/api/v1/users**").hasRole(Role.ADMIN.name())
             .pathMatchers("/login**").permitAll()
-            .pathMatchers(HttpMethod.OPTIONS).permitAll()
             .pathMatchers("/auth**").permitAll()
             .pathMatchers("/api/auth/login**").permitAll()
+            .pathMatchers("/api/v1/groups**").permitAll()
             .anyExchange().authenticated()
             .and();
 
@@ -120,8 +126,18 @@ public class AppSecurityConfig {
         return http.build();
     }
 
-
-
+    @Bean 
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+ 
     public ServerCsrfTokenRepository csrfTokenRepository() {
 
         WebSessionServerCsrfTokenRepository repository =

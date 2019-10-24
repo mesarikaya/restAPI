@@ -13,10 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
 
@@ -69,13 +66,13 @@ public class NomatimApiUnitTest {
         String searchAddress4 = "2171ED, The Netherlands";
         
         Optional<Double[]> queryResult1 = nomatimMapLocation
-        											.getFreeTextLongitudeAndLatitude(searchAddress1);
+        											.getAddressLongitudeAndLatitude(searchAddress1);
         Optional<Double[]> queryResult2 = nomatimMapLocation
-        											.getFreeTextLongitudeAndLatitude(searchAddress2); 
+        											.getAddressLongitudeAndLatitude(searchAddress2); 
         Optional<Double[]> queryResult3 = nomatimMapLocation
-        											.getFreeTextLongitudeAndLatitude(searchAddress3); 
+        											.getAddressLongitudeAndLatitude(searchAddress3); 
         Optional<Double[]> queryResult4 = nomatimMapLocation
-        											.getFreeTextLongitudeAndLatitude(searchAddress4); 
+        											.getAddressLongitudeAndLatitude(searchAddress4); 
         
         assertFalse(queryResult1.isEmpty());
         assertArrayEquals(new Double[] {52.2282149,4.5296537}, queryResult1.get());
@@ -89,31 +86,40 @@ public class NomatimApiUnitTest {
     
     @Test
     public void getNullResultWithEmptyText() {
-    	String searchAddress1 = "";
+    	String searchAddress1 = "   ";
         
-        Optional<Double[]> queryResult1 = nomatimMapLocation
-        											.getFreeTextLongitudeAndLatitude(searchAddress1);
+        Optional<Double[]> queryResult = nomatimMapLocation
+        											.getAddressLongitudeAndLatitude(searchAddress1);
         
-        assertTrue(queryResult1.isEmpty());
+        assertTrue(queryResult.isEmpty());
     }
 
     @Test
     public void searchByAddressAndReturnNonEmptyResult() {
     	
-        Optional<Double[]> queryResult1 = nomatimMapLocation
+        Optional<Double[]> queryResult = nomatimMapLocation
         											.getAddressLongitudeAndLatitude(address);
        
-        assertFalse(queryResult1.isEmpty());
-        assertArrayEquals(new Double[] {52.2282149,4.5296537}, queryResult1.get());
+        assertFalse(queryResult.isEmpty());
+        assertArrayEquals(new Double[] {52.2282149,4.5296537}, queryResult.get());
     }
     
     @Test
     public void getNullResultWithNullAddress() {
-        Optional<Double[]> queryResult1 = nomatimMapLocation
+        Optional<Double[]> queryResult = nomatimMapLocation
 				.getAddressLongitudeAndLatitude(null);
 
-        assertTrue(queryResult1.isEmpty());
+        assertTrue(queryResult.isEmpty());
     }
+    
+    @Test
+    public void getNullResultWithAnObjectDifferentThanAddressAndString() {
+        Optional<Double[]> queryResult = nomatimMapLocation
+				.getAddressLongitudeAndLatitude(new Integer[] {1,2,3});
+
+        assertTrue(queryResult.isEmpty());
+    }
+
 
 
 }
