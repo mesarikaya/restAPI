@@ -1,12 +1,14 @@
 package com.mes.gotogether.repositories.domain;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.Group;
+import com.mes.gotogether.domains.responses.GroupSearchResponse;
 
 import reactor.core.publisher.Flux;
 
@@ -41,5 +43,6 @@ public interface GroupRepository extends ReactiveMongoRepository<Group, ObjectId
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax,
             Double destLatMin, Double destLatMax,
-            Double destLongMin, Double destLongMax);
+            Double destLongMin, Double destLongMax,
+            Pageable page);
 }

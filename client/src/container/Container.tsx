@@ -8,11 +8,13 @@ import { UpdateAuth } from '../redux/actions/jwtAuthAction';
 import App from './components/Page/App';
 import {store} from "../redux/store";
 import { SecurityState } from '../redux/types/system/securityState';
+import { GroupSearchResult } from 'src/redux/types/userInterface/groupSearchResult';
 
 
 interface AppProps {
     updateSession: typeof UpdateAuth,
-    system: SecurityState
+    system: SecurityState,
+    groupSearchResults : GroupSearchResult[]
 }
 
 // These props are provided by the router
@@ -24,6 +26,7 @@ interface PathProps {
 
 export interface State {
     system: SecurityState;
+    groupSearchResults : GroupSearchResult[];
 };
 
 class Container extends React.Component<AppProps & RouteComponentProps<PathProps>, State> {
@@ -38,15 +41,23 @@ class Container extends React.Component<AppProps & RouteComponentProps<PathProps
         const currentState = store.getState().system;
 
         this.state = {
-            system: currentState.system
+            system: currentState.system,
+            groupSearchResults: currentState.groupSearchResults
         };
     }
 
     public componentDidUpdate(oldProps: AppProps) {
         
         const newProps = this.props;
-        if(oldProps.system !== newProps.system) {
-          this.setState({ system: this.props.system });
+        if(oldProps.system !== newProps.system && oldProps.groupSearchResults !== newProps.groupSearchResults) {
+            this.setState({ 
+                system:this.props.system,
+                groupSearchResults:this.props.groupSearchResults 
+            });
+        } else if(oldProps.system !== newProps.system){
+            this.setState({ system:this.props.system });
+        } else if(oldProps.groupSearchResults !== newProps.groupSearchResults) {
+            this.setState({ groupSearchResults:this.props.groupSearchResults });
         }
     }
 
@@ -65,7 +76,8 @@ const mapStateToProps = (
     state: State, 
     OwnProps: AppProps & RouteComponentProps<PathProps>
     ) => ({
-    system: state.system
+    system: state.system,
+    groupSearchResults: state.groupSearchResults
 })  
 
 export default withRouter(connect(mapStateToProps, null)(Container));

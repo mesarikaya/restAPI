@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from "react-router";
 
+
 // Add styling related imports
 import '../../../stylesheets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,7 +10,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import carouselPart1 from '../../../stylesheets/images/carouselImagePart1.png';
 import carouselPart2 from '../../../stylesheets/images/carouselImagePart2.png';
 import carouselPart3 from '../../../stylesheets/images/carouselImagePart3.png';
-import { Carousel, CardColumns} from 'react-bootstrap';
+import { Carousel, CardColumns, Button} from 'react-bootstrap';
 
 // import child component
 import GroupSearchForm from '../Forms/GroupSearchForm';
@@ -22,16 +23,19 @@ import { GroupSearchFormFields } from '../../../redux/types/userInterface/groupS
 import { store } from '../../../redux/store';
 import { SecurityState } from '../../../redux/types/system/securityState';
 import { SearchGroups } from 'src/redux/actions/groupSearchAction';
+import { GroupSearchResult } from 'src/redux/types/userInterface/groupSearchResult';
 
 export interface Props {
     system: SecurityState;
     loginFormFields: LoginFormFields;
     groupSearchFormFields: GroupSearchFormFields;
+    groupSearchResults : GroupSearchResult[];
     onSubmit: typeof SearchGroups;
 };
 
 export interface State {
     system: SecurityState;
+    groupSearchResults : GroupSearchResult[];
 };
 
 // These props are provided by the router
@@ -54,15 +58,23 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
         console.log('App - Current Store State is: ', currentState);
 
         this.state = {
-            system: currentState.system
+            system: currentState.system,
+            groupSearchResults: currentState.groupSearchResults
         };
     }
 
     public componentDidUpdate(oldProps: Props) {
         
         const newProps = this.props;
-        if(oldProps.system !== newProps.system) {
-          this.setState({ system:this.props.system });
+        if(oldProps.system !== newProps.system && oldProps.groupSearchResults !== newProps.groupSearchResults) {
+            this.setState({ 
+                system:this.props.system,
+                groupSearchResults:this.props.groupSearchResults 
+            });
+        } else if(oldProps.system !== newProps.system){
+            this.setState({ system:this.props.system });
+        } else if(oldProps.groupSearchResults !== newProps.groupSearchResults) {
+            this.setState({ groupSearchResults:this.props.groupSearchResults });
         }
     }
 
@@ -122,44 +134,18 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                 <br />
 
                 <div className="container">
-                    <CardColumns>
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-
-                        <GroupCard name="ArnhemToBolwerk" groupDetails={{"originCity":"Arnhem", "originZipCode":"2012Ed", 
-                        "originRange":0.5, "destinationCity": "Bolwerk", "destinationZipCode":"2104ER", "destinationRange":0.5}}
-                        members={[{"userName":"Ergin", "userEmail":"test@gm.com"}]}/>
-                    </CardColumns>
-
+                    
+                        <CardColumns>
+                            {this.state.groupSearchResults.length>0 ? (
+                                    this.state.groupSearchResults.map((item, index) => (
+                                    <GroupCard key={index.toString()} 
+                                    name={item.name} groupDetails={item.groupDetails} 
+                                    members={item.members}/>
+                                ))):
+                                <div>null</div>
+                            }
+                        </CardColumns>
+                    <Button> Load More...</Button>
                 </div>
 
             </div>
@@ -174,7 +160,8 @@ const mapStateToProps = (
     OwnProps: Props & RouteComponentProps<PathProps>
     ) => {
     return {
-        system: state.system
+        system: state.system,
+        groupSearchResults: state.groupSearchResults
     }
 }
 

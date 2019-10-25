@@ -10,10 +10,7 @@ const initialState: SecurityState   = {
     token: ''
 };
 
-export function loginReducer(
-    state = initialState,
-    action: JwtAuthActionTypes
-    ): SecurityState {
+export function loginReducer(state = initialState, action: JwtAuthActionTypes): SecurityState {
 
     switch (action.type) {
 

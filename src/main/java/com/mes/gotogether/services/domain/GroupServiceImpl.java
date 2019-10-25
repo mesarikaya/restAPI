@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import static org.springframework.util.ObjectUtils.*;
 
@@ -71,7 +72,8 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
 	public Flux<Group> findGroupsByOriginAndDestinationAddress(String originAddress, String destinationAddress,
-			double originRadius, double destinationRadius) {
+															   double originRadius, double destinationRadius,
+															   Pageable page) {
     	
     	log.info("Sending latitude and longitude");
     	Optional<Double[]> originLatitudeAndLongitude = geoLocationService.getAddressLongitudeAndLatitude(originAddress);
@@ -88,7 +90,8 @@ public class GroupServiceImpl implements GroupService{
 		
 		return this.findGroupsByOriginAndDestinationWithinRadius(
 	            originGeoLocations[0], originGeoLocations[1], originRadius,
-	            destinationGeoLocations[0], destinationGeoLocations[1], destinationRadius); 	
+	            destinationGeoLocations[0], destinationGeoLocations[1], destinationRadius,
+	            page); 	
    }
 
 	@Override
@@ -138,7 +141,8 @@ public class GroupServiceImpl implements GroupService{
             Double originLatMin, Double originLatMax,
             Double originLongMin, Double originLongMax,
             Double destLatMin, Double destLatMax,
-            Double destLongMin, Double destLongMax) {
+            Double destLongMin, Double destLongMax,
+            Pageable page) {
 
         if (isEmpty(originLatMin) || isEmpty(originLatMax)
                 || isEmpty(originLongMin) || isEmpty(originLongMax)
@@ -158,7 +162,8 @@ public class GroupServiceImpl implements GroupService{
                 originLatMin, originLatMax,
                 originLongMin, originLongMax,
                 destLatMin, destLatMax,
-                destLongMin, destLongMax);
+                destLongMin, destLongMax, 
+                page);
     }
 
     public Flux<Group> findGroupsByOriginWithinRadius(
@@ -189,7 +194,8 @@ public class GroupServiceImpl implements GroupService{
 
     public Flux<Group> findGroupsByOriginAndDestinationWithinRadius(
             Double originLat, Double originLong, Double originRadius,
-            Double destLat, Double destLong, Double destRadius){
+            Double destLat, Double destLong, Double destRadius,
+            Pageable page){
 
         if (isEmpty(originLat) || isEmpty(originLong)
                 || isEmpty(destLat) || isEmpty(destLong)
@@ -203,7 +209,8 @@ public class GroupServiceImpl implements GroupService{
                 originThresholds.getLatMin(), originThresholds.getLatMax(),
                 originThresholds.getLongMin(), originThresholds.getLongMax(),
                 destThresholds.getLatMin(), destThresholds.getLatMax(),
-                destThresholds.getLongMin(), destThresholds.getLongMax());
+                destThresholds.getLongMin(), destThresholds.getLongMax(),
+                page);
     }
 
     @Override
@@ -259,4 +266,5 @@ public class GroupServiceImpl implements GroupService{
 
         return groupRepository.deleteAll();
     }
+
 }

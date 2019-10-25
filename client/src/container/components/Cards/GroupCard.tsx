@@ -2,16 +2,17 @@ import * as React from 'react';
 
 // Import types
 import { GroupUser } from 'src/redux/types/userInterface/groupUser';
-import { GroupCardFields } from 'src/redux/types/userInterface/groupCardFields';
+// import { GroupCardFields } from 'src/redux/types/userInterface/groupCardFields';
 
 // Styling imports
 import { Card } from 'react-bootstrap';
 import '../../../stylesheets/css/cards/groupCard.css';
 
 interface Props {
+    key: string,
     name: string;
-    groupDetails: GroupCardFields;
-    members: GroupUser[];
+    groupDetails: any;
+    members: GroupUser;
 }
 
 

@@ -1,10 +1,10 @@
-import { GroupArray } from '../userInterface/GroupArray';
+import { GroupSearchResult } from '../userInterface/groupSearchResult';
 
 export const SEARCH_GROUP_REQUEST = 'SEARCH_GROUP_REQUEST';
 
 interface SearchGroupRequest {
     type: typeof SEARCH_GROUP_REQUEST
-    payload: GroupArray
+    payload: GroupSearchResult[]
 }
 
-export type GroupSearchActionTypes = SearchGroupRequest;
+export type GroupSearchActionType = SearchGroupRequest;

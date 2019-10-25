@@ -1,29 +1,26 @@
 package com.mes.gotogether.controllers.restControllers;
 
-import com.mes.gotogether.domains.Group;
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.mes.gotogether.domains.User;
+import com.mes.gotogether.domains.responses.GroupSearchResponse;
 import com.mes.gotogether.security.jwt.JWTUtil;
 import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
 import com.mes.gotogether.services.domain.GroupService;
 import com.mes.gotogether.services.domain.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -56,10 +53,12 @@ public class UserController {
     
     @GetMapping("/groups")
     @ResponseStatus(HttpStatus.OK)
-    public Flux<Group> getGroupsByOriginAndDestinationWithinRadius(@RequestParam("origin") String origin, 
+    public Flux<GroupSearchResponse> getGroupsByOriginAndDestinationWithinRadius(@RequestParam("origin") String origin, 
     															   @RequestParam("destination") String destination,
     															   @RequestParam("originRange") double originRadius,
-    															   @RequestParam("destinationRange") double destRadius)
+    															   @RequestParam("destinationRange") double destRadius,
+    															   @RequestParam("page") int page,
+    															   @RequestParam("size") int size)
     {
     	/*Set<String, String> parameterMap = params.entrySet();
     	for (params.entrySet()) {
@@ -68,6 +67,8 @@ public class UserController {
     	params.entrySet().stream().forEach((e) -> System.out.println("Key: " + e.getKey() + " value: " + e.getValue()));*/
     	System.out.println("Inside the get groups function");
     	
-    	return groupService.findGroupsByOriginAndDestinationAddress(origin, destination, originRadius, destRadius);	
+    	return groupService.findGroupsByOriginAndDestinationAddress(origin, destination, 
+    													            originRadius, destRadius,
+    													            PageRequest.of(page, size)).map(group-> new GroupSearchResponse(group));	
     }
 }
