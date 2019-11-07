@@ -1,0 +1,82 @@
+.groupCard {
+    min-width: calc(90%/3) !important;
+}
+
+.card-deck .card {
+    margin-bottom: 1rem;
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+}
+
+.card-header {
+    background: #fad961; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right top,#FF9800, #FFC107, #FFEB3B, #FFEB3B);
+    background: -moz-linear-gradient(to right top, #FF9800, #FFC107, #FFEB3B, #FFEB3B);
+    background: -o-linear-gradient(to right top, #FF9800, #FFC107, #FFEB3B, #FFEB3B);
+    background: linear-gradient(to right top, #FF9800, #FFC107, #FFEB3B, #FFEB3B); /* Chrome 10-25, Safari 5.1-6 */
+}
+
+.card-text-header{
+    font-size: 1.6 rem;
+    font-weight: 700;
+}
+
+.card-text{
+    font-size: 1.4 rem;
+    font-weight: 700;
+}
+
+.fa-7x{
+    font-size: 2.5rem;
+}
+
+/* PAGE BREAKS AND DEFAULTS MODIFICATION FOR CARD COLUMN RESPONSIVENESS
+-------------------------------------------------- */
+@media only screen and (max-width: 576px) { 
+    .groupCard {
+        min-width: calc(40%) !important;
+    }
+
+    .card-columns{
+      column-count: 1;
+    }
+}
+  
+@media only screen and (min-width: 577px) and (max-width: 768px) {
+    .groupCard {
+        min-width: calc(60%) !important;
+    }
+
+    .card-columns{
+        column-count: 1;
+    }
+}
+@media only screen and (min-width: 769px) and (max-width: 1000px) {
+    .groupCard {
+        min-width: calc(90%/3) !important;
+    }
+    
+    .card-columns{
+        column-count: 2;
+    }
+}
+
+@media only screen and (min-width: 1001px) and (max-width: 1300px) {
+    .groupCard {
+        min-width: calc(90%/3) !important;
+    }
+
+    .card-columns{
+        column-count: 3;
+    }
+}
+
+@media only screen and (min-width: 1301px) {
+    .groupCard {
+        min-width: calc(90%/3) !important;
+    }
+
+    .card-columns{
+        column-count: 3;
+    }
+}
