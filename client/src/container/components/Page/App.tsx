@@ -177,7 +177,10 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                                 members={groupSearchResult[key].members}/>))
                             }
                        </CardDeck>
-                       <Button type="button" onClick={this.loadMore}> Load More... </Button>>
+                       {this.state.groupSearchResults.page !== 0 ? 
+                            <Button type="button" onClick={this.loadMore}> Load More... </Button>: null
+                       }
+                       
                     </div>): null
                     }        
                 </div>

@@ -66,32 +66,43 @@ export function SearchGroups(event: React.FormEvent<HTMLFormElement> | null,
 
             // Depending on response status, allow or not for login
             if (response.status === 200) {
-                
-                const newResponseData = response.data;
-                const prevGroups = [];
-
-                for(const key in existingGroups){
-                    if (existingGroups.hasOwnProperty(key)){
-                        prevGroups.push(existingGroups[key]);
+                // tslint:disable-next-line:no-console
+                console.log("response is", response.data);
+                if(Array.isArray(response.data) && response.data.length){
+                    const newResponseData = response.data;
+                    const prevGroups = [];
+                    
+                    for(const key in existingGroups){
+                        if (existingGroups.hasOwnProperty(key)){
+                            prevGroups.push(existingGroups[key]);
+                        }
                     }
+                    // tslint:disable-next-line: no-console
+                    console.log("New response is: ", newResponseData);
+                    // tslint:disable-next-line: no-console
+                    console.log("Existing group: ", prevGroups);
+    
+                    Object.keys(newResponseData)
+                          .map((key) => (prevGroups.push(newResponseData[key])));
+    
+                    // tslint:disable-next-line: no-console
+                    console.log("Final group: ", prevGroups);
+                    payload ={
+                        groups: JSON.parse(JSON.stringify(prevGroups)),
+                        page: ++page,
+                    }; 
+                }else{
+                    // tslint:disable-next-line:no-console
+                    console.log("setting page to 0");
+                    payload ={
+                        groups: existingGroups,
+                        page: 0,
+                    }; 
                 }
-                // tslint:disable-next-line: no-console
-                console.log("New response is: ", newResponseData);
-                // tslint:disable-next-line: no-console
-                console.log("Existing group: ", prevGroups);
-
-                Object.keys(newResponseData).map((key) => (
-                    prevGroups.push(newResponseData[key])));
-                // tslint:disable-next-line: no-console
-                console.log("Final group: ", prevGroups);
-                payload ={
-                    groups: JSON.parse(JSON.stringify(prevGroups)),
-                    page: ++page,
-                }; 
-                
+                                
                 // tslint:disable-next-line:no-console
                 console.log("SENDING TO THE REDUCER");
-                dispatch({ type: 'SEARCH_GROUP_REQUEST', payload })                
+                dispatch({ type: 'SEARCH_GROUP_REQUEST', payload })         
             }else {
                 // TODO: CREATE ERROR HANDLERS
                 // tslint:disable-next-line:no-console

@@ -120,75 +120,76 @@ class LoginButton extends React.Component<Props, State> {
 
                       <div className="container mb-2 modalContainer">
                           <div className="row-fluid">
-                              <Form name="loginForm" className="needsLoginFormValidation"
+                              <Form name="loginForm" 
+                                    className="needsLoginFormValidation"
                                     noValidate={true}
                                     validated = {validated}
                                     onSubmit = {this.handleSubmit}>
-                                  <h2 className="loginHeader text-center">Login</h2>
+                                <h2 className="loginHeader text-center">Login</h2>
 
-                                  <div className="error" />
+                                <div className="error" />
 
-                                  <Form.Row className="mt-4">
-                                      <InputGroup>
-                                          <Form.Control
-                                              required={true}
-                                              type="email"
-                                              id={"username"}
-                                              name={"username"}
-                                              placeholder="username"
-                                              onChange={this.handleChange}
-                                          />
-                                          <InputGroup.Append>
-                                              <InputGroup.Text>
-                                                  <i className="fas fa-user-shield" />
-                                              </InputGroup.Text>
-                                          </InputGroup.Append>
-                                          <Form.Control.Feedback type="invalid"
-                                           className="invalid-feedback usernameError text-center">
-                                              Invalid username!
-                                          </Form.Control.Feedback>
-                                      </InputGroup>
-                                  </Form.Row>
+                                <Form.Row className="mt-4">
+                                    <InputGroup>
+                                        <Form.Control
+                                            required={true}
+                                            type="email"
+                                            id={"username"}
+                                            name={"username"}
+                                            placeholder="username"
+                                            onChange={this.handleChange}
+                                        />
+                                        <InputGroup.Append>
+                                            <InputGroup.Text>
+                                                <i className="fas fa-user-shield" />
+                                            </InputGroup.Text>
+                                        </InputGroup.Append>
+                                        <Form.Control.Feedback type="invalid"
+                                        className="invalid-feedback usernameError text-center">
+                                            Invalid username!
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
+                                </Form.Row>
 
-                                  <Form.Row>
-                                      <InputGroup  >
-                                          <Form.Control
-                                              required={true}
-                                              type="password"
-                                              id={"password"}
-                                              name={"password"}
-                                              placeholder="password"
-                                              onChange={this.handleChange}
-                                          />
-                                          <InputGroup.Append>
-                                              <div className="input-group-text">
-                                                  <i className="far fa-eye" />
-                                              </div>
-                                          </InputGroup.Append>
-                                          <Form.Control.Feedback type="invalid"
-                                           className="invalid-feedback passwordError text-center">
-                                              Invalid password!
-                                          </Form.Control.Feedback>
-                                      </InputGroup>
-                                  </Form.Row>
+                                <Form.Row>
+                                    <InputGroup  >
+                                        <Form.Control
+                                            required={true}
+                                            type="password"
+                                            id={"password"}
+                                            name={"password"}
+                                            placeholder="password"
+                                            onChange={this.handleChange}
+                                        />
+                                        <InputGroup.Append>
+                                            <div className="input-group-text">
+                                                <i className="far fa-eye" />
+                                            </div>
+                                        </InputGroup.Append>
+                                        <Form.Control.Feedback type="invalid"
+                                        className="invalid-feedback passwordError text-center">
+                                            Invalid password!
+                                        </Form.Control.Feedback>
+                                    </InputGroup>
+                                </Form.Row>
 
-                                  <div className="form-row mt-3 mb-3">
-                                      <label className={"my-auto"}>
-                                          <Switch
-                                              onChange={this.handleRememberMeChange}
-                                              checked={this.state.loginFormFields.rememberMe}
-                                              offColor={"#f46950"}
-                                          />
-                                      </label>
-                                      <span className="rememberMeText my-auto">Remember me</span>
-                                      <a className="helpText ml-auto my-auto" href="/loginHelp">Need help?</a>
-                                  </div>
+                                <div className="form-row mt-3 mb-3">
+                                    <label className={"my-auto"}>
+                                        <Switch
+                                            onChange={this.handleRememberMeChange}
+                                            checked={this.state.loginFormFields.rememberMe}
+                                            offColor={"#f46950"}
+                                        />
+                                    </label>
+                                    <span className="rememberMeText my-auto">Remember me</span>
+                                    <a className="helpText ml-auto my-auto" href="/loginHelp">Need help?</a>
+                                </div>
 
-                                  <div className="col text-center my-auto">
-                                      <button className="btn btn-primary submitButton" type="submit">
-                                          Submit
-                                      </button>
-                                  </div>
+                                <div className="col text-center my-auto">
+                                    <button className="btn btn-primary submitButton" type="submit">
+                                        Submit
+                                    </button>
+                                </div>
                               </Form>
                           </div>
                       </div>

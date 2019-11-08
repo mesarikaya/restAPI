@@ -26,7 +26,7 @@ class GroupCard extends React.Component<Props>{
             <React.Fragment>
                         
                 {/* <!- Group Card design --> */}
-                <Card className="groupCard" border="warning">
+                <Card className="groupCard">
                     <Card.Header><Card.Title className="card-header-text">Group: {this.props.name}</Card.Title></Card.Header>
                     <Card.Body>
                         <Card.Text className="card-text">

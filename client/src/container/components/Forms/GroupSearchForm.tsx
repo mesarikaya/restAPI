@@ -148,9 +148,11 @@ class GroupSearchForm extends React.Component<Props, State> {
                     <Form.Row> 
                         <InputGroup className="justify-content-center">
                             {/* <!- Origin Input Group --> */}
-                            <Form.Group className="originInputFormGroup" controlId="originAdressInputControl">
+                            <Form.Group className="originInputFormGroup">
                                 {/* <!- Origin Input text --> */}
-                                <Form.Label className="originLabel" ><strong>Origin</strong></Form.Label>
+                                <Form.Label className="originLabel" >
+                                    <strong>Origin</strong>
+                                </Form.Label>
                                 <Form.Control 
                                     type="input"
                                     id={"origin"}
@@ -163,8 +165,8 @@ class GroupSearchForm extends React.Component<Props, State> {
                             {/* <!- Origin Input Range Group --> */}
                             <Form.Group controlId="originAdressRangeControl">
                                 {/* <!- Origin Range --> */}
-                                <FormLabel className="originRangeDropdownLabel" htmlFor="originRangeDropDownMenuButton">
-                                <strong>Range</strong>
+                                <FormLabel className="originRangeDropdownLabel">
+                                    <strong>Range</strong>
                                 </FormLabel>
                                 <InputRange 
                                     name={"originRange"}
@@ -178,9 +180,9 @@ class GroupSearchForm extends React.Component<Props, State> {
                     
                         <InputGroup className="justify-content-center">
                             {/* <!- Destination Input Group --> */}
-                            <Form.Group className="destinationInputFormGroup" controlId="destinationAdressInputControl">
+                            <Form.Group className="destinationInputFormGroup">
                                 {/* <!- Destination Input text --> */}
-                                <Form.Label className="destinationLabel" >
+                                <Form.Label className="destinationLabel">
                                     <strong>Destination</strong>
                                 </Form.Label>
                                 <Form.Control 
@@ -195,7 +197,7 @@ class GroupSearchForm extends React.Component<Props, State> {
                             {/* <!- Destination Input Range Group --> */}
                             <Form.Group controlId="destinationAdressRangeControl">
                                 {/* <!- Destination Range --> */}
-                                <FormLabel className="destinationRangeDropdownLabel" htmlFor="destinationRangeDropDownMenuButton">
+                                <FormLabel className="destinationRangeDropdownLabel">
                                     <strong>Range</strong>
                                 </FormLabel>
                                 <InputRange 
