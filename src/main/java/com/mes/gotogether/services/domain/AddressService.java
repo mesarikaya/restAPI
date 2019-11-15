@@ -1,9 +1,7 @@
 package com.mes.gotogether.services.domain;
 
-import org.bson.types.ObjectId;
-
 import com.mes.gotogether.domains.Address;
-
+import org.bson.types.ObjectId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +13,7 @@ public interface AddressService {
                                                                           String city,
                                                                           String country);
 
-    Flux<Address> findAddressByLatitudeAndLongitudeAnd(Double latitude, Double longitude);
+    Flux<Address> findAddressByLatitudeAndLongitudeAnd(double latitude, double longitude);
     Flux<Address> findAll();
     Mono<Address> saveOrUpdateAddress(Address address);
     Mono<Address> saveFakeAddress(Address address);
@@ -25,7 +23,7 @@ public interface AddressService {
                                                                            String city,
                                                                            String country);
 
-    Mono<Void> deleteAddressByLatitudeAndLongitude(Double latitude, Double longitude);
+    Mono<Void> deleteAddressByLatitudeAndLongitude(double latitude, double longitude);
     Mono<Void> deleteAll();
     Mono<Address> setAddressLatitudeAndLongitude(Address address);
 }

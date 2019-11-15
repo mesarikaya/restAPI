@@ -2,19 +2,19 @@ package com.mes.gotogether.domains;
 
 import java.util.HashSet;
 import java.util.Objects;
-
 import javax.validation.constraints.NotNull;
-
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Document
 public class Group {
@@ -62,27 +62,12 @@ public class Group {
         this.isActive = isActive;
     }
 
-    public HashSet<User> getMembers() {
-        return members;
-    }
-
-    public void setMembers(HashSet<User> members) {
-        this.members = members;
-    }
-
-    public HashSet<User> getOwners() {
-        return owners;
-    }
-
-    public void setOwners(HashSet<User> owners) {
-        this.owners = owners;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
+        
         return id.equals(group.id) &&
                 name.equals(group.name);
     }

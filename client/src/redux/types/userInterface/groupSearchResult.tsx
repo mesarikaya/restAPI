@@ -1,4 +1,7 @@
+import { GroupUser } from './groupUser';
+
 export interface GroupSearchResult {
+    id: string,
     name: string,
     groupDetails: {
         originCity: string,
@@ -8,5 +11,7 @@ export interface GroupSearchResult {
         destinationZipCode: string,
         destinationRange: number
     },
-    members: {userNames: string[]}
+    members: {
+        users: GroupUser[]
+    }
 }

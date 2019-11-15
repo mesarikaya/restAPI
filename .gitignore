@@ -1,6 +1,9 @@
 HELP.md
 .gradle
 /build/
+/lib/
+/bin/
+/goTogetherApp/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
@@ -51,10 +54,13 @@ client/build
 .env.development.local
 .env.test.local
 .env.production.local
+.csv
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
+# test data
+/src/main/resources/data/
+/bin/main/data/
 

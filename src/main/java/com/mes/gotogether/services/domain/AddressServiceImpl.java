@@ -5,13 +5,13 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.repositories.domain.AddressRepository;
 import com.mes.gotogether.services.externalconnections.GeoLocationService;
-
+import java.util.Objects;
+import static org.springframework.util.ObjectUtils.*;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,9 +21,9 @@ import reactor.core.publisher.Mono;
 @Transactional
 public class AddressServiceImpl implements AddressService {
 
-    private AddressRepository addressRepository;
-    private RestTemplate restTemplate;
-    private GeoLocationService geoLocationService;
+    private final AddressRepository addressRepository;
+    private final RestTemplate restTemplate;
+    private final GeoLocationService geoLocationService;
 
     public AddressServiceImpl(
     		AddressRepository addressRepository, 
@@ -38,7 +38,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Mono<Address> findAddressById(ObjectId id) {
 
-        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+        if (Objects.isNull(id)) {
+            return Mono.empty();
+        }
 
         return addressRepository.findById(id);
     }
@@ -50,10 +52,12 @@ public class AddressServiceImpl implements AddressService {
                                                                                 String country) {
 
         // If null, do nothing
-        if (ObjectUtils.isEmpty(streetName)
-                || ObjectUtils.isEmpty(houseNumber)
-                || ObjectUtils.isEmpty(city)
-                || ObjectUtils.isEmpty(country)) return Mono.empty();
+        if (isEmpty(streetName)
+                || isEmpty(houseNumber)
+                || isEmpty(city)
+                || isEmpty(country)) {
+            return Mono.empty();
+        }
 
         return addressRepository.findFirstAddressByStreetNameAndHouseNumberAndCityAndCountryOrderByLastModifiedDesc(
                 streetName,
@@ -63,10 +67,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Flux<Address> findAddressByLatitudeAndLongitudeAnd(Double latitude, Double longitude) {
+    public Flux<Address> findAddressByLatitudeAndLongitudeAnd(double latitude, double longitude) {
 
         // If null, do nothing
-        if (ObjectUtils.isEmpty(latitude) || ObjectUtils.isEmpty(longitude)) return Flux.empty();
+        if (Double.isNaN(latitude) || Double.isNaN(longitude)) {
+            return Flux.empty();
+        }
 
         return addressRepository.findFirst10AddressByLatitudeAndLongitudeOrderByLastModifiedDesc(latitude, longitude);
     }
@@ -80,7 +86,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Mono<Address> saveOrUpdateAddress(Address address) {
 
-        if (!ObjectUtils.isEmpty(address)){
+        if (!Objects.isNull(address)){
             return this.findAddressById(address.getId())
                     .flatMap(addressResult -> {
                             addressResult.setId(address.getId());
@@ -111,7 +117,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Mono<Void> deleteAddressById(ObjectId id) {
 
-        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+        if (Objects.isNull(id)) {
+            return Mono.empty();
+        }
 
         return addressRepository.deleteById(id);
     }
@@ -120,10 +128,12 @@ public class AddressServiceImpl implements AddressService {
     public Mono<Void> deleteAddressByStreetNameAndHouseNumberAndCityAndCountryAnd(String streetName, String houseNumber, String city, String country) {
 
         // If any is null, do nothing
-        if (ObjectUtils.isEmpty(streetName)
-                || ObjectUtils.isEmpty(houseNumber)
-                || ObjectUtils.isEmpty(city)
-                || ObjectUtils.isEmpty(country)) return Mono.empty();
+        if (isEmpty(streetName)
+                || isEmpty(houseNumber)
+                || isEmpty(city)
+                || isEmpty(country)) {
+            return Mono.empty();
+        }
 
         return addressRepository.deleteAddressByStreetNameAndHouseNumberAndCityAndCountry(
                 streetName,
@@ -133,10 +143,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Mono<Void> deleteAddressByLatitudeAndLongitude(Double latitude, Double longitude) {
+    public Mono<Void> deleteAddressByLatitudeAndLongitude(double latitude, double longitude) {
 
         // If any is null, do nothing
-        if (ObjectUtils.isEmpty(latitude) || ObjectUtils.isEmpty(longitude)) return Mono.empty();
+        if (Double.isNaN(latitude) || Double.isNaN(longitude)) {
+            return Mono.empty();
+        }
 
         return addressRepository.deleteAddressByLatitudeAndLongitude(latitude, longitude);
     }
@@ -150,7 +162,9 @@ public class AddressServiceImpl implements AddressService {
     public Mono<Address> setAddressLatitudeAndLongitude(Address address) {
 
         // If null, do nothing
-        if (ObjectUtils.isEmpty(address)) return Mono.empty();
+        if (Objects.isNull(address)) {
+            return Mono.empty();
+        }
        
         Optional<Double[]> latitudeAndLongitude = geoLocationService.getAddressLongitudeAndLatitude(address);
         

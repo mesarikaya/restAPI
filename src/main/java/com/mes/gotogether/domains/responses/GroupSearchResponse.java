@@ -1,42 +1,44 @@
 package com.mes.gotogether.domains.responses;
 
-import java.io.Serializable;
+import com.mes.gotogether.domains.Group;
 import java.util.HashSet;
 import java.util.Objects;
 import static java.util.stream.Collectors.*;
-
-import com.mes.gotogether.domains.Group;
-import com.mes.gotogether.domains.User;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 
+@Slf4j
 @Data
 @Getter
 @ToString
 public class GroupSearchResponse {
 	
+	private final ObjectId id;
 	private final String name;
 	private final GroupDetails groupDetails;
 	private final Members members;
 	
 	public GroupSearchResponse(Group group) {
 		
-		Objects.requireNonNull(group);
-		Objects.requireNonNull(group.getOriginAddress());
-		Objects.requireNonNull(group.getDestinationAddress());
-		this.name = group.getName();
-		this.groupDetails = new GroupDetails(group.getOriginAddress().getCity(),
-											 group.getOriginAddress().getZipcode(),
-											 group.getOriginSearchRadius(),
-											 group.getDestinationAddress().getCity(),
-											 group.getDestinationAddress().getZipcode(),
-											 group.getDestinationSearchRadius()
-											);
-		
-		this.members = new Members(group.getMembers().stream()
-				 									 .map(member -> member.getFirstName() + " " + member.getLastName())
-				 									 .collect(toCollection(HashSet::new)));
+                             log.info("*******CONVERTING TO GROUP RESPONSE******");
+                            Objects.requireNonNull(group);
+                            Objects.requireNonNull(group.getOriginAddress());
+                            Objects.requireNonNull(group.getDestinationAddress());
+                            this.id = group.getId();
+                            this.name = group.getName();
+                            this.groupDetails = new GroupDetails(group.getOriginAddress().getCity(),group.getOriginAddress().getZipcode(),
+                                                       group.getOriginSearchRadius(), group.getDestinationAddress().getCity(),
+                                                       group.getDestinationAddress().getZipcode(),group.getDestinationSearchRadius());
+                                                    this.members = new Members(group.getMembers().stream()
+                                                                                                                                          .map(member -> new User(member.getId(),
+                                                                                                                                                                                        member.getFirstName() + " " + member.getLastName(), 
+                                                                                                                                                                                        group.getOwners().contains(member)))
+                                                                                                                                        . collect(toCollection(HashSet::new)));
+
+                            log.info("Created member is: " + this.members);
 	}
 
 	@Getter
@@ -51,8 +53,8 @@ public class GroupSearchResponse {
 		private final double destinationRange;
 		
 		public GroupDetails(String originCity, String originZipCode, 
-						    double originRange, String destinationCity,
-						    String destinationZipCode, double destinationRange) {
+                                                                            double originRange, String destinationCity,
+                                                                            String destinationZipCode, double destinationRange) {
 			
 			this.originCity = originCity;
 			this.originZipCode = originZipCode;
@@ -67,10 +69,25 @@ public class GroupSearchResponse {
 	@ToString
 	private static class Members {
 		
-		private final HashSet<String> userNames;
+		private final HashSet<User> users;
 		
-		public Members(HashSet<String> userNames) {
-			this.userNames = userNames;
+		public Members(HashSet<User> users) {
+			this.users = users;
+		}
+	}
+	
+	@Getter
+	@ToString
+	private static class User {
+		
+		private ObjectId id;
+		private final String userName;
+		private final boolean isOwner;
+		
+		public User(ObjectId id, String userName, boolean isOwner) {
+			this.id = id;
+			this.userName = userName;
+			this.isOwner = isOwner;
 		}
 	}
 }

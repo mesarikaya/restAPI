@@ -1,7 +1,6 @@
 package com.mes.gotogether.services.externalconnections;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
 
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -52,22 +50,22 @@ public class NomatimMapLocation implements GeoLocationService{
 		
 		String url = setGeoLocationSearchAddress(baseUrl, urlParameter, jsonResultFormat);
 		NomatimOpenStreetMapQuery[] queryResult = getQueryResult(url);
-        log.info("**** QUERY ARRAY LENGTH: " + queryResult.length);
-        if (queryResult.length>0) {
-        	log.info("******QUERY RESULT IS: " + queryResult[0].toString());
-        	return returnResultAsOptional(queryResult);
-        }else {
-        	return Optional.empty();
-        }
+                                        log.info("**** QUERY ARRAY LENGTH: " + queryResult.length);
+                                        if (queryResult.length>0) {
+                                                log.info("******QUERY RESULT IS: " + queryResult[0].toString());
+                                                return returnResultAsOptional(queryResult);
+                                        }else {
+                                                return Optional.empty();
+                                        }
 	}
 
 	private NomatimOpenStreetMapQuery[] getQueryResult(String searchAddress){
 		
 		NomatimOpenStreetMapQuery[] defaultResult = {};
 		NomatimOpenStreetMapQuery[] queryResult = Optional.ofNullable(restTemplate.getForObject(
-				searchAddress,
-                NomatimOpenStreetMapQuery[].class))
-				.orElse(defaultResult);
+                                                                                                                                                          searchAddress,
+                                                                                                                                                          NomatimOpenStreetMapQuery[].class))
+                                                                                                                                                          .orElse(defaultResult);
 		
 		return queryResult;
 	}
@@ -75,8 +73,8 @@ public class NomatimMapLocation implements GeoLocationService{
 	private String setGeoLocationSearchAddress(String... params) {
 		
     	return Arrays.stream(params)
-				.filter(p -> p!=null)
-				.collect(Collectors.joining());
+		 .filter(p -> p!=null)
+		 .collect(Collectors.joining());
     }
 	
 	private Optional<Double[]> returnResultAsOptional(NomatimOpenStreetMapQuery[] queryResult) {

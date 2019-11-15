@@ -1,10 +1,16 @@
 package com.mes.gotogether.domains;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -13,23 +19,15 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 @Data
 @NoArgsConstructor
+@Getter
+@Setter
 @CompoundIndexes({
         @CompoundIndex(name = "user_idx", def = "{'userId' : 1}", unique = true, dropDups = true)
 })
 @Document(collection = "Users")
 public class User {
-
-    // public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(8);
 
     @Id
     private ObjectId id;
@@ -77,21 +75,9 @@ public class User {
         this.roles = roles;
     }
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public void setEmail(String email) {
         this.email = email;
         this.setUserId();
-    }
-
-    public String getOauthId() {
-        return oauthId;
     }
 
     public void setOauthId(String oauthId) {
@@ -102,17 +88,9 @@ public class User {
     private void setUserId() {
         this.userId = this.email + this.oauthId;
     }
-
+    
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
     }
 
     @Override

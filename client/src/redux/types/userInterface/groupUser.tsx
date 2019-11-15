@@ -1,3 +1,5 @@
 export interface GroupUser {
-    userNames: string[];
+    id: string;
+    userName: string;
+    isOwner: boolean;
 }

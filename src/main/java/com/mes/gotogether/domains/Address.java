@@ -1,19 +1,20 @@
 package com.mes.gotogether.domains;
 
-
 import java.util.Date;
 import java.util.Objects;
-
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Data
 @NoArgsConstructor
+@Getter
+@Setter
 @Document
 public class Address {
 

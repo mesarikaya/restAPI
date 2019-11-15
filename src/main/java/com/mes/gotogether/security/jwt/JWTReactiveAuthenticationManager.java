@@ -1,9 +1,11 @@
 package com.mes.gotogether.security.jwt;
 
+import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
+import io.jsonwebtoken.Claims;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -14,11 +16,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import com.mes.gotogether.domains.Role;
-import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
-
-import io.jsonwebtoken.Claims;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -28,7 +25,7 @@ public class JWTReactiveAuthenticationManager implements ReactiveAuthenticationM
 
     private final SecurityUserLibraryUserDetailsService securityUserDetailsService;
     private final JWTUtil jwtTokenUtil;
-    private PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     public JWTReactiveAuthenticationManager(SecurityUserLibraryUserDetailsService securityUserDetailsService,
                                             JWTUtil jwtTokenUtil) {
@@ -37,6 +34,7 @@ public class JWTReactiveAuthenticationManager implements ReactiveAuthenticationM
         System.out.println("***********IN AUTHENTICATION MANAGER*******************");
         this.securityUserDetailsService = securityUserDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 

@@ -1,17 +1,15 @@
 package com.mes.gotogether.services.domain;
 
+import com.mes.gotogether.domains.User;
+import com.mes.gotogether.repositories.domain.UserRepository;
 import java.util.List;
-
+import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-
-import com.mes.gotogether.domains.User;
-import com.mes.gotogether.repositories.domain.UserRepository;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -28,7 +26,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<User> findUserById(ObjectId id) {
 
-        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+        if (Objects.isNull(id)) {
+            return Mono.empty();
+        }
 
         return userRepository.findById(id);
     }
@@ -43,7 +43,9 @@ public class UserServiceImpl implements UserService {
     public Mono<User> findByUserId(String userId) {
 
         // Check null cases
-        if (ObjectUtils.isEmpty(userId)) return Mono.empty();
+        if (ObjectUtils.isEmpty(userId)) {
+            return Mono.empty();
+        }
 
         // Check if user exists
         return userRepository.findByUserId(userId);
@@ -52,7 +54,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<User> createUser(User user) {
 
-        if (ObjectUtils.isEmpty(user)) return Mono.empty();
+        if (Objects.isNull(user)) {
+            return Mono.empty();
+        }
 
         return userRepository.save(user);
     }
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
     public Mono<User> saveOrUpdateUser(User user) {
 
         // Check if new user is null, empty cases
-        if (!ObjectUtils.isEmpty(user)){
+        if (!Objects.isNull(user)){
             log.debug("REQUESTING SAVE OR UPDATE with  user: " + user);
             // Check if the user exists (By email and oauthId)
             // Check if user exists, if so, update. Otherwise create
@@ -91,7 +95,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<Void> deleteUserById(ObjectId id) {
 
-        if (ObjectUtils.isEmpty(id)) return Mono.empty();
+        if (Objects.isNull(id)) {
+            return Mono.empty();
+        }
 
         return userRepository.deleteById(id);
     }
@@ -100,7 +106,9 @@ public class UserServiceImpl implements UserService {
     public Mono<Void> deleteByUserId(String userId) {
 
         // Check null cases
-        if (ObjectUtils.isEmpty(userId)) return Mono.empty();
+        if (ObjectUtils.isEmpty(userId)) {
+            return Mono.empty();
+        }
 
         return userRepository.deleteByUserId(userId);
     }
