@@ -4,6 +4,7 @@ HELP.md
 /lib/
 /bin/
 /goTogetherApp/
+/.settings/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
