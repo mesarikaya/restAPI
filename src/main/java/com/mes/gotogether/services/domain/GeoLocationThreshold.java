@@ -20,24 +20,20 @@ public class GeoLocationThreshold {
         // All distance is assumed to be in km
         // Earth radius is in km ~= 6371
         double earthRadius = 6371;
-        this.latitude = Math.toRadians(latitude);
-        this.longitude = Math.toRadians(longitude);
-        this.radius = radius/earthRadius;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.radius = radius;
 
-        // Set the ranges
-        /*this.latMin = latitude - Math.toDegrees(radius/earthRadius);
-        this.latMax = latitude + Math.toDegrees(radius/earthRadius);
-        this.longMin = longitude - Math.toDegrees(radius/earthRadius/Math.cos(Math.toRadians(latitude)));
-        this.longMax = longitude + Math.toDegrees(radius/earthRadius/Math.cos(Math.toRadians(latitude)));*/
-        this.latMin = Math.asin(Math.sin(latitude)*Math.cos(radius)+Math.cos(latitude) *Math.sin(radius)*Math.cos(Math.PI));
-        this.latMax = Math.asin(Math.sin(latitude)*Math.cos(radius)+Math.cos(latitude) *Math.sin(radius)*Math.cos(0));
-        double longMinRadian = longitude + Math.atan2(Math.sin(Math.PI/2)*Math.sin(radius) * Math.cos(latitude), 
-                                                                                        Math.cos(radius)-Math.sin(latitude)*Math.sin(latitude));
-        longMinRadian = (longMinRadian + 3 * Math.PI) % (2 * Math.PI)- Math.PI;
-        this.longMin = Math.toDegrees(longMinRadian);
-        double longMaxRadian = longitude + Math.atan2(Math.sin(3*Math.PI/2)*Math.sin(radius) * Math.cos(latitude), 
-                                                                                        Math.cos(radius)-Math.sin(latitude)*Math.sin(latitude));
-        longMaxRadian = (longMaxRadian + 3 * Math.PI) % (2 * Math.PI)- Math.PI;
-        this.longMax = Math.toDegrees(longMaxRadian);
+       // Ref: http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
+        double latT = Math.asin(Math.sin(Math.toRadians(latitude))/Math.cos(radius/earthRadius));
+        double deltaLon = Math.acos( ( Math.cos(radius*0.5/earthRadius) - Math.sin(latT)*Math.sin(Math.toRadians(latitude)) ) / (Math.cos(latT)*Math.cos(Math.toRadians(latitude))));
+        double lonMin  = Math.toRadians(longitude) - deltaLon;
+        double lonMax = Math.toRadians(longitude) + deltaLon;
+        double laMin = Math.toRadians(latitude) - (radius*0.5/earthRadius);
+        double laMax = Math.toRadians(latitude) + (radius*0.5/earthRadius);
+         this.longMax = Math.toDegrees(lonMax);
+         this.longMin = Math.toDegrees(lonMin);
+         this.latMax = Math.toDegrees(laMax);
+         this.latMin = Math.toDegrees(laMin);
     }
 }
