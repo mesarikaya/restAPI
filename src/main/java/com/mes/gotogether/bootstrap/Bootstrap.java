@@ -194,10 +194,10 @@ public class Bootstrap implements CommandLineRunner {
           }*/
         
         /*
-           // Delete current database
-         groupService.deleteAll().block();
-         addressService.deleteAll().block();
-         userService.deleteAll().block();
+        // Delete current database
+        groupService.deleteAll().block();
+        addressService.deleteAll().block();
+        userService.deleteAll().block();
          
         // FIRST sample user
         User user1 = new User();
@@ -262,7 +262,7 @@ public class Bootstrap implements CommandLineRunner {
         
     	
         // Read test data file
-        File testFile= ResourceUtils.getFile("classpath:data/TestData.csv");
+        File testFile= ResourceUtils.getFile("classpath:data/TestDataSpread.csv");
 
         //File is found
         System.out.println("File Found : " + testFile.exists());
@@ -303,7 +303,7 @@ public class Bootstrap implements CommandLineRunner {
         }
         System.out.println("Created group count: "+ groupNamesMap.keySet().size());
         
-         // Generate Fake Users, Addresses and Groups
+         // Generate Fake Users, Addresses and Groups, userDTO.size()
          for(int itemLoc=0; itemLoc<userDTO.size(); itemLoc++){
 
             // Create user address and save to address schema
@@ -374,6 +374,6 @@ public class Bootstrap implements CommandLineRunner {
         }
         
         System.out.println("FAKE data creation is successfull!");
-     */
+        */
     }
 }
