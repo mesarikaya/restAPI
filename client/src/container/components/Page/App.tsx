@@ -171,10 +171,13 @@ class App extends React.Component<Props & RouteComponentProps<PathProps>, State>
                     <div>
                         <CardDeck>
                             {Object.keys(groupSearchResult).map((key) => (
-                                <GroupCard key={groupSearchResult[key].name} 
-                                name={groupSearchResult[key].name} 
-                                groupDetails={groupSearchResult[key].groupDetails} 
-                                members={groupSearchResult[key].members}/>))
+                                    <GroupCard key={groupSearchResult[key].name} 
+                                    name={groupSearchResult[key].name} 
+                                    groupDetails={groupSearchResult[key].groupDetails} 
+                                    members={groupSearchResult[key].members}
+                                    group = {groupSearchResult[key]}
+                                    />
+                                ))
                             }
                        </CardDeck>
                        {this.state.groupSearchResults.page !== 0 ? 

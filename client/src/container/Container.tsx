@@ -6,9 +6,13 @@ import { UpdateAuth } from '../redux/actions/jwtAuthAction';
 
 // Import the presentational components for this container
 import App from './components/Page/App';
+import GroupPage from './components/Page/GroupPage/GroupPage';
+
+// Import store and relevant types
 import {store} from "../redux/store";
 import { SecurityState } from '../redux/types/system/securityState';
 import { GroupSearchResult } from 'src/redux/types/userInterface/groupSearchResult';
+
 
 
 interface AppProps {
@@ -72,6 +76,7 @@ class Container extends React.Component<AppProps & RouteComponentProps<PathProps
         return (
             <Switch>
                 <Route exact={true} path="/" component={App} />
+                <Route path="/group" component={GroupPage} />
                 <Route path="/**" component={App} />
             </Switch>
         );
