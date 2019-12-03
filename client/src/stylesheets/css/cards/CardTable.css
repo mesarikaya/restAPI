@@ -1,0 +1,26 @@
+.card-header {
+    background: #93b4d7; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
+    background: -moz-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
+    background: -o-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
+    background: linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6); /* Chrome 10-25, Safari 5.1-6 */
+}
+
+table {
+    width: 100%;
+    padding: 0;
+}
+  
+th {
+    background-color: #c52424;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #e9e2e2;
+    color: #f2f2f2;
+}
+
+td {
+    color: #661f04;
+}

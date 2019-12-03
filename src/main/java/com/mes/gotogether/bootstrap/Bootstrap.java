@@ -234,13 +234,7 @@ public class Bootstrap implements CommandLineRunner {
         addressService.saveOrUpdateAddress(address1).block();
         user1.setAddress(address1);
 
-        userService.saveOrUpdateUser(user1)
-                .log()
-                .subscribe(
-                        null,
-                        null,
-                        () -> log.info("done initialization...")
-                );
+        userService.saveOrUpdateUser(user1).block();
 
         // SECOND sample user
         User user2 = new User();
@@ -262,18 +256,10 @@ public class Bootstrap implements CommandLineRunner {
 
         // GET lat and lon for the address
         addressService.saveOrUpdateAddress(address2).block();
-        user2.setAddress(address1);
+        user2.setAddress(address2);
 
-        userService.saveOrUpdateUser(user2)
-                .log()
-                .subscribe(
-                        null,
-                        null,
-                        () -> log.info("done initialization 2...")
-                );    
-        
-        
-    	
+        userService.saveOrUpdateUser(user2).block();
+
         // Read test data file
         File testFile= ResourceUtils.getFile("classpath:data/TestDataSpread.csv");
 
@@ -298,7 +284,6 @@ public class Bootstrap implements CommandLineRunner {
                 // Check if the group name is inside the hash set of names
                 if(groupNamesMap.containsKey(gr.getName())){
                     // Do nothing, a group is  already mapped to the name
-                    System.out.println("");
                 }else{
                     // Create a group
                     Group group = new Group();
@@ -356,7 +341,7 @@ public class Bootstrap implements CommandLineRunner {
             // Find relevant group and add to the list of groups user has
             Group group = groupNamesMap.get(groupDTO.get(itemLoc).getName());
             if (group != null){
-                user.getGroups().add(group);
+                
                 if (group.getOriginAddress() == null){
                     group.setOriginAddress(userAddress);
                 }
@@ -368,22 +353,31 @@ public class Bootstrap implements CommandLineRunner {
                 // Add user to the group members set
                 if (!group.getMembers().contains(user)) {
                     group.getMembers().add(user);
-                }else{
-                    group.getMembers().add(user);
                 }
                      
                 // Add user to the group owners set
                 int random = new Random().nextInt(3)+0;
                 
-                // Add user to the group members set
-                if (!group.getMembershipRequests().contains(user) & random<=1) {
-                    group.getMembershipRequests().add(user);
-                }else{
-                    group.getMembershipRequests().add(user);
+               // Add user to the group membership set
+                if(group.getMembershipRequests().size()>0) {
+                    if (!group.getMembershipRequests().contains(user) & random<=0.2) {
+                        group.getMembershipRequests().add(user);
+                    }
+                } else{
+                        group.getMembershipRequests().add(user);
+                }
+                
+                // Add user to the group members invitations set
+                if(group.getInvites().size()>0) {
+                    if (!group.getInvites().contains(user) & random<=0.2) {
+                        group.getInvites().add(user);
+                    }
+                } else{
+                        group.getInvites().add(user);
                 }
                 
                 if(group.getOwners().size()>0){
-                    if (!group.getOwners().contains(user) & random<=1.5) {
+                    if (!group.getOwners().contains(user) & random<=1) {
                         group.getOwners().add(user);
                     }
                 }else{

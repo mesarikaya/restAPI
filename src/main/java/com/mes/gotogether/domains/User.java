@@ -2,13 +2,12 @@ package com.mes.gotogether.domains;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.bson.types.ObjectId;
@@ -16,11 +15,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Users")
 @Data
+@NoArgsConstructor
 @Getter
 @Setter
 @CompoundIndexes({
@@ -50,16 +49,6 @@ public class User {
     private Date verificationExpiresAt;
     private boolean isActive;
     private List<Role> roles;
-    @ToString.Exclude
-    @DBRef
-    private Set<Group> groups;
-    @DBRef
-    private Set<Group> invites;
-
-    public User(){
-        this.groups = new HashSet<>();
-        this.invites = new HashSet<>();
-    }
     
     public User(User user){
         this(

@@ -22,9 +22,10 @@ public class Group {
     private ObjectId id;
     @NotNull
     private String name;
-    private Set<User> members = new HashSet<>();
-    private Set<User> owners = new HashSet<>();
-    private Set<User> membershipRequests = new HashSet<>();
+    private Set<User> members;
+    private Set<User> owners;
+    private Set<User> membershipRequests;
+    private Set<User> invites;
     private Address originAddress;
     private double originSearchRadius;
     private Address destinationAddress;
@@ -35,6 +36,7 @@ public class Group {
         members = new HashSet<>();
         owners = new HashSet<>();
         membershipRequests = new HashSet<>();
+        invites = new HashSet<>();
     }
     
     public Group(Group group){
