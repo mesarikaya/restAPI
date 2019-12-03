@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.bson.types.ObjectId;
@@ -20,7 +20,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@NoArgsConstructor
 @Getter
 @Setter
 @CompoundIndexes({
@@ -53,8 +52,12 @@ public class User {
     private List<Role> roles;
     @ToString.Exclude
     @DBRef
-    private HashSet<Group> groups;
+    private Set<Group> groups;
 
+    public User(){
+        this.groups = new HashSet<>();
+    }
+    
     public User(User user){
         this(
             user.getId(),
@@ -70,7 +73,7 @@ public class User {
         this.id = id;
         this.email = email;
         this.oauthId = oauthId;
-        this.userId = email + oauthId;
+        this.userId = email.split("@")[0] + oauthId;
         this.password = password;
         this.roles = roles;
     }
@@ -86,7 +89,7 @@ public class User {
     }
 
     private void setUserId() {
-        this.userId = this.email + this.oauthId;
+        this.userId = this.email.split("@")[0] + this.oauthId;
     }
     
     public void setPassword(String password) {

@@ -1,13 +1,27 @@
 package com.mes.gotogether.bootstrap;
 
+import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.domains.Group;
+import com.mes.gotogether.domains.LoginType;
+import com.mes.gotogether.domains.Role;
+import com.mes.gotogether.domains.User;
 import com.mes.gotogether.services.domain.AddressService;
 import com.mes.gotogether.services.domain.GroupService;
 import com.mes.gotogether.services.domain.UserService;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 @Slf4j
 @Component
@@ -192,8 +206,7 @@ public class Bootstrap implements CommandLineRunner {
          } else{
               log.info("Bootstrap data is already available!");
           }*/
-        
-        /*
+       
         // Delete current database
         groupService.deleteAll().block();
         addressService.deleteAll().block();
@@ -221,13 +234,7 @@ public class Bootstrap implements CommandLineRunner {
         addressService.saveOrUpdateAddress(address1).block();
         user1.setAddress(address1);
 
-        userService.saveOrUpdateUser(user1)
-                .log()
-                .subscribe(
-                        null,
-                        null,
-                        () -> log.info("done initialization...")
-                );
+        userService.saveOrUpdateUser(user1).block();
 
         // SECOND sample user
         User user2 = new User();
@@ -249,42 +256,34 @@ public class Bootstrap implements CommandLineRunner {
 
         // GET lat and lon for the address
         addressService.saveOrUpdateAddress(address2).block();
-        user2.setAddress(address1);
+        user2.setAddress(address2);
 
-        userService.saveOrUpdateUser(user2)
-                .log()
-                .subscribe(
-                        null,
-                        null,
-                        () -> log.info("done initialization 2...")
-                );    
-        
-        
-    	
+        userService.saveOrUpdateUser(user2).block();
+
         // Read test data file
         File testFile= ResourceUtils.getFile("classpath:data/TestDataSpread.csv");
 
-        //File is found
-        System.out.println("File Found : " + testFile.exists());
+        // File is found
+        log.debug("File Found : " + testFile.exists());
 
         // Read User Data
         List<UserDTO> userDTO = CsvReader.readUserDetails(testFile);
-        System.out.println("User DTO count is: " + userDTO.size());
+        log.debug("User DTO count is: " + userDTO.size());
         
         // Read Address Data
         List<AddressDTO> addressDTO = CsvReader.readAddressDetails(testFile);
-        System.out.println("Address DTO count:  " + addressDTO.size());
+        log.debug("Address DTO count:  " + addressDTO.size());
         
         // Read Group Data
         List<GroupDTO> groupDTO = CsvReader.readGroupDetails(testFile);
-        System.out.println("Group DTO data count is:" + groupDTO.size());
+        log.debug("Group DTO data count is:" + groupDTO.size());
         
         HashMap<String, Group> groupNamesMap = new HashMap<>();
         for(GroupDTO gr: groupDTO){
 
                 // Check if the group name is inside the hash set of names
                 if(groupNamesMap.containsKey(gr.getName())){
-                    // Do nothing, a group is  already mapped to the name
+                    // Do nothing, a group is already mapped to the name
                 }else{
                     // Create a group
                     Group group = new Group();
@@ -301,7 +300,7 @@ public class Bootstrap implements CommandLineRunner {
                     groupNamesMap.put(gr.getName(), group);
                 }
         }
-        System.out.println("Created group count: "+ groupNamesMap.keySet().size());
+        log.debug("Created group count: "+ groupNamesMap.keySet().size());
         
          // Generate Fake Users, Addresses and Groups, userDTO.size()
          for(int itemLoc=0; itemLoc<userDTO.size(); itemLoc++){
@@ -340,6 +339,7 @@ public class Bootstrap implements CommandLineRunner {
             // Find relevant group and add to the list of groups user has
             Group group = groupNamesMap.get(groupDTO.get(itemLoc).getName());
             if (group != null){
+                
                 if (group.getOriginAddress() == null){
                     group.setOriginAddress(userAddress);
                 }
@@ -354,7 +354,7 @@ public class Bootstrap implements CommandLineRunner {
                 }else{
                     group.getMembers().add(user);
                 }
-                
+                group.getMembershipRequests().add(user);
                 // Add user to the group owners set
                 int random = new Random().nextInt(3)+0;
                 
@@ -373,7 +373,7 @@ public class Bootstrap implements CommandLineRunner {
             userService.saveOrUpdateUser(user).block();
         }
         
-        System.out.println("FAKE data creation is successfull!");
-        */
+        log.info("FAKE data creation is successfull!");
+        
     }
 }

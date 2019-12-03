@@ -2,10 +2,10 @@ package com.mes.gotogether.domains;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Getter
 @Setter
-@NoArgsConstructor
 @Document
 public class Group {
 
@@ -23,20 +22,28 @@ public class Group {
     private ObjectId id;
     @NotNull
     private String name;
-    private HashSet<User> members;
-    private HashSet<User> owners;
+    private Set<User> members;
+    private Set<User> owners;
+    private Set<User> membershipRequests;
     private Address originAddress;
     private double originSearchRadius;
     private Address destinationAddress;
     private double destinationSearchRadius;
     private boolean isActive;
 
+    public Group(){
+        members = new HashSet<>();
+        owners = new HashSet<>();
+        membershipRequests = new HashSet<>();
+    }
+    
     public Group(Group group){
         this(
                 group.getId(),
                 group.getName(),
                 group.getMembers(),
                 group.getOwners(),
+                group.getMembershipRequests(),
                 group.getOriginAddress(),
                 group.getOriginSearchRadius(),
                 group.getDestinationAddress(),
@@ -46,15 +53,16 @@ public class Group {
     }
 
     @PersistenceConstructor
-    public Group(ObjectId id, String name, HashSet<User> members,
-                 HashSet<User> owners, Address originAddress,
-                 double originSearchRadius, Address destinationAddress,
-                 double destinationSearchRadius, boolean isActive) {
-
+    public Group(ObjectId id, String name, Set<User> members,
+                            Set<User> owners, Set<User> membershipRequests,
+                            Address originAddress,
+                            double originSearchRadius, Address destinationAddress,
+                            double destinationSearchRadius, boolean isActive) {
         this.id = id;
         this.name = name;
         this.members = members;
         this.owners = owners;
+        this.membershipRequests = membershipRequests;
         this.originAddress = originAddress;
         this.originSearchRadius = originSearchRadius;
         this.destinationAddress = destinationAddress;
@@ -68,8 +76,7 @@ public class Group {
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
         
-        return id.equals(group.id) &&
-                name.equals(group.name);
+        return id.equals(group.id) &&name.equals(group.name);
     }
 
     @Override

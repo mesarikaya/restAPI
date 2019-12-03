@@ -5,13 +5,16 @@ export interface GroupSearchResult {
     name: string,
     groupDetails: {
         originCity: string,
-        originZipcode: string,
+        originZipCode: string,
         originRange: number,
         destinationCity: string,
         destinationZipCode: string,
         destinationRange: number
     },
     members: {
+        users: GroupUser[]
+    },
+    waitingList: {
         users: GroupUser[]
     }
 }

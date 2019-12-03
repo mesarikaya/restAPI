@@ -1,5 +1,6 @@
 export interface GroupUser {
     id: string;
     userName: string;
-    isOwner: boolean;
+    owner: boolean;
+    userId: string;
 }

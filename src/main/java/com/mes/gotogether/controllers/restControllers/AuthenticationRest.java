@@ -1,5 +1,11 @@
 package com.mes.gotogether.controllers.restControllers;
 
+import com.mes.gotogether.security.domain.AuthRequest;
+import com.mes.gotogether.security.domain.AuthResponse;
+import com.mes.gotogether.security.domain.SecurityUserLibrary;
+import com.mes.gotogether.security.jwt.JWTUtil;
+import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,14 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.mes.gotogether.security.domain.AuthRequest;
-import com.mes.gotogether.security.domain.AuthResponse;
-import com.mes.gotogether.security.domain.SecurityUserLibrary;
-import com.mes.gotogether.security.jwt.JWTUtil;
-import com.mes.gotogether.security.service.SecurityUserLibraryUserDetailsService;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -52,7 +50,7 @@ public class AuthenticationRest {
     	log.info("Authorization: " + ar.getUsername() +
                 "password: " + ar.getPassword() +
                 "encoded: " +passwordEncoder.encode(ar.getPassword()));
-        return securityUserService.findByUserId(ar.getUsername()).map((userDetails) -> {
+        return securityUserService.findByUserId(ar.getUsername().split("@")[0]).map((userDetails) -> {
             System.out.println("userdetails password: " + userDetails.getPassword());
             if (passwordEncoder.matches(ar.getPassword(), userDetails.getPassword())) {
                 log.info("Authorized! YEAH!!!!");

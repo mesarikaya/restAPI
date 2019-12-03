@@ -13,6 +13,7 @@ import { GroupSearchResult } from 'src/redux/types/userInterface/groupSearchResu
 import NavigationBar from '../../Navigation/NavigationBar';
 import { LoginFormFields } from 'src/redux/types/userInterface/loginFormFields';
 import { isNullOrUndefined } from 'util';
+import GroupMemberTable from './GroupMemberTable';
 
 
 /** CREATE Prop and State interfaces to use in the component */
@@ -52,13 +53,16 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
             name: '',
             groupDetails: {
                 originCity: '',
-                originZipcode: '',
+                originZipCode: '',
                 originRange: 2,
                 destinationCity: '',
                 destinationZipCode: '',
                 destinationRange: 2 
             },
             members: {
+                users: []
+            },
+            waitingList:{
                 users: []
             }
         };
@@ -92,7 +96,9 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
 
             <NavigationBar loginFormFields={this.props.loginFormFields} />
             <div className="container"/>
-                
+                <GroupMemberTable key={this.state.groupInfo.id} 
+                                  groupInfo={this.state.groupInfo}
+                                  userName={this.state.storeState.system.userName}/>
             </div>
         );
     }
@@ -122,4 +128,4 @@ const mapStateToProps = (
     }
 }*/
 
-export  default withRouter(connect(mapStateToProps, null)(GroupPage));
+export default withRouter(connect(mapStateToProps, null)(GroupPage));
