@@ -234,7 +234,13 @@ public class Bootstrap implements CommandLineRunner {
         addressService.saveOrUpdateAddress(address1).block();
         user1.setAddress(address1);
 
-        userService.saveOrUpdateUser(user1).block();
+        userService.saveOrUpdateUser(user1)
+                .log()
+                .subscribe(
+                        null,
+                        null,
+                        () -> log.info("done initialization...")
+                );
 
         // SECOND sample user
         User user2 = new User();
@@ -256,34 +262,43 @@ public class Bootstrap implements CommandLineRunner {
 
         // GET lat and lon for the address
         addressService.saveOrUpdateAddress(address2).block();
-        user2.setAddress(address2);
+        user2.setAddress(address1);
 
-        userService.saveOrUpdateUser(user2).block();
-
+        userService.saveOrUpdateUser(user2)
+                .log()
+                .subscribe(
+                        null,
+                        null,
+                        () -> log.info("done initialization 2...")
+                );    
+        
+        
+    	
         // Read test data file
         File testFile= ResourceUtils.getFile("classpath:data/TestDataSpread.csv");
 
-        // File is found
-        log.debug("File Found : " + testFile.exists());
+        //File is found
+        System.out.println("File Found : " + testFile.exists());
 
         // Read User Data
         List<UserDTO> userDTO = CsvReader.readUserDetails(testFile);
-        log.debug("User DTO count is: " + userDTO.size());
+        System.out.println("User DTO count is: " + userDTO.size());
         
         // Read Address Data
         List<AddressDTO> addressDTO = CsvReader.readAddressDetails(testFile);
-        log.debug("Address DTO count:  " + addressDTO.size());
+        System.out.println("Address DTO count:  " + addressDTO.size());
         
         // Read Group Data
         List<GroupDTO> groupDTO = CsvReader.readGroupDetails(testFile);
-        log.debug("Group DTO data count is:" + groupDTO.size());
+        System.out.println("Group DTO data count is:" + groupDTO.size());
         
         HashMap<String, Group> groupNamesMap = new HashMap<>();
         for(GroupDTO gr: groupDTO){
 
                 // Check if the group name is inside the hash set of names
                 if(groupNamesMap.containsKey(gr.getName())){
-                    // Do nothing, a group is already mapped to the name
+                    // Do nothing, a group is  already mapped to the name
+                    System.out.println("");
                 }else{
                     // Create a group
                     Group group = new Group();
@@ -296,11 +311,13 @@ public class Bootstrap implements CommandLineRunner {
                     group.setMembers(membersInGroup);
                     HashSet<User> ownersInGroup = new HashSet<>();
                     group.setOwners(ownersInGroup);
+                    HashSet<User> membershipRequests = new HashSet<>();
+                    group.setMembershipRequests(membershipRequests);
                     // Add the group to the hash map of group names
                     groupNamesMap.put(gr.getName(), group);
                 }
         }
-        log.debug("Created group count: "+ groupNamesMap.keySet().size());
+        System.out.println("Created group count: "+ groupNamesMap.keySet().size());
         
          // Generate Fake Users, Addresses and Groups, userDTO.size()
          for(int itemLoc=0; itemLoc<userDTO.size(); itemLoc++){
@@ -339,7 +356,7 @@ public class Bootstrap implements CommandLineRunner {
             // Find relevant group and add to the list of groups user has
             Group group = groupNamesMap.get(groupDTO.get(itemLoc).getName());
             if (group != null){
-                
+                user.getGroups().add(group);
                 if (group.getOriginAddress() == null){
                     group.setOriginAddress(userAddress);
                 }
@@ -354,9 +371,16 @@ public class Bootstrap implements CommandLineRunner {
                 }else{
                     group.getMembers().add(user);
                 }
-                group.getMembershipRequests().add(user);
+                     
                 // Add user to the group owners set
                 int random = new Random().nextInt(3)+0;
+                
+                // Add user to the group members set
+                if (!group.getMembershipRequests().contains(user) & random<=1) {
+                    group.getMembershipRequests().add(user);
+                }else{
+                    group.getMembershipRequests().add(user);
+                }
                 
                 if(group.getOwners().size()>0){
                     if (!group.getOwners().contains(user) & random<=1.5) {
@@ -373,7 +397,7 @@ public class Bootstrap implements CommandLineRunner {
             userService.saveOrUpdateUser(user).block();
         }
         
-        log.info("FAKE data creation is successfull!");
+        System.out.println("FAKE data creation is successfull!");
         
     }
 }

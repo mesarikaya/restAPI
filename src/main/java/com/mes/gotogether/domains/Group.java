@@ -12,19 +12,19 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 @Data
 @Getter
 @Setter
-@Document
 public class Group {
 
     @Id
     private ObjectId id;
     @NotNull
     private String name;
-    private Set<User> members;
-    private Set<User> owners;
-    private Set<User> membershipRequests;
+    private Set<User> members = new HashSet<>();
+    private Set<User> owners = new HashSet<>();
+    private Set<User> membershipRequests = new HashSet<>();
     private Address originAddress;
     private double originSearchRadius;
     private Address destinationAddress;

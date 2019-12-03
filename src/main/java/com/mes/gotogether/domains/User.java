@@ -19,13 +19,13 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "Users")
 @Data
 @Getter
 @Setter
 @CompoundIndexes({
         @CompoundIndex(name = "user_idx", def = "{'userId' : 1}", unique = true, dropDups = true)
 })
-@Document(collection = "Users")
 public class User {
 
     @Id
@@ -53,9 +53,12 @@ public class User {
     @ToString.Exclude
     @DBRef
     private Set<Group> groups;
+    @DBRef
+    private Set<Group> invites;
 
     public User(){
         this.groups = new HashSet<>();
+        this.invites = new HashSet<>();
     }
     
     public User(User user){
