@@ -79,4 +79,9 @@ public class Address {
     public int hashCode() {
         return Objects.hash(streetName, houseNumber, city, zipcode, state, country, latitude, longitude);
     }
+    
+    @Override
+    public String toString() {
+        return streetName + " " + houseNumber + ", " +  city + ", " + zipcode + ", "  + state + ", " + country; 
+    }
 }
