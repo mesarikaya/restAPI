@@ -10,10 +10,10 @@
 
 .card-header {
     background: #93b4d7; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right top,#88a4c7, #d8e3f7, #93b4d7, #78a3f1);
-    background: -moz-linear-gradient(to right top,#88a4c7, #d8e3f7, #93b4d7, #78a3f1);
-    background: -o-linear-gradient(to right top,#88a4c7, #d8e3f7, #93b4d7, #78a3f1);
-    background: linear-gradient(to right top, #88a4c7, #d8e3f7, #93b4d7, #78a3f1); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
+    background: -moz-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
+    background: -o-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
+    background: linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6); /* Chrome 10-25, Safari 5.1-6 */
 }
 
 .card-text-header{
