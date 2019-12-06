@@ -42,7 +42,6 @@ class NavigationBar extends React.Component<Props> {
                             
                             <div className="col-12 col-sm-7 navButtonGroup">
                                 <LoginButton loginFormFields={this.props.loginFormFields}/>
-                                
                                 <Button className="navButton signOutButton" variant="link">
                                     <i className="fas fa-sign-out-alt">
                                         <strong id="icons"> Sign out</strong>

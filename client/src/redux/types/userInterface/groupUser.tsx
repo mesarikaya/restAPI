@@ -3,4 +3,5 @@ export interface GroupUser {
     userName: string;
     owner: boolean;
     userId: string;
+    address: string;
 }

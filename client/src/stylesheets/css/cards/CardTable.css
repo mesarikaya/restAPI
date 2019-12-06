@@ -1,9 +1,9 @@
 .card-header {
     background: #93b4d7; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
-    background: -moz-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
-    background: -o-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
-    background: linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010);
+    background: -moz-linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010);
+    background: -o-linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010);
+    background: linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010); /* Chrome 10-25, Safari 5.1-6 */
 }
 
 table {
@@ -24,3 +24,5 @@ tr:nth-child(even) {
 td {
     color: #661f04;
 }
+
+  

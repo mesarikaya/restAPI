@@ -1,5 +1,5 @@
 .groupCard {
-    min-width: calc(90%/3) !important;
+    min-width: calc(90%) !important;
 }
 
 .card-deck .card {
@@ -10,10 +10,10 @@
 
 .card-header {
     background: #93b4d7; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
-    background: -moz-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
-    background: -o-linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6);
-    background: linear-gradient(to right top, #e8e8e8, #ffa6a6, #e3c4d1, #ffa6a6); /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010);
+    background: -moz-linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010);
+    background: -o-linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010);
+    background: linear-gradient(to right top, #df8d8d, #ee2929, #f6a6a6, #c71010); /* Chrome 10-25, Safari 5.1-6 */
 }
 
 .card-text-header{
@@ -34,49 +34,43 @@
 -------------------------------------------------- */
 @media only screen and (max-width: 576px) { 
     .groupCard {
-        min-width: calc(40%) !important;
+        min-width: calc(90%) !important;
     }
 
     .card-columns{
       column-count: 1;
     }
+
+    .card-deck .card:not(:last-child){
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+    } 
 }
   
 @media only screen and (min-width: 577px) and (max-width: 768px) {
     .groupCard {
-        min-width: calc(60%) !important;
+        min-width: calc(40%) !important;
     }
 
-    .card-columns{
-        column-count: 1;
-    }
+    .card-deck .card:not(:last-child){
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+    } 
 }
 @media only screen and (min-width: 769px) and (max-width: 1000px) {
     .groupCard {
-        min-width: calc(90%/3) !important;
-    }
-    
-    .card-columns{
-        column-count: 2;
+        min-width: calc(35%) !important;
     }
 }
 
 @media only screen and (min-width: 1001px) and (max-width: 1300px) {
     .groupCard {
-        min-width: calc(90%/3) !important;
-    }
-
-    .card-columns{
-        column-count: 3;
+        min-width: calc(25%) !important;
     }
 }
 
 @media only screen and (min-width: 1301px) {
     .groupCard {
-        min-width: calc(90%/3) !important;
-    }
-
-    .card-columns{
-        column-count: 3;
+        min-width: calc(25%) !important;
     }
 }

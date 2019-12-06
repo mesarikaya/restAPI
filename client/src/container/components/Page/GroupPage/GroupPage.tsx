@@ -6,6 +6,9 @@ import { RouteComponentProps, withRouter } from "react-router";
 //  import createBrowserHistory from 'history/createBrowserHistory';
 // const history = createBrowserHistory({ forceRefresh: true });
 
+// Add styling related imports
+import '../../../../stylesheets/css/cards/GroupPage.css';
+
 // Import store and types
 import { store } from 'src/redux/store';
 import { StoreState } from 'src/redux/types/storeState';
@@ -14,6 +17,9 @@ import NavigationBar from '../../Navigation/NavigationBar';
 import { LoginFormFields } from 'src/redux/types/userInterface/loginFormFields';
 import { isNullOrUndefined } from 'util';
 import GroupMemberTable from './GroupMemberTable';
+import { GroupUser } from '../../../../redux/types/userInterface/groupUser';
+import GroupWaitingList from './GroupWaitingList';
+import { CardDeck, Button } from 'react-bootstrap';
 
 
 /** CREATE Prop and State interfaces to use in the component */
@@ -26,6 +32,8 @@ export interface GroupProps{
 export interface GroupState{
     groupInfo: GroupSearchResult;
     storeState: StoreState;
+    isUserInGroup: boolean;
+    isUserOwnerInGroup: boolean;
 }
 
 // These props are provided by the router
@@ -71,12 +79,15 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
             selectedGroup = JSON.parse(localStorageSelectedGroup);
         }
         
+        const groupUser = this.isUserInGroup(selectedGroup.members.users);
+        const groupOwner = this.isOwnerInGroup(selectedGroup.members.users);
         // tslint:disable-next-line: no-console
-        console.log("Selected group JSON:", localStorageSelectedGroup);
-        
+        console.log("Group page user status:", groupUser, groupOwner);
         this.state = {
             groupInfo: selectedGroup,
-            storeState: currAppState
+            storeState: currAppState,
+            isUserInGroup:groupUser,
+            isUserOwnerInGroup: groupOwner
         }
     }
 
@@ -90,15 +101,46 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
         }
     }
 
+    public isUserInGroup(data:GroupUser[]) {
+        const isUserInGroup = data.some((obj:GroupUser) => obj.userId===store.getState().system.userName);
+        return isUserInGroup;
+    } 
+    
+
+    public isOwnerInGroup(data:GroupUser[]) {
+        
+        const isOwnerInGroup = data.some((obj:GroupUser) => obj.owner && obj.userId===store.getState().system.userName);
+        return isOwnerInGroup;
+    } 
+
     public render() {
         return (
             <div className="GroupPage">
+                <NavigationBar loginFormFields={this.props.loginFormFields} />
+                <div className="container px-0 mx-auto">
+                    <h2 className="text-center">                                
+                        {this.state.groupInfo.name}: <span>
+                                                        {this.state.groupInfo.groupDetails.originCity}, {this.state.groupInfo.groupDetails.originZipCode}
+                                                        <i className="fas fa-angle-double-right fa-3x"/><i className="fas fa-angle-double-right fa-3x"/> 
+                                                        {this.state.groupInfo.groupDetails.destinationCity},    
+                                                        {this.state.groupInfo.groupDetails.originZipCode} 
+                                                        {this.state.isUserOwnerInGroup && this.state.isUserInGroup ? <Button variant="info" size="sm">Delete Group</Button>: null}
+                                                     </span>
+                    </h2>
+                    <CardDeck>
+                        <GroupMemberTable key={this.state.groupInfo.id} 
+                                          groupInfo={this.state.groupInfo}
+                                          userName={this.state.storeState.system.userName}
+                                          isUserInGroup={this.state.isUserInGroup}
+                                          isUserOwnerInGroup={this.state.isUserOwnerInGroup}/>
 
-            <NavigationBar loginFormFields={this.props.loginFormFields} />
-            <div className="container"/>
-                <GroupMemberTable key={this.state.groupInfo.id} 
-                                  groupInfo={this.state.groupInfo}
-                                  userName={this.state.storeState.system.userName}/>
+                        <GroupWaitingList key={this.state.groupInfo.id} 
+                                          groupInfo={this.state.groupInfo}
+                                          userName={this.state.storeState.system.userName}
+                                          isUserInGroup={this.state.isUserInGroup}
+                                          isUserOwnerInGroup={this.state.isUserOwnerInGroup}/>
+                    </CardDeck>
+                </div>
             </div>
         );
     }
