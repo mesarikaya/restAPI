@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-public class GroupServiceImpl implements GroupService{
+public final class GroupServiceImpl implements GroupService{
 
     private final GroupRepository groupRepository;
     private final GeoLocationService geoLocationService;

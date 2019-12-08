@@ -16,7 +16,7 @@ import org.bson.types.ObjectId;
 @Data
 @Getter
 @ToString
-public class GroupSearchResponse {
+public final class GroupSearchResponse {
 	
 	private final ObjectId id;
 	private final String name;

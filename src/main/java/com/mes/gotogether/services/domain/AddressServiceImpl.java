@@ -1,25 +1,23 @@
 package com.mes.gotogether.services.domain;
 
-import java.util.Optional;
-
-import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-
 import com.mes.gotogether.domains.Address;
 import com.mes.gotogether.repositories.domain.AddressRepository;
 import com.mes.gotogether.services.externalconnections.GeoLocationService;
 import java.util.Objects;
-import static org.springframework.util.ObjectUtils.*;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import static org.springframework.util.ObjectUtils.*;
+import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
 @Transactional
-public class AddressServiceImpl implements AddressService {
+public final class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
     private final RestTemplate restTemplate;

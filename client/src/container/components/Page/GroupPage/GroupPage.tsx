@@ -12,7 +12,6 @@ import '../../../../stylesheets/css/cards/GroupPage.css';
 // Import store and types
 import { store } from 'src/redux/store';
 import { StoreState } from 'src/redux/types/storeState';
-import { GroupSearchResult } from 'src/redux/types/userInterface/groupSearchResult';
 import NavigationBar from '../../Navigation/NavigationBar';
 import { LoginFormFields } from 'src/redux/types/userInterface/loginFormFields';
 import { isNullOrUndefined } from 'util';
@@ -20,20 +19,38 @@ import GroupMemberTable from './GroupMemberTable';
 import { GroupUser } from '../../../../redux/types/userInterface/groupUser';
 import GroupWaitingList from './GroupWaitingList';
 import { CardDeck, Button } from 'react-bootstrap';
+import { SearchUsers } from 'src/redux/actions/userSearchAction';
+import GroupSearchForm from '../../Forms/GroupSearchForm';
+import { UserSearchResult } from 'src/redux/types/userInterface/userSearchResult';
+import { GroupSearchResult } from 'src/redux/types/userInterface/groupSearchResult';
+import { GroupSearchFormFields } from 'src/redux/types/userInterface/groupSearchFormFields';
+import UserTableList from '../../Tables/UserTableList';
 
 
 /** CREATE Prop and State interfaces to use in the component */
 // Set the default Props
 export interface GroupProps{
-    groupInfo: GroupSearchResult;
+    groupInfo:GroupSearchResult;
+    userSearchFormFields: GroupSearchFormFields;
+    userSearchResults: {
+        users: UserSearchResult[],
+        page: number
+    };
     loginFormFields: LoginFormFields;
+    onSubmit: typeof SearchUsers;
 }
 
 export interface GroupState{
     groupInfo: GroupSearchResult;
+    userSearchFormFields: GroupSearchFormFields;
+    userSearchResults: {
+        users: UserSearchResult[],
+        page: number
+    };
     storeState: StoreState;
     isUserInGroup: boolean;
     isUserOwnerInGroup: boolean;
+    size: number;
 }
 
 // These props are provided by the router
@@ -83,12 +100,29 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
         const groupOwner = this.isOwnerInGroup(selectedGroup.members.users);
         // tslint:disable-next-line: no-console
         console.log("Group page user status:", groupUser, groupOwner);
+
+        const userResults: {users: UserSearchResult[], page: number} = {
+            users: [],
+            page: 0
+        };
+
         this.state = {
             groupInfo: selectedGroup,
+            userSearchResults: userResults,
+            userSearchFormFields: {
+                origin: '',
+                originRange: 2,
+                destination: '',
+                destinationRange: 2
+            },
             storeState: currAppState,
             isUserInGroup:groupUser,
-            isUserOwnerInGroup: groupOwner
+            isUserOwnerInGroup: groupOwner,
+            size: 9
         }
+
+        this.loadMore = this.loadMore.bind(this);
+        this.handleUserSearchFormUpdate = this.handleUserSearchFormUpdate.bind(this);
     }
 
     public componentDidUpdate(oldProps: GroupProps& RouteComponentProps < PathProps >) {
@@ -99,21 +133,42 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
                 groupInfo: this.props.groupInfo 
             });
         }
+
+        if(oldProps.userSearchResults !== newProps.userSearchResults) {
+            this.setState({ 
+                userSearchResults:this.props.userSearchResults 
+            });
+        }
+
     }
 
     public isUserInGroup(data:GroupUser[]) {
         const isUserInGroup = data.some((obj:GroupUser) => obj.userId===store.getState().system.userName);
         return isUserInGroup;
     } 
-    
 
     public isOwnerInGroup(data:GroupUser[]) {
-        
         const isOwnerInGroup = data.some((obj:GroupUser) => obj.owner && obj.userId===store.getState().system.userName);
         return isOwnerInGroup;
-    } 
+    }
+
+    public loadMore = async (event: any): Promise<void> => {     
+        this.props.onSubmit(null, 
+                            this.state.userSearchFormFields, 
+                            this.state.userSearchResults.users,
+                            this.state.userSearchResults.page,
+                            this.state.storeState.system.token);
+    }
+
+    public handleUserSearchFormUpdate = (formFields: GroupSearchFormFields): void => {
+        this.setState({
+            userSearchFormFields: formFields
+        });
+    }
 
     public render() {
+        
+        const userSearchResult = this.state.userSearchResults.users;
         return (
             <div className="GroupPage">
                 <NavigationBar loginFormFields={this.props.loginFormFields} />
@@ -141,6 +196,28 @@ class GroupPage extends React.Component<GroupProps & RouteComponentProps < PathP
                                           isUserOwnerInGroup={this.state.isUserOwnerInGroup}/>
                     </CardDeck>
                 </div>
+                <div className="container mx-auto my-auto align-items-center">
+                    <div className="row justify-content-center">
+                        <GroupSearchForm 
+                            formFields={this.state.userSearchFormFields}
+                            page={this.state.userSearchResults.page}
+                            token={this.state.storeState.system.token} 
+                            updateSearchFormFields={this.handleUserSearchFormUpdate}
+                            onSubmit={this.props.onSubmit}
+                        />
+                    </div>
+                </div>
+
+                <div className="container mx-auto my-auto">                       
+                    {Object.keys(userSearchResult).length>0 ? (
+                    <div>
+                        <UserTableList userList={this.state.userSearchResults.users} />
+                       {this.state.userSearchResults.page !== 0 ? 
+                            <Button type="button" onClick={this.loadMore}> Load More... </Button>: null
+                       }
+                    </div>): null
+                    }        
+                </div>
             </div>
         );
     }
@@ -158,16 +235,16 @@ const mapStateToProps = (
 }
 
 // TODO: Add user search dispatch
-/*const mapDispatchToProps = (dispatch: any) => {
+const mapDispatchToProps = (dispatch: any) => {
     return {
         onSubmit: (
             e: React.FormEvent<HTMLFormElement>, 
             formFields: GroupSearchFormFields,
-            existingGroups: GroupSearchResult[],
+            existingUsers: UserSearchResult[],
             page: number,
             token: string,
-            ) => dispatch(SearchGroups(e, formFields, existingGroups, page, token))
+        ) => dispatch(SearchUsers(e, formFields, existingUsers, page, token))
     }
-}*/
+}
 
-export default withRouter(connect(mapStateToProps, null)(GroupPage));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GroupPage));

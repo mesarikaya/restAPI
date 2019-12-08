@@ -1,22 +1,19 @@
 package com.mes.gotogether.services.externalconnections;
 
+import com.mes.gotogether.domains.Address;
+import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.mes.gotogether.domains.Address;
-import com.mes.gotogether.domains.NomatimOpenStreetMapQuery;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Service
-public class NomatimMapLocation implements GeoLocationService{
+public final class NomatimMapLocation implements GeoLocationService{
 
 	private final RestTemplate restTemplate;
 	private static final String baseUrl = "https://nominatim.openstreetmap.org/search/";

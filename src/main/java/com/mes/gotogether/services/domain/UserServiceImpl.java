@@ -15,9 +15,9 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public final class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final  UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;

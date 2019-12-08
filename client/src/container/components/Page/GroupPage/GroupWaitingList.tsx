@@ -17,10 +17,6 @@ export interface Props {
     isUserOwnerInGroup: boolean;
 }
 
-export interface State {
-    rows: Table;
-}
-
 class GroupWaitingList extends React.Component<Props,{}>{
 
 

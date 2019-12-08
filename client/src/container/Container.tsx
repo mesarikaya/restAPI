@@ -75,7 +75,7 @@ class Container extends React.Component<AppProps & RouteComponentProps<PathProps
 
         return (
             <Switch>
-                <Route exact={true} path="/" component={App} />
+                <Route exact={true} path="/" component={App}/>
                 <Route path="/group" component={GroupPage} />
                 <Route path="/**" component={App} />
             </Switch>

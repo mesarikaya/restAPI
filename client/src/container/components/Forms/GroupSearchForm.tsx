@@ -11,12 +11,13 @@ import { GroupSearchFormFields } from '../../../redux/types/userInterface/groupS
 import InputRange from '../Buttons/InputRange';
 import { SearchGroups } from '../../../redux/actions/groupSearchAction';
 import { submitForm } from '../../utilities/submitForm';
+import { SearchUsers } from 'src/redux/actions/userSearchAction';
 
 export interface Props {
     formFields: GroupSearchFormFields;
     page: number;
     token: string;
-    onSubmit: typeof SearchGroups;
+    onSubmit: typeof SearchGroups| typeof SearchUsers;
     updateSearchFormFields: (formFields: GroupSearchFormFields) => void;
 };
 
@@ -70,6 +71,8 @@ class GroupSearchForm extends React.Component<Props, State> {
         
         // MAKE AN AJAX CALL
         this.props.onSubmit(event, this.props.formFields, [], this.props.page, this.props.token);
+        
+        
 
         // TODO: VALIDATE ON THE REST CONTROLLER AND RETURN ERROR OR THE SEARCH STATUS AND SAVE COOKIE
     };
@@ -140,10 +143,10 @@ class GroupSearchForm extends React.Component<Props, State> {
 
             <div className="searchForm">
                                                 
-                <h1 className="joinAGroupText">Join<span> a group</span>?</h1>
-                <p className="joinAGroupSubText">Search with ease based on the origin and destination radius</p>
+                <h1 className="joinAGroupText text-center">Join<span> a group</span>?</h1>
+                <p className="joinAGroupSubText text-center">Search with ease based on the origin and destination radius</p>
                 
-                <Form name="groupSearchForm" className="groupSearchFormValidation" 
+                <Form name="groupSearchForm" className="groupSearchFormValidation text-center" 
                 noValidate={true} validated = {validated} onSubmit = {this.handleSubmit}>
                     <Form.Row> 
                         <InputGroup className="justify-content-center">

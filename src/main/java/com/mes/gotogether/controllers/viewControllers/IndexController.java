@@ -1,10 +1,10 @@
 package com.mes.gotogether.controllers.viewControllers;
 
+import com.mes.gotogether.security.domain.AuthRequest;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.validation.Valid;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,10 +12,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.mes.gotogether.security.domain.AuthRequest;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Slf4j
